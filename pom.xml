@@ -17,9 +17,9 @@
 	<url>http://maven.apache.org</url>
 
 	<scm>
-		<connection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base.git</connection>
-		<developerConnection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base.git</developerConnection>
-		<url>https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base.git</url>
+		<connection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base</connection>
+		<developerConnection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base</developerConnection>
+		<url>https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base</url>
   	</scm>
 
 	<properties>
