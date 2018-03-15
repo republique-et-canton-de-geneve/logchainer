@@ -20,7 +20,7 @@ public class FolderService {
     private static final String TMP_DIRECTORY = "tmpDirectory"; 
 
 
-    private FolderService(){};
+    private FolderService(){}
 
 
     /**
@@ -45,8 +45,9 @@ public class FolderService {
      * Getter for the tmp property.
      * 
      * @return tmp directory name as a String
+     * @throws IOException 
      */
-    private static String getTmpProperty(String key) throws Exception{
+    private static String getTmpProperty(String key) throws IOException {
 	String tmp;
 
 	try {
@@ -56,7 +57,7 @@ public class FolderService {
 
 	    return tmp;
 
-	} catch (Exception e) {
+	} catch (IOException e) {
 	    LOG.error("tmp property not found", e);
 
 	    throw e;

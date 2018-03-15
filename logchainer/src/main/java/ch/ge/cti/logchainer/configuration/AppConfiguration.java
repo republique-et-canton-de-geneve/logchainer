@@ -21,7 +21,7 @@ public class AppConfiguration {
     /**
      * Non instantiable class
      */
-    private AppConfiguration(){};
+    private AppConfiguration(){}
     
     
     /**

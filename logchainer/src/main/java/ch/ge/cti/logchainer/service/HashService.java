@@ -13,7 +13,7 @@ public class HashService {
 	    .getLogger(HashService.class.getName());
     
     
-    private HashService(){};
+    private HashService(){}
     
 
     public static byte[] getLogHashCode(String pFile) {
