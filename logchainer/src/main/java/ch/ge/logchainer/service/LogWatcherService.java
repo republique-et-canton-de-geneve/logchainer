@@ -24,13 +24,13 @@ public class LogWatcherService {
     /**
      * logger
      */
-    private static final Logger LOG = LoggerFactory
-	    .getLogger(LogWatcherService.class.getName());
-
+    private static final Logger LOG = LoggerFactory.getLogger(LogWatcherService.class.getName());
 
     /**
      * Constructor.
-     * @param pDir path to the directoy to watch.
+     * 
+     * @param pDir
+     *            path to the directoy to watch.
      * @throws IOException
      */
     public LogWatcherService() throws IOException {
@@ -41,8 +41,7 @@ public class LogWatcherService {
 
 	    LOG.info("input property correctly accessed");
 
-
-	} catch (Exception e){
+	} catch (Exception e) {
 	    LOG.error("input property not found");
 	}
 
@@ -50,34 +49,32 @@ public class LogWatcherService {
 
 	LOG.info("file directory is : " + input.toString());
 
-
 	this.watcher = FileSystems.getDefault().newWatchService();
 
 	try {
-	    key = input.register(watcher, 
-		    ENTRY_CREATE);
+	    key = input.register(watcher, ENTRY_CREATE);
 
 	    LOG.info("key created as an ENTRY_CREATE");
 
 	} catch (IOException e) {
 	    LOG.error("couldn't complete the initialization : " + e.toString());
+	    throw e;
 	}
 
 	LOG.info("initialization completed");
     }
 
-
-
     /**
      * Infinity loop checking for updates in the directoy.
-     * @throws IOException 
+     * 
+     * @throws IOException
      */
     public void processEvents() throws IOException {
 	LOG.info("start of the infinity loop");
 
-	for(;;){
+	for (;;) {
 
-	    //wait for key to be signaled
+	    // wait for key to be signaled
 	    try {
 		key = watcher.take();
 	    } catch (InterruptedException x) {
@@ -87,40 +84,41 @@ public class LogWatcherService {
 	    for (WatchEvent<?> event : key.pollEvents()) {
 		WatchEvent.Kind<?> kind = event.kind();
 
-		//handling the overflow situation
-		if (kind == OVERFLOW){ 
+		// handling the overflow situation
+		if (kind == OVERFLOW) {
 		    LOG.info("overflow detected");
 
-		    continue; 
-		} 
+		    continue;
+		}
 
-		//To obtain the filename if needed.
-		//the filename is the context of the event.
+		// To obtain the filename if needed.
+		// the filename is the context of the event.
 		WatchEvent<Path> ev = (WatchEvent<Path>) event;
 		Path filename = ev.context();
 
 		if (kind == ENTRY_CREATE) {
-		    //We now refer to the code part
-		    //treating of a new file appearing 
-		    //in the directoy.
-		    LOG.info("New file detected : " + (new File(input.toString() + "/" + filename.toString() )).getAbsolutePath());
-		    
+		    // We now refer to the code part
+		    // treating of a new file appearing
+		    // in the directoy.
+		    LOG.info("New file detected : "
+			    + (new File(input.toString() + "/" + filename.toString())).getAbsolutePath());
+
 		    String pFileInTmp;
-		    
+
 		    pFileInTmp = FolderService.moveFileInputToTmp(filename.toString(), input.toString());
-		    
-		    //we instantiate a local array to keep and manipulate the hashCode
+
+		    // we instantiate a local array to keep and manipulate the
+		    // hashCode
 		    byte[] hashCodeOfLog = HashService.getLogHashCode(pFileInTmp);
-		    
+
 		    LOG.info("Hash of the logs received in hashCodeOfLog variable");
-		    
+
 		    LOG.debug("hash code is : " + hashCodeOfLog.toString() + "  end");
-		} 
+		}
 
-
-		//Reseting the key to be able to use it again
-		//If the key is not valid or the directory is inacessible
-		//ends the loop.
+		// Reseting the key to be able to use it again
+		// If the key is not valid or the directory is inacessible
+		// ends the loop.
 		boolean valid = key.reset();
 		if (!valid) {
 
