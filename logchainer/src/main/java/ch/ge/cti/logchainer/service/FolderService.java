@@ -1,6 +1,5 @@
 package ch.ge.cti.logchainer.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
@@ -13,49 +12,50 @@ import ch.ge.cti.logchainer.configuration.AppConfiguration;
 
 public class FolderService {
 
-    /**
-     * logger
-     */
-    private static final Logger LOG = LoggerFactory.getLogger(FolderService.class.getName());
-    
-    private static String TMP_DIRECTORY = "tmpDirectory";
-    /**
-     * Moves the newly created files (those who normally don't override any file
-     * name in the tmp directory)
-     * 
-     * @param pFile
-     * @throws IOException
-     */
-    public static String moveFileInputToTmp(String pFile, String pDir) throws IOException {
-	LOG.debug("new file moving method entered");
+	/**
+	 * logger
+	 */
+	private static final Logger LOG = LoggerFactory.getLogger(FolderService.class.getName());
 
-	Files.move(Paths.get(pDir + "/" + pFile), Paths.get(getTmpProperty(TMP_DIRECTORY) + "/" + pFile), new CopyOption[] {});
+	private static String TMP_DIRECTORY = "tmpDirectory";
 
-	LOG.debug("file successfully moved to directory : " + getTmpProperty(TMP_DIRECTORY) + "/" + pFile);
+	/**
+	 * Moves the newly created files (those who normally don't override any file
+	 * name in the tmp directory)
+	 * 
+	 * @param pFile
+	 * @throws IOException
+	 */
+	public static String moveFileInputToTmp(String pFile, String pDir) throws IOException {
+		LOG.debug("new file moving method entered");
 
-	return getTmpProperty(TMP_DIRECTORY) + "/" + pFile;
-    }
+		Files.move(Paths.get(pDir + "/" + pFile), Paths.get(getTmpProperty(TMP_DIRECTORY) + "/" + pFile), new CopyOption[] {});
 
-    /**
-     * Getter for the tmp property.
-     * 
-     * @return tmp directory name as a String
-     */
-    private static String getTmpProperty(String key) {
-	String tmp;
+		LOG.debug("file successfully moved to directory : " + getTmpProperty(TMP_DIRECTORY) + "/" + pFile);
 
-	try {
-	    tmp = AppConfiguration.load().getProperty(key);
-
-	    LOG.info("tmp property correctly accessed");
-
-	    return tmp;
-
-	} catch (Exception e) {
-	    LOG.error("tmp property not found");
-
-	    return null;
+		return getTmpProperty(TMP_DIRECTORY) + "/" + pFile;
 	}
-    }
+
+	/**
+	 * Getter for the tmp property.
+	 * 
+	 * @return tmp directory name as a String
+	 */
+	private static String getTmpProperty(String key) {
+		String tmp;
+
+		try {
+			tmp = AppConfiguration.load().getProperty(key);
+
+			LOG.info("tmp property correctly accessed");
+
+			return tmp;
+
+		} catch (Exception e) {
+			LOG.error("tmp property not found");
+
+			return null;
+		}
+	}
 
 }
