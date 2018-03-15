@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -29,6 +30,42 @@
 	<modules>
 		<module>logchainer</module>
 	</modules>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<id>jenkins-demande-la-javadoc-pour-jar</id>
+						<!-- mis en commentaire pour éviter une double génération de la javadoc -->
+						<!-- <goals> <goal>jar</goal> </goals> -->
+					</execution>
+				</executions>
+				<configuration>
+					<!-- commenté suite http://etatprd.etat-ge.ch:30402/ctidemande/browse/UCTI-151 -->
+					<!-- <aggregate>true</aggregate> -->
+					<quiet>true</quiet>
+					<windowtitle>
+						"${project.name} : documentation"
+					</windowtitle>
+					<version>true</version>
+					<use>true</use>
+					<show>protected</show>
+					<author>true</author>
+					<locale>fr</locale>
+					<source>1.8</source>
+					<!-- voir http://etatprd.etat-ge.ch:30402/ctidemande/browse/UCTI-176 -->
+					<encoding>${encoding}</encoding>
+					<!-- default: ${project.build.sourceEncoding} -->
+				</configuration>
+				<inherited>true</inherited>
+			</plugin>
+		</plugins>
+	</build>
+
 
 	<dependencyManagement>
 		<dependencies>
