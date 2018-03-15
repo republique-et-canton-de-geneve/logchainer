@@ -1,7 +1,5 @@
 package ch.ge.cti.logchainer.service;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -18,15 +16,20 @@ public class FolderService {
      */
     private static final Logger LOG = LoggerFactory.getLogger(FolderService.class.getName());
     
-    private static String TMP_DIRECTORY = "tmpDirectory";
+    private static final String TMP_DIRECTORY = "tmpDirectory";
+    
+    
+    private FolderService(){};
+    
+    
     /**
      * Moves the newly created files (those who normally don't override any file
      * name in the tmp directory)
      * 
      * @param pFile
-     * @throws IOException
+     * @throws Exception 
      */
-    public static String moveFileInputToTmp(String pFile, String pDir) throws IOException {
+    public static String moveFileInputToTmp(String pFile, String pDir) throws Exception {
 	LOG.debug("new file moving method entered");
 
 	Files.move(Paths.get(pDir + "/" + pFile), Paths.get(getTmpProperty(TMP_DIRECTORY) + "/" + pFile), new CopyOption[] {});
@@ -40,8 +43,9 @@ public class FolderService {
      * Getter for the tmp property.
      * 
      * @return tmp directory name as a String
+     * @throws Exception 
      */
-    private static String getTmpProperty(String key) {
+    private static String getTmpProperty(String key) throws Exception {
 	String tmp;
 
 	try {
@@ -52,9 +56,9 @@ public class FolderService {
 	    return tmp;
 
 	} catch (Exception e) {
-	    LOG.error("tmp property not found");
-
-	    return null;
+	    LOG.error("tmp property not found", e);
+	    
+	    throw e;
 	}
     }
 

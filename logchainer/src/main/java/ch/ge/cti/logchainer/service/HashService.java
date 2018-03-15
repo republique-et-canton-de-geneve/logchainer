@@ -13,6 +13,8 @@ public class HashService {
 	    .getLogger(HashService.class.getName());
     
     
+    private HashService(){};
+    
 
     public static byte[] getLogHashCode(String pFile) {
 	LOG.info("Hashing algorithm entered");

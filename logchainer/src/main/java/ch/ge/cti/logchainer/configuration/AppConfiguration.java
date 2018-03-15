@@ -19,12 +19,18 @@ public class AppConfiguration {
 	    .getLogger(AppConfiguration.class.getName());
     
     /**
+     * Non instantiable class
+     */
+    private AppConfiguration(){};
+    
+    
+    /**
      * Responsible for the download of the properties file.
      * @return the properties as a Properties object
      * @throws IOException
      * @throws FileNotFoundException
      */
-    public static Properties load() throws IOException, FileNotFoundException{
+    public static Properties load() throws IOException{
 	Properties properties = new Properties();
 
 	FileInputStream input = new FileInputStream(LogChainerConstante.FILENAME);
@@ -38,13 +44,13 @@ public class AppConfiguration {
 	    return properties;
 	    
 	} catch (FileNotFoundException e) {
-	    LOG.error("properties file not found");
+	    LOG.error("properties file not found", e);
 	    
-	    return null;
+	    throw e;
 	    
 	} catch (IOException e) {
-	    LOG.error("couldn't access properties file");
-	    return null;
+	    LOG.error("couldn't access properties file", e);
+	    throw e;
 	}
 	
 	finally{

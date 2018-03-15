@@ -1,5 +1,8 @@
 package ch.ge.cti.logchainer.service;
 
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -8,7 +11,7 @@ import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import static java.nio.file.StandardWatchEventKinds.*;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +45,8 @@ public class LogWatcherService {
 	    LOG.info("input property correctly accessed");
 
 	} catch (Exception e) {
-	    LOG.error("input property not found");
+	    LOG.error("input property not found", e);
+	    throw e;
 	}
 
 	this.input = Paths.get(inputDir);
@@ -57,7 +61,7 @@ public class LogWatcherService {
 	    LOG.info("key created as an ENTRY_CREATE");
 
 	} catch (IOException e) {
-	    LOG.error("couldn't complete the initialization : " + e.toString());
+	    LOG.error("couldn't complete the initialization : " + e.toString() , e);
 	    throw e;
 	}
 
@@ -66,10 +70,9 @@ public class LogWatcherService {
 
     /**
      * Infinity loop checking for updates in the directoy.
-     * 
-     * @throws IOException
+     * @throws Exception 
      */
-    public void processEvents() throws IOException {
+    public void processEvents() throws Exception {
 	LOG.info("start of the infinity loop");
 
 	for (;;) {
@@ -78,6 +81,8 @@ public class LogWatcherService {
 	    try {
 		key = watcher.take();
 	    } catch (InterruptedException x) {
+		LOG.error("interruption in the key search " , x);
+		
 		return;
 	    }
 
@@ -113,7 +118,7 @@ public class LogWatcherService {
 
 		    LOG.info("Hash of the logs received in hashCodeOfLog variable");
 
-		    LOG.debug("hash code is : " + hashCodeOfLog.toString() + "  end");
+		    LOG.debug("hash code is : " + Arrays.toString(hashCodeOfLog) + "  end");
 		}
 
 		// Reseting the key to be able to use it again

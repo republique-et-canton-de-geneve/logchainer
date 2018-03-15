@@ -2,14 +2,13 @@ package ch.ge.cti.logchainer;
 
 import java.io.IOException;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.ge.cti.logchainer.service.LogWatcherService;
 
 public class LogChainer implements Runnable {
-    private static LogWatcherService WATCHER;
+    private static LogWatcherService watcher;
     
     /**
      * logger
@@ -19,13 +18,13 @@ public class LogChainer implements Runnable {
     public static void main(String[] args) throws IOException {
 	LOG.info("enter main");
 
-	start(args);
+	start();
     }
 
-    private static void start(String[] args) throws IOException {
+    private static void start() throws IOException {
 	LOG.info("enter start");
 	
-	WATCHER = new LogWatcherService();
+	watcher = new LogWatcherService();
 	
 	
 	new Thread(new LogChainer()).start();
@@ -38,10 +37,10 @@ public class LogChainer implements Runnable {
 	LOG.info("run started");
 	
 	try {
-	    WATCHER.processEvents();
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+	    watcher.processEvents();
+	} catch (Exception e) {
+	    
+	    LOG.error("Exception was cached", e);
 	}
 	
     }
