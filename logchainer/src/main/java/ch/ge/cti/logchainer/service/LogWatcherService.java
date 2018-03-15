@@ -51,8 +51,7 @@ public class LogWatcherService {
 
 	this.input = Paths.get(inputDir);
 
-	if (input != null)
-	    LOG.info("file directory is : ", input.toString());
+	LOG.info("file directory is : ", input.toString());
 
 	this.watcher = FileSystems.getDefault().newWatchService();
 
@@ -73,7 +72,7 @@ public class LogWatcherService {
      * Infinity loop checking for updates in the directoy.
      * @throws Exception 
      */
-    public void processEvents() throws Exception {
+    public void processEvents() throws IOException {
 	LOG.info("start of the infinity loop");
 
 	for (;;) {

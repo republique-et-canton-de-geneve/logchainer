@@ -38,7 +38,7 @@ public class LogChainer implements Runnable {
 	
 	try {
 	    watcher.processEvents();
-	} catch (Exception e) {
+	} catch (IOException e) {
 	    
 	    LOG.error("Exception was cached", e);
 	}
