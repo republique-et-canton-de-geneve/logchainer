@@ -51,7 +51,7 @@ public class LogWatcherService {
 
 	this.input = Paths.get(inputDir);
 
-	LOG.info("file directory is : " + input.toString());
+	LOG.info("file directory is : ", input.toString());
 
 	this.watcher = FileSystems.getDefault().newWatchService();
 
@@ -61,7 +61,7 @@ public class LogWatcherService {
 	    LOG.info("key created as an ENTRY_CREATE");
 
 	} catch (IOException e) {
-	    LOG.error("couldn't complete the initialization : " + e.toString() , e);
+	    LOG.error("couldn't complete the initialization : ", e.toString() , e);
 	    throw e;
 	}
 
@@ -118,7 +118,7 @@ public class LogWatcherService {
 
 		    LOG.info("Hash of the logs received in hashCodeOfLog variable");
 
-		    LOG.debug("hash code is : " + Arrays.toString(hashCodeOfLog) + "  end");
+		    LOG.debug("hash code is : ", Arrays.toString(hashCodeOfLog), "  end");
 		}
 
 		// Reseting the key to be able to use it again

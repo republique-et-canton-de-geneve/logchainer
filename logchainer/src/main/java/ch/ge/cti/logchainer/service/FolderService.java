@@ -34,7 +34,7 @@ public class FolderService {
 
 	Files.move(Paths.get(pDir + "/" + pFile ), Paths.get(getTmpProperty(TMP_DIRECTORY) + "/" + pFile), new CopyOption[]{});
 
-	LOG.debug("file successfully moved to directory : " + getTmpProperty(TMP_DIRECTORY) + "/" + pFile);
+	LOG.debug("file successfully moved to directory : ", getTmpProperty(TMP_DIRECTORY), "/", pFile);
 
 	return getTmpProperty(TMP_DIRECTORY) + "/" + pFile;
     }
