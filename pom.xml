@@ -9,7 +9,7 @@
 
 	<groupId>ch.ge.cti.logchainer</groupId>
 	<artifactId>logchainer-base</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.7-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>logchainer-base</name>
@@ -19,7 +19,7 @@
 		<connection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base.git</connection>
 		<developerConnection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base.git</developerConnection>
 		<url>https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base.git</url>
-	  <tag>logchainer-base-0.0.3</tag>
+    <tag>HEAD</tag>
   </scm>
 
 	<properties>
@@ -31,6 +31,18 @@
 		<module>logchainer</module>
 	</modules>
 
+	<profiles>
+		<profile>
+			<id>java8-doclint-disabled</id>
+			<activation>
+				<jdk>[1.8,)</jdk>
+			</activation>
+			<properties>
+				<javadoc.opts>-Xdoclint:none</javadoc.opts>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -41,26 +53,19 @@
 					<executions>
 						<execution>
 							<id>Melusine-demande-la-javadoc-pour-jar</id>
-							<!-- mis en commentaire pour éviter une double génération de la javadoc -->
-							<!-- <goals> <goal>jar</goal> </goals> -->
 						</execution>
 					</executions>
 					<configuration>
-						<!-- commenté suite http://etatprd.etat-ge.ch:30402/ctidemande/browse/UCTI-151 -->
-						<!-- <aggregate>true</aggregate> -->
 						<quiet>true</quiet>
-						<windowtitle>
-							"${project.name} : documentation"
-						</windowtitle>
+						<windowtitle>"${project.name} : documentation"</windowtitle>
 						<version>true</version>
 						<use>true</use>
 						<show>protected</show>
 						<author>true</author>
 						<locale>fr</locale>
 						<source>1.8</source>
-						<!-- voir http://etatprd.etat-ge.ch:30402/ctidemande/browse/UCTI-176 -->
 						<encoding>${encoding}</encoding>
-						<!-- default: ${project.build.sourceEncoding} -->
+						<additionalparam>${javadoc.opts}</additionalparam>
 					</configuration>
 					<inherited>true</inherited>
 				</plugin>
