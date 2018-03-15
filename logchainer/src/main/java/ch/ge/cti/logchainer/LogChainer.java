@@ -1,4 +1,4 @@
-package ch.ge.logchainer;  
+package ch.ge.cti.logchainer;  
 
 import java.io.IOException;
 
@@ -6,7 +6,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.ge.logchainer.service.LogWatcherService;
+import ch.ge.cti.logchainer.service.LogWatcherService;
 
 public class LogChainer implements Runnable {
     private static LogWatcherService WATCHER;

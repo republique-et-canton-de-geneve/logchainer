@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>ch.ge.logchainer</groupId>
+		<groupId>ch.ge.cti.logchainer</groupId>
 		<artifactId>logchainer-base</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>

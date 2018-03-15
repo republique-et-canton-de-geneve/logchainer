@@ -1,4 +1,4 @@
-package ch.ge.logchainer.service;
+package ch.ge.cti.logchainer.service;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;

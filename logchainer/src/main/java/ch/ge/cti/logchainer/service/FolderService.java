@@ -1,4 +1,4 @@
-package ch.ge.logchainer.service;
+package ch.ge.cti.logchainer.service;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.ge.logchainer.configuration.AppConfiguration;
+import ch.ge.cti.logchainer.configuration.AppConfiguration;
 
 public class FolderService {
 

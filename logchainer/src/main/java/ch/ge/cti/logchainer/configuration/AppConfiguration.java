@@ -1,4 +1,4 @@
-package ch.ge.logchainer.configuration;
+package ch.ge.cti.logchainer.configuration;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,7 +8,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.ge.logchainer.constante.LogChainerConstante;
+import ch.ge.cti.logchainer.constante.LogChainerConstante;
 
 public class AppConfiguration {
     

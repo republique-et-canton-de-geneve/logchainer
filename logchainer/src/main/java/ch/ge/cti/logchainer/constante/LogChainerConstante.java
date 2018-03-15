@@ -1,4 +1,4 @@
-package ch.ge.logchainer.constante;
+package ch.ge.cti.logchainer.constante;
 
 public class LogChainerConstante {
     
