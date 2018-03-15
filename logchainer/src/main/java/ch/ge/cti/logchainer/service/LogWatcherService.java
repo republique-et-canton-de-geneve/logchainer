@@ -44,16 +44,15 @@ public class LogWatcherService {
 
 	    LOG.info("input property correctly accessed");
 
-	    this.input = Paths.get(inputDir);
-
-	    LOG.info("file directory is : ", input.toString());
-
 	} catch (Exception e) {
 	    LOG.error("input property not found", e);
 	    throw e;
 	}
 
+	this.input = Paths.get(inputDir);
 
+	if (input != null)
+	    LOG.info("file directory is : ", input.toString());
 
 	this.watcher = FileSystems.getDefault().newWatchService();
 
