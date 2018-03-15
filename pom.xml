@@ -33,38 +33,40 @@
 	</modules>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
-				<executions>
-					<execution>
-						<id>jenkins-demande-la-javadoc-pour-jar</id>
-						<!-- mis en commentaire pour éviter une double génération de la javadoc -->
-						<!-- <goals> <goal>jar</goal> </goals> -->
-					</execution>
-				</executions>
-				<configuration>
-					<!-- commenté suite http://etatprd.etat-ge.ch:30402/ctidemande/browse/UCTI-151 -->
-					<!-- <aggregate>true</aggregate> -->
-					<quiet>true</quiet>
-					<windowtitle>
-						"${project.name} : documentation"
-					</windowtitle>
-					<version>true</version>
-					<use>true</use>
-					<show>protected</show>
-					<author>true</author>
-					<locale>fr</locale>
-					<source>1.8</source>
-					<!-- voir http://etatprd.etat-ge.ch:30402/ctidemande/browse/UCTI-176 -->
-					<encoding>${encoding}</encoding>
-					<!-- default: ${project.build.sourceEncoding} -->
-				</configuration>
-				<inherited>true</inherited>
-			</plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.9.1</version>
+					<executions>
+						<execution>
+							<id>Melusine-demande-la-javadoc-pour-jar</id>
+							<!-- mis en commentaire pour éviter une double génération de la javadoc -->
+							<!-- <goals> <goal>jar</goal> </goals> -->
+						</execution>
+					</executions>
+					<configuration>
+						<!-- commenté suite http://etatprd.etat-ge.ch:30402/ctidemande/browse/UCTI-151 -->
+						<!-- <aggregate>true</aggregate> -->
+						<quiet>true</quiet>
+						<windowtitle>
+							"${project.name} : documentation"
+						</windowtitle>
+						<version>true</version>
+						<use>true</use>
+						<show>protected</show>
+						<author>true</author>
+						<locale>fr</locale>
+						<source>1.8</source>
+						<!-- voir http://etatprd.etat-ge.ch:30402/ctidemande/browse/UCTI-176 -->
+						<encoding>${encoding}</encoding>
+						<!-- default: ${project.build.sourceEncoding} -->
+					</configuration>
+					<inherited>true</inherited>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 
