@@ -53,26 +53,19 @@
 					<executions>
 						<execution>
 							<id>Melusine-demande-la-javadoc-pour-jar</id>
-							<!-- mis en commentaire pour éviter une double génération de la javadoc -->
-							<!-- <goals> <goal>jar</goal> </goals> -->
 						</execution>
 					</executions>
 					<configuration>
-						<!-- commenté suite http://etatprd.etat-ge.ch:30402/ctidemande/browse/UCTI-151 -->
-						<!-- <aggregate>true</aggregate> -->
 						<quiet>true</quiet>
-						<windowtitle>
-							"${project.name} : documentation"
-						</windowtitle>
+						<windowtitle>"${project.name} : documentation"</windowtitle>
 						<version>true</version>
 						<use>true</use>
 						<show>protected</show>
 						<author>true</author>
 						<locale>fr</locale>
 						<source>1.8</source>
-						<!-- voir http://etatprd.etat-ge.ch:30402/ctidemande/browse/UCTI-176 -->
 						<encoding>${encoding}</encoding>
-						<!-- default: ${project.build.sourceEncoding} -->
+						<additionalparam>${javadoc.opts}</additionalparam
 					</configuration>
 					<inherited>true</inherited>
 				</plugin>
