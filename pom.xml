@@ -65,7 +65,7 @@
 						<locale>fr</locale>
 						<source>1.8</source>
 						<encoding>${encoding}</encoding>
-						<additionalparam>${javadoc.opts}</additionalparam
+						<additionalparam>${javadoc.opts}</additionalparam>
 					</configuration>
 					<inherited>true</inherited>
 				</plugin>
