@@ -10,7 +10,7 @@
 
 	<groupId>ch.ge.cti.logchainer</groupId>
 	<artifactId>logchainer-base</artifactId>
-	<version>0.0.8-SNAPSHOT</version>
+	<version>0.0.7-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>logchainer-base</name>
