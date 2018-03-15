@@ -17,7 +17,7 @@ public class FolderService {
      */
     private static final Logger LOG = LoggerFactory.getLogger(FolderService.class.getName());
 
-    private static final String TMP_DIRECTORY = "tmpDirectory";
+    private static final String TMP_DIRECTORY = "tmpDirectory"; 
 
 
     private FolderService(){};
