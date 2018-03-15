@@ -29,7 +29,7 @@ public class FolderService {
      * @param pFile
      * @throws IOException
      */
-    public static String moveFileInputToTmp(String pFile, String pDir) throws Exception {
+    public static String moveFileInputToTmp(String pFile, String pDir) throws IOException {
 	LOG.debug("new file moving method entered");
 
 	Files.move(Paths.get(pDir + "/" + pFile ), Paths.get(getTmpProperty(TMP_DIRECTORY) + "/" + pFile), new CopyOption[]{});
