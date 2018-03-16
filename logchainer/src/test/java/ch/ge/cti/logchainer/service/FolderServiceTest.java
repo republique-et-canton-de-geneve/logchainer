@@ -1,4 +1,4 @@
-package ch.ge.logchainer.service;
+package ch.ge.cti.logchainer.service;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

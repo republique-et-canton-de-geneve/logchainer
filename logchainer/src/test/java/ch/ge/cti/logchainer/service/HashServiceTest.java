@@ -1,4 +1,4 @@
-package ch.ge.logchainer.service;
+package ch.ge.cti.logchainer.service;
 
 import static org.testng.Assert.assertEquals;
 
