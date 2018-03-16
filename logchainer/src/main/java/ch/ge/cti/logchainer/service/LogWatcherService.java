@@ -1,5 +1,6 @@
 package ch.ge.cti.logchainer.service;
 
+import static ch.ge.cti.logchainer.constante.LogChainerConstante.TMP_DIRECTORY;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
@@ -61,7 +62,7 @@ public class LogWatcherService {
 	    LOG.info("key created as an ENTRY_CREATE");
 
 	} catch (IOException e) {
-	    LOG.error("couldn't complete the initialization : ", e.toString() , e);
+	    LOG.error("couldn't complete the initialization : ", e.toString(), e);
 	    throw e;
 	}
 
@@ -70,7 +71,8 @@ public class LogWatcherService {
 
     /**
      * Infinity loop checking for updates in the directoy.
-     * @throws Exception 
+     * 
+     * @throws Exception
      */
     public void processEvents() throws IOException {
 	LOG.info("start of the infinity loop");
@@ -81,7 +83,7 @@ public class LogWatcherService {
 	    try {
 		key = watcher.take();
 	    } catch (InterruptedException x) {
-		LOG.error("interruption in the key search " , x);
+		LOG.error("interruption in the key search ", x);
 
 		return;
 	    }
@@ -110,7 +112,8 @@ public class LogWatcherService {
 
 		    String pFileInTmp;
 
-		    pFileInTmp = FolderService.moveFileInputToTmp(filename.toString(), input.toString());
+		    pFileInTmp = FolderService.moveFileInputToTmp(filename.toString(), input.toString(),
+			    AppConfiguration.getTmpProperty(TMP_DIRECTORY));
 
 		    // we instantiate a local array to keep and manipulate the
 		    // hashCode

@@ -8,8 +8,6 @@ import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.ge.cti.logchainer.configuration.AppConfiguration;
-
 public class FolderService {
 
     /**
@@ -17,51 +15,24 @@ public class FolderService {
      */
     private static final Logger LOG = LoggerFactory.getLogger(FolderService.class.getName());
 
-    private static final String TMP_DIRECTORY = "tmpDirectory"; 
-
-
-    private FolderService(){}
-
+    private FolderService() {
+    }
 
     /**
-     * Moves the newly created files (those who normally don't override any file 
+     * Moves the newly created files (those who normally don't override any file
      * name in the tmp directory)
+     * 
      * @param pFile
      * @throws IOException
      */
-    public static String moveFileInputToTmp(String pFile, String pDir) throws IOException {
+    public static String moveFileInputToTmp(String pFile, String pDir, String pTmp) throws IOException {
 	LOG.debug("new file moving method entered");
 
-	Files.move(Paths.get(pDir + "/" + pFile ), Paths.get(getTmpProperty(TMP_DIRECTORY) + "/" + pFile), new CopyOption[]{});
+	Files.move(Paths.get(pDir + "/" + pFile), Paths.get(pTmp + "/" + pFile), new CopyOption[] {});
 
-	LOG.debug("file successfully moved to directory : ", getTmpProperty(TMP_DIRECTORY), "/", pFile);
+	LOG.debug("file successfully moved to directory : ", pTmp, "/", pFile);
 
-	return getTmpProperty(TMP_DIRECTORY) + "/" + pFile;
+	return pTmp + "/" + pFile;
     }
 
-
-
-    /**
-     * Getter for the tmp property.
-     * 
-     * @return tmp directory name as a String
-     * @throws IOException 
-     */
-    private static String getTmpProperty(String key) throws IOException {
-	String tmp;
-
-	try {
-	    tmp = AppConfiguration.load().getProperty(key);
-
-	    LOG.info("tmp property correctly accessed");
-
-	    return tmp;
-
-	} catch (IOException e) {
-	    LOG.error("tmp property not found", e);
-
-	    throw e;
-	}
-
-    }
 }
