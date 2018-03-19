@@ -6,5 +6,7 @@ public class LogChainerConstante {
     
     public static final String TMP_DIRECTORY = "tmpDirectory"; 
     
+    public static final String OUTPUT_DIRECTORY = "outputDirectory";
+    
     private LogChainerConstante() {}
 }

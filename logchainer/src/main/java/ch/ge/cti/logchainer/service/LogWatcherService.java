@@ -1,19 +1,25 @@
 package ch.ge.cti.logchainer.service;
 
+import static ch.ge.cti.logchainer.constante.LogChainerConstante.OUTPUT_DIRECTORY;
 import static ch.ge.cti.logchainer.constante.LogChainerConstante.TMP_DIRECTORY;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.util.Arrays;
+import java.util.Collection;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +68,7 @@ public class LogWatcherService {
 	    LOG.info("key created as an ENTRY_CREATE");
 
 	} catch (IOException e) {
-	    LOG.error("couldn't complete the initialization : ", e.toString(), e);
+	    LOG.error("couldn't complete the initialization : " + e.toString(), e);
 	    throw e;
 	}
 
@@ -100,6 +106,7 @@ public class LogWatcherService {
 
 		// To obtain the filename if needed.
 		// the filename is the context of the event.
+		@SuppressWarnings("unchecked")
 		WatchEvent<Path> ev = (WatchEvent<Path>) event;
 		Path filename = ev.context();
 
@@ -110,18 +117,69 @@ public class LogWatcherService {
 		    LOG.info("New file detected : "
 			    + (new File(input.toString() + "/" + filename.toString())).getAbsolutePath());
 
+		    String fluxNameTmp = "";
+
+		    for (int i = 0 ; i < filename.toString().toCharArray().length ; ++i) {
+			if (filename.toString().toCharArray()[i] != '_') {
+			    fluxNameTmp += filename.toString().toCharArray()[i];
+			} else {
+			    i = filename.toString().toCharArray().length + 1;
+			}
+		    }
+		    LOG.info("the flux of the file is : " + fluxNameTmp);
+		    final String fluxName = fluxNameTmp;
+
+		    String tmp = AppConfiguration.getTmpProperty(TMP_DIRECTORY);
+
+		    @SuppressWarnings("unchecked")
+		    Collection<File> oldTmpFile = FileUtils.listFiles(new File(tmp), new IOFileFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+			    return accept(new File(name));
+			}
+
+			@Override
+			public boolean accept(File file) {
+			    if (file.getName().startsWith(fluxName)) {
+				LOG.info("same flux name noticed");
+				LOG.info("file " + file.getName() + "is detected as same flux");
+			    } else {
+				LOG.info("no same flux name detected");
+			    }
+
+
+
+			    return (file.getName().startsWith(fluxName) ? true : false);
+			}
+		    }, null);
+
 		    String pFileInTmp;
 
-		    pFileInTmp = FolderService.moveFileInputToTmp(filename.toString(), input.toString(),
-			    AppConfiguration.getTmpProperty(TMP_DIRECTORY));
+		    pFileInTmp = FolderService.moveFileInputToTmp(filename.toString(), input.toString(), tmp);
 
 		    // we instantiate a local array to keep and manipulate the
 		    // hashCode
-		    byte[] hashCodeOfLog = HashService.getLogHashCode(pFileInTmp);
+		    byte[] hashCodeOfLog;
+
+		    if (!oldTmpFile.isEmpty()) {
+			hashCodeOfLog = HashService.getLogHashCode(this.getClass().getClassLoader().getResourceAsStream(((File) oldTmpFile.toArray()[0]).getName()));
+			((File) oldTmpFile.toArray()[0]).delete();
+			LOG.info("old file name is : " + ((File) oldTmpFile.toArray()[0]).toString());
+		    } else {
+			hashCodeOfLog = HashService.getNullHash();
+			LOG.info("null hash used");
+		    }
 
 		    LOG.info("Hash of the logs received in hashCodeOfLog variable");
 
-		    LOG.debug("hash code is : ", Arrays.toString(hashCodeOfLog), "  end");
+		    LOG.debug("hash code is : " + new String(hashCodeOfLog) + "> end");
+
+		    
+		    new LogChainerService().chainingLogFile(pFileInTmp, 0, new String("<SHA-256: " + new String(hashCodeOfLog) + "> \n").getBytes());
+
+		    FolderService.moveFileTmpToOutput(tmp, filename.toString(),
+			    AppConfiguration.getTmpProperty(OUTPUT_DIRECTORY));
+
 		}
 
 		// Reseting the key to be able to use it again

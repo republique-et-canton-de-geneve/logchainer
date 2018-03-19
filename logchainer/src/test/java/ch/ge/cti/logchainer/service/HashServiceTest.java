@@ -2,19 +2,23 @@ package ch.ge.cti.logchainer.service;
 
 import static org.testng.Assert.assertEquals;
 
-import org.testng.annotations.Test;
+import java.io.IOException;
+import java.io.InputStream;
 
-import ch.ge.cti.logchainer.service.HashService;
+import org.testng.annotations.Test;
 
 public class HashServiceTest {
 
     @Test(description = "hash method test")
-    public void testHashCode() {
-	String pathTestFile = "D:/_codesource_M501/logchainer-base/logchainer/src/test/resources/testHashCode";
-	byte[] refArray = new byte[] { 26, 40, -50, 107, -109, -40, 41, -24, -95, -37, 5, -6, 73, -56, 18, -71, -18,
-		-13, 11, 115, -80, -74, 113, 28, -80, 95, 26, 110, 10, -38, 4, -49 };
+    public void testHashCode() throws IOException {
+	String pathTestFile = "testHashCode";
 
-	assertEquals(HashService.getLogHashCode(pathTestFile), refArray);
+	InputStream fileToTest = this.getClass().getClassLoader().getResourceAsStream(pathTestFile);
+
+	byte[] refArray = new byte[] { 14, -39, -87, 75, 76, -6, -127, -30, 51, 126, -4, 21, 5, 102, -98, 25, 100, -62,
+		91, -19, 117, 1, 50, 118, -89, 57, -10, 11, -8, -49, 15, -18 };
+
+	assertEquals(HashService.getLogHashCode(fileToTest), refArray);
     }
 
 }

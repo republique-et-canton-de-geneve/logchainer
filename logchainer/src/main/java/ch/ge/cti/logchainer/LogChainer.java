@@ -9,7 +9,7 @@ import ch.ge.cti.logchainer.service.LogWatcherService;
 
 public class LogChainer implements Runnable {
     private static LogWatcherService watcher;
-    
+
     /**
      * logger
      */
@@ -23,10 +23,10 @@ public class LogChainer implements Runnable {
 
     private static void start() throws IOException {
 	LOG.info("enter start");
-	
+
 	watcher = new LogWatcherService();
-	
-	
+
+
 	new Thread(new LogChainer()).start();
 
 	LOG.info("new thread created");
@@ -35,13 +35,13 @@ public class LogChainer implements Runnable {
     @Override 
     public void run() {
 	LOG.info("run started");
-	
+
 	try {
 	    watcher.processEvents();
 	} catch (IOException e) {
-	    
+
 	    LOG.error("Exception was cached", e);
 	}
-	
+
     }
 }

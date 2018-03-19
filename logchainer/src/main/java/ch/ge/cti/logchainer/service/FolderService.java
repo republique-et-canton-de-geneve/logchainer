@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +31,17 @@ public class FolderService {
 
 	Files.move(Paths.get(pDir + "/" + pFile), Paths.get(pTmp + "/" + pFile), new CopyOption[] {});
 
-	LOG.debug("file successfully moved to directory : ", pTmp, "/", pFile);
+	LOG.debug("file successfully moved to directory : " + pTmp + "/" + pFile);
 
 	return pTmp + "/" + pFile;
+    }
+    
+    
+    public static String moveFileTmpToOutput(String pTmp, String pFile, String pOutput) throws IOException {
+	
+	Files.copy(Paths.get(pTmp + "/" + pFile), Paths.get(pOutput + "/" + pFile), new CopyOption[] {});
+	
+	return pOutput + "/" + pFile;
     }
 
 }
