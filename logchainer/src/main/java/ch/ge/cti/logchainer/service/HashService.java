@@ -24,6 +24,7 @@ public class HashService {
     }
 
     public static byte[] getNullHash() {
+	LOG.info("null hash method entered");
 	return new byte[] {};
     }
 }
