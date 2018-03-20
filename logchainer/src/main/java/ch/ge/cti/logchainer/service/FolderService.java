@@ -39,7 +39,7 @@ public class FolderService {
     
     public static String moveFileTmpToOutput(String pTmp, String pFile, String pOutput) throws IOException {
 	
-	Files.copy(Paths.get(pTmp + "/" + pFile), Paths.get(pOutput + "/" + pFile), new CopyOption[] {});
+	Files.copy(Paths.get(pTmp + "/" + pFile), Paths.get(pOutput + "/" + pFile), StandardCopyOption.REPLACE_EXISTING);
 	
 	return pOutput + "/" + pFile;
     }

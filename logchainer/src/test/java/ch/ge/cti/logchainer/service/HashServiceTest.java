@@ -12,13 +12,12 @@ public class HashServiceTest {
     @Test(description = "hash method test")
     public void testHashCode() throws IOException {
 	String pathTestFile = "testHashCode";
-
-	InputStream fileToTest = this.getClass().getClassLoader().getResourceAsStream(pathTestFile);
-
 	byte[] refArray = new byte[] { 14, -39, -87, 75, 76, -6, -127, -30, 51, 126, -4, 21, 5, 102, -98, 25, 100, -62,
 		91, -19, 117, 1, 50, 118, -89, 57, -10, 11, -8, -49, 15, -18 };
 
-	assertEquals(HashService.getLogHashCode(fileToTest), refArray);
+	try (InputStream fileToTest = this.getClass().getClassLoader().getResourceAsStream(pathTestFile)) {
+	    assertEquals(HashService.getLogHashCode(fileToTest), refArray);
+	}
     }
 
 }

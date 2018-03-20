@@ -7,6 +7,7 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -119,7 +120,7 @@ public class LogWatcherService {
 
 		    String fluxNameTmp = "";
 
-		    for (int i = 0 ; i < filename.toString().toCharArray().length ; ++i) {
+		    for (int i = 0; i < filename.toString().toCharArray().length; ++i) {
 			if (filename.toString().toCharArray()[i] != '_') {
 			    fluxNameTmp += filename.toString().toCharArray()[i];
 			} else {
@@ -147,8 +148,6 @@ public class LogWatcherService {
 				LOG.info("no same flux name detected");
 			    }
 
-
-
 			    return (file.getName().startsWith(fluxName) ? true : false);
 			}
 		    }, null);
@@ -162,8 +161,11 @@ public class LogWatcherService {
 		    byte[] hashCodeOfLog;
 
 		    if (!oldTmpFile.isEmpty()) {
-			hashCodeOfLog = HashService.getLogHashCode(this.getClass().getClassLoader().getResourceAsStream(((File) oldTmpFile.toArray()[0]).getName()));
-			((File) oldTmpFile.toArray()[0]).delete();
+			File oldFile = oldTmpFile.stream().findFirst().get();
+			try (InputStream is = new FileInputStream((oldFile))) {
+			    hashCodeOfLog = HashService.getLogHashCode(is);
+			}
+			oldFile.delete();
 			LOG.info("old file name is : " + ((File) oldTmpFile.toArray()[0]).toString());
 		    } else {
 			hashCodeOfLog = HashService.getNullHash();
@@ -174,8 +176,8 @@ public class LogWatcherService {
 
 		    LOG.debug("hash code is : " + new String(hashCodeOfLog) + "> end");
 
-		    
-		    new LogChainerService().chainingLogFile(pFileInTmp, 0, new String("<SHA-256: " + new String(hashCodeOfLog) + "> \n").getBytes());
+		    new LogChainerService().chainingLogFile(pFileInTmp, 0,
+			    new String("<SHA-256: " + new String(hashCodeOfLog) + "> \n").getBytes());
 
 		    FolderService.moveFileTmpToOutput(tmp, filename.toString(),
 			    AppConfiguration.getTmpProperty(OUTPUT_DIRECTORY));
