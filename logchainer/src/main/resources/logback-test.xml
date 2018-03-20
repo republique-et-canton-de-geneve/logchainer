@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration>
 <configuration>
-	<property file="logchainer/src/main/resources/logback.properties" />
+	<property file="logchainer/src/main/resources/conf/logback.properties" />
 
 
 	<!-- to screen -->
