@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration>
 <configuration>
+	<property file="logchainer/src/main/resources/logback.properties" />
+
+
 	<!-- to screen -->
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} %-5level [%thread] - %msg - 
-						%logger{36}.%M\(%line\)%n</pattern>
+			<pattern>%d{HH:mm:ss.SSS} %-5level [%thread] - %msg -
+				%logger{36}.%M\(%line\)%n</pattern>
 		</encoder>
 	</appender>
 
