@@ -1,14 +1,13 @@
 package ch.ge.cti.logchainer.service;
 
+import static ch.ge.cti.logchainer.constante.LogChainerConstante.INPUT_DIRECTORY;
 import static ch.ge.cti.logchainer.constante.LogChainerConstante.OUTPUT_DIRECTORY;
 import static ch.ge.cti.logchainer.constante.LogChainerConstante.TMP_DIRECTORY;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
@@ -48,7 +47,7 @@ public class LogWatcherService {
 	LOG.info("initialization started");
 
 	try {
-	    inputDir = AppConfiguration.load().getProperty("inputDirectory");
+	    inputDir = AppConfiguration.load().getProperty(INPUT_DIRECTORY);
 
 	    LOG.info("input property correctly accessed");
 
