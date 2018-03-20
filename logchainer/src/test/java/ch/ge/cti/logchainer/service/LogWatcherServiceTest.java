@@ -22,7 +22,7 @@ import org.testng.annotations.Test;
 public class LogWatcherServiceTest {
     private WatchService watchService;
     private WatchKey basePathWatchKey;
-    private String testResourcesDirPath = "/logchainer/src/test/resources";
+    private String testResourcesDirPath = "D:/_codesource_M501/logchainer-base/logchainer/src/test/resources/dirCreationDetectionTest";
 
     @BeforeTest
     public void setUp() throws Exception {

@@ -9,7 +9,7 @@ import ch.ge.cti.logchainer.service.FolderService;
 
 public class FolderServiceTest {
      private String testResourcesDirPath =
-     "/logchainer/src/test/resources";
+     "D:/_codesource_M501/logchainer-base/logchainer/src/test/resources";
     
      @Test
      public void testMovingFile() throws Exception {

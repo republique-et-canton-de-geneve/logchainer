@@ -61,12 +61,12 @@ public class AppConfiguration {
     }
 
     /**
-     * Getter for the tmp property.
+     * Getter for the property.
      * 
-     * @return tmp directory name as a String
+     * @return property name as a String
      * @throws IOException
      */
-    public static String getTmpProperty(String key) throws IOException {
+    public static String getProperty(String key) throws IOException {
 	String property;
 
 	try {

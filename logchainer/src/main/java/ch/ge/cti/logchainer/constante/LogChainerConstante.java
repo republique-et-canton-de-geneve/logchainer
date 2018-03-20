@@ -2,7 +2,7 @@ package ch.ge.cti.logchainer.constante;
 
 public class LogChainerConstante {
     
-    public static final String FILENAME = "src/main/resources/conf/configurations.properties";
+    public static final String FILENAME = "D:/_codesource_M501/logchainer-base/logchainer/src/main/resources/conf/configurations.properties";
     
     public static final String INPUT_DIRECTORY = "inputDirectory";
     

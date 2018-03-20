@@ -47,7 +47,7 @@ public class LogWatcherService {
 	LOG.info("initialization started");
 
 	try {
-	    inputDir = AppConfiguration.load().getProperty(INPUT_DIRECTORY);
+	    inputDir = AppConfiguration.getProperty(INPUT_DIRECTORY);
 
 	    LOG.info("input property correctly accessed");
 
@@ -129,7 +129,7 @@ public class LogWatcherService {
 		    LOG.info("the flux of the file is : " + fluxNameTmp);
 		    final String fluxName = fluxNameTmp;
 
-		    String tmp = AppConfiguration.getTmpProperty(TMP_DIRECTORY);
+		    String tmp = AppConfiguration.getProperty(TMP_DIRECTORY);
 
 		    @SuppressWarnings("unchecked")
 		    Collection<File> oldTmpFile = FileUtils.listFiles(new File(tmp), new IOFileFilter() {
@@ -179,7 +179,7 @@ public class LogWatcherService {
 			    new String("<SHA-256: " + new String(hashCodeOfLog) + "> \n").getBytes());
 
 		    FolderService.moveFileTmpToOutput(tmp, filename.toString(),
-			    AppConfiguration.getTmpProperty(OUTPUT_DIRECTORY));
+			    AppConfiguration.getProperty(OUTPUT_DIRECTORY));
 
 		}
 
