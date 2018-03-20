@@ -81,6 +81,13 @@
 						</reportPlugins>
 					</configuration>
 				</plugin>
+
+				<!-- Spring boot -->
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>1.5.1.RELEASE</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -125,6 +132,13 @@
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>spring-ws-core</artifactId>
 				<version>2.4.0.RELEASE</version>
+			</dependency>
+
+			<!-- Spring Boot -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter</artifactId>
+				<version>1.5.1.RELEASE</version>
 			</dependency>
 
 			<dependency>

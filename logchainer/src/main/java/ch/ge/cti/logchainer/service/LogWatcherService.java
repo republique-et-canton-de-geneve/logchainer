@@ -141,12 +141,10 @@ public class LogWatcherService {
 			@Override
 			public boolean accept(File file) {
 			    if (file.getName().startsWith(fluxName)) {
-				LOG.info("same flux name noticed");
-				LOG.info("file " + file.getName() + "is detected as same flux");
+				LOG.info("same flux name noticed for " + file.getName());
 			    } else {
 				LOG.info("no same flux name detected");
 			    }
-
 			    return (file.getName().startsWith(fluxName) ? true : false);
 			}
 		    }, null);
@@ -162,10 +160,12 @@ public class LogWatcherService {
 		    if (!oldTmpFile.isEmpty()) {
 			File oldFile = oldTmpFile.stream().findFirst().get();
 			try (InputStream is = new FileInputStream((oldFile))) {
+			    LOG.info("inputStream of the old file opened");
 			    hashCodeOfLog = HashService.getLogHashCode(is);
 			}
+			LOG.info("old file name is : " + oldFile.getName());
 			oldFile.delete();
-			LOG.info("old file name is : " + ((File) oldTmpFile.toArray()[0]).toString());
+			LOG.info("old file deleted");
 		    } else {
 			hashCodeOfLog = HashService.getNullHash();
 			LOG.info("null hash used");
@@ -173,7 +173,7 @@ public class LogWatcherService {
 
 		    LOG.info("Hash of the logs received in hashCodeOfLog variable");
 
-		    LOG.debug("hash code is : " + new String(hashCodeOfLog) + "> end");
+		    LOG.debug("hash code is : <" + new String(hashCodeOfLog) + ">");
 
 		    new LogChainerService().chainingLogFile(pFileInTmp, 0,
 			    new String("<SHA-256: " + new String(hashCodeOfLog) + "> \n").getBytes());
@@ -181,6 +181,7 @@ public class LogWatcherService {
 		    FolderService.moveFileTmpToOutput(tmp, filename.toString(),
 			    AppConfiguration.getProperty(OUTPUT_DIRECTORY));
 
+		    LOG.info("end of the treatment of the file put in the input directory");
 		}
 
 		// Reseting the key to be able to use it again

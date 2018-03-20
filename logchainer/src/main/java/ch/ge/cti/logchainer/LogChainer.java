@@ -4,10 +4,13 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import ch.ge.cti.logchainer.service.LogWatcherService;
 
-public class LogChainer implements Runnable {
+@SpringBootApplication
+public class LogChainer implements Runnable, CommandLineRunner  {
     private static LogWatcherService watcher;
 
     /**
@@ -43,5 +46,11 @@ public class LogChainer implements Runnable {
 	    LOG.error("Exception was cached", e);
 	}
 
+    }
+
+    @Override
+    public void run(String... arg0) throws Exception {
+	// TODO Auto-generated method stub
+	
     }
 }
