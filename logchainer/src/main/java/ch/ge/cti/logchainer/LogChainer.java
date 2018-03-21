@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -11,6 +12,7 @@ import ch.ge.cti.logchainer.service.LogWatcherService;
 
 @SpringBootApplication
 public class LogChainer implements Runnable, CommandLineRunner  {
+    @Autowired
     private static LogWatcherService watcher;
 
     /**
