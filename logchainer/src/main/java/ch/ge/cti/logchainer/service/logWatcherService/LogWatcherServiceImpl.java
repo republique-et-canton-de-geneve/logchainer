@@ -1,4 +1,4 @@
-package ch.ge.cti.logchainer.service;
+package ch.ge.cti.logchainer.service.logWatcherService;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
@@ -25,6 +25,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.configuration.AppConfiguration;
+import ch.ge.cti.logchainer.service.folderService.FolderService;
+import ch.ge.cti.logchainer.service.hashService.HashService;
+import ch.ge.cti.logchainer.service.logChainerService.LogChainerService;
 
 @Service
 

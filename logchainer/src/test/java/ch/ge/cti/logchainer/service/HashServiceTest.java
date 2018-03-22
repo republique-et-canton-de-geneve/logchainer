@@ -9,6 +9,8 @@ import java.io.InputStream;
 
 import org.testng.annotations.Test;
 
+import ch.ge.cti.logchainer.service.hashService.HashServiceImpl;
+
 public class HashServiceTest {
     final static String pathTestFile = "src/test/resources/testHashCode";
 

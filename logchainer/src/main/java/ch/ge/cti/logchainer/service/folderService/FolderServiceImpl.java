@@ -1,4 +1,4 @@
-package ch.ge.cti.logchainer.service;
+package ch.ge.cti.logchainer.service.folderService;
 
 import java.io.IOException;
 import java.nio.file.CopyOption;

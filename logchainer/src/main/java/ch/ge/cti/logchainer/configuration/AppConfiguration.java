@@ -9,8 +9,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import ch.ge.cti.logchainer.service.LogWatcherService;
-import ch.ge.cti.logchainer.service.LogWatcherServiceImpl;
+import ch.ge.cti.logchainer.service.logWatcherService.LogWatcherService;
+import ch.ge.cti.logchainer.service.logWatcherService.LogWatcherServiceImpl;
 
 @Configuration
 @PropertySource(value = "file:${application.properties}")
