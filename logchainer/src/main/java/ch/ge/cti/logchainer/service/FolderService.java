@@ -1,52 +1,27 @@
 package ch.ge.cti.logchainer.service;
 
 import java.io.IOException;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
-@Service
-public class FolderService {
-
+public interface FolderService {
     /**
-     * logger
-     */
-    private static final Logger LOG = LoggerFactory.getLogger(FolderService.class.getName());
-
-    private FolderService() {
-    }
-
-    /**
-     * Moves the newly created files (those who normally don't override any file
-     * name in the tmp directory)
+     * Moves indicated file from the input Directory to the tmp one.
      * 
-     * @param pFile
+     * @param pathFile
+     * @param pathDir
+     * @param pathTmp
+     * @return file's path once moved
      * @throws IOException
      */
-    public static String moveFileInputToTmp(String pFile, String pDir, String pTmp) throws IOException {
-	LOG.info("file moving method entered");
+    String moveFileInputToTmp(String pathFile, String pathInput, String pathTmp) throws IOException;
 
-	Files.move(Paths.get(pDir + "/" + pFile), Paths.get(pTmp + "/" + pFile), new CopyOption[] {});
-
-	LOG.info("file successfully moved to directory : " + pTmp + "/" + pFile);
-
-	return pTmp + "/" + pFile;
-    }
-    
-    
-    public static String moveFileTmpToOutput(String pTmp, String pFile, String pOutput) throws IOException {
-	LOG.info("file moving method entered");
-	
-	Files.copy(Paths.get(pTmp + "/" + pFile), Paths.get(pOutput + "/" + pFile), StandardCopyOption.REPLACE_EXISTING);
-	
-	LOG.info("file successfully moved to directory : " + pOutput + "/" + pFile + ", replacing file if one with same name was already existing");
-	
-	return pOutput + "/" + pFile;
-    }
-
+    /**
+     * Moves indicated file from the tmp Directory to the output one.
+     * 
+     * @param pathFile
+     * @param pathTmp
+     * @param pathOutput
+     * @return file's path once moved
+     * @throws IOException
+     */
+    String moveFileTmpToOutput(String pathFile, String pathTmp, String pathOutput) throws IOException;
 }

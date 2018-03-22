@@ -3,30 +3,20 @@ package ch.ge.cti.logchainer.service;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
-@Service
-public class HashService {
+public interface HashService {
+    /**
+     * Computes the SHA256 HashCode of the given stream.
+     * 
+     * @param fileStream
+     * @return the result of the hash algorithm
+     * @throws IOException
+     */
+    byte[] getLogHashCode(InputStream fileStream) throws IOException;
 
     /**
-     * logger
+     * To get a HashCode for a null object (defined by programmer)
+     * 
+     * @return empty byte array (arbitrary choice that can be changed)
      */
-    private static final Logger LOG = LoggerFactory.getLogger(HashService.class.getName());
-
-    private HashService() {
-    }
-
-    public static byte[] getLogHashCode(InputStream fileStream) throws IOException {
-	LOG.info("Hashing algorithm entered");
-
-	return DigestUtils.sha256(fileStream);
-    }
-
-    public static byte[] getNullHash() {
-	LOG.info("null hash method entered");
-	return new byte[] {};
-    }
+    byte[] getNullHash();
 }
