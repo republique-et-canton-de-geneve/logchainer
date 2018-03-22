@@ -7,9 +7,11 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import ch.ge.cti.logchainer.constante.LogChainerConstante;
 
+@Repository
 public class AppConfiguration {
 
     /**

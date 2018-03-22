@@ -16,6 +16,7 @@ public class LogChainer implements CommandLineRunner{
     @Autowired
     private LogWatcherService watcher;
 
+
     /**
      * logger
      */
