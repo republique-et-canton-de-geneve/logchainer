@@ -32,7 +32,7 @@ public class LogWatcherService {
     private WatchService watcher;
     private WatchKey key;
     private String inputDir;
-
+    
     /**
      * logger
      */
