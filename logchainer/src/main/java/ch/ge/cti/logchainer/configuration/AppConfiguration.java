@@ -1,10 +1,16 @@
 package ch.ge.cti.logchainer.configuration;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+
+import ch.ge.cti.logchainer.service.LogWatcherService;
+import ch.ge.cti.logchainer.service.LogWatcherServiceImpl;
 
 @Configuration
 @PropertySource(value = "file:${application.properties}")
@@ -17,6 +23,10 @@ public class AppConfiguration {
     private static final Logger LOG = LoggerFactory.getLogger(AppConfiguration.class.getName());
 
  
+    @Bean
+    public static LogWatcherService logWatcherService() throws IOException {
+	return new LogWatcherServiceImpl();
+    }
     
 
     // @Value("${inputDirectory}")
