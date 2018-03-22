@@ -46,7 +46,7 @@ public class LogWatcherService {
      * @throws IOException
      */
     public LogWatcherService() throws IOException {
-	LOG.info("initialization started");
+	LOG.info("LogWatcherService initialization started");
 
 	try {
 	    inputDir = AppConfiguration.getProperty(INPUT_DIRECTORY);
@@ -60,7 +60,7 @@ public class LogWatcherService {
 
 	this.input = Paths.get(inputDir);
 
-	LOG.info("file directory is : ", input.toString());
+	LOG.info("input file directory is : ", input.toString());
 
 	this.watcher = FileSystems.getDefault().newWatchService();
 
@@ -74,7 +74,7 @@ public class LogWatcherService {
 	    throw e;
 	}
 
-	LOG.info("initialization completed");
+	LOG.info("LogWatcherService initialization completed");
     }
 
     /**
@@ -175,7 +175,7 @@ public class LogWatcherService {
 
 		    LOG.info("Hash of the logs received in hashCodeOfLog variable");
 
-		    LOG.debug("hash code is : <" + new String(hashCodeOfLog) + ">");
+		    LOG.info("hash code is : <" + new String(hashCodeOfLog) + ">");
 
 		    new LogChainerService().chainingLogFile(pFileInTmp, 0,
 			    new String("<SHA-256: " + new String(hashCodeOfLog) + "> \n").getBytes());

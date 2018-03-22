@@ -29,11 +29,11 @@ public class FolderService {
      * @throws IOException
      */
     public static String moveFileInputToTmp(String pFile, String pDir, String pTmp) throws IOException {
-	LOG.debug("file moving method entered");
+	LOG.info("file moving method entered");
 
 	Files.move(Paths.get(pDir + "/" + pFile), Paths.get(pTmp + "/" + pFile), new CopyOption[] {});
 
-	LOG.debug("file successfully moved to directory : " + pTmp + "/" + pFile);
+	LOG.info("file successfully moved to directory : " + pTmp + "/" + pFile);
 
 	return pTmp + "/" + pFile;
     }
@@ -44,7 +44,7 @@ public class FolderService {
 	
 	Files.copy(Paths.get(pTmp + "/" + pFile), Paths.get(pOutput + "/" + pFile), StandardCopyOption.REPLACE_EXISTING);
 	
-	LOG.debug("file successfully moved to directory : " + pOutput + "/" + pFile + ", replacing file if one with same name was already existing");
+	LOG.info("file successfully moved to directory : " + pOutput + "/" + pFile + ", replacing file if one with same name was already existing");
 	
 	return pOutput + "/" + pFile;
     }

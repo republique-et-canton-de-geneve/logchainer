@@ -36,12 +36,12 @@ public class AppConfiguration {
 	Properties properties = new Properties();
 
 	FileInputStream input = new FileInputStream(LogChainerConstante.FILENAME);
-	LOG.debug("input stream opened");
+	LOG.info("input stream opened");
 
 	try {
 	    properties.load(input);
 
-	    LOG.debug("properties file found and accessed");
+	    LOG.info("properties file found and accessed");
 
 	    return properties;
 
@@ -57,7 +57,7 @@ public class AppConfiguration {
 
 	finally {
 	    input.close();
-	    LOG.debug("input stream closed");
+	    LOG.info("input stream closed");
 	}
 
     }
