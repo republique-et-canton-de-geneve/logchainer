@@ -10,4 +10,5 @@ public interface LogWatcherService {
      * @throws IOException
      */
     void processEvents() throws IOException;
+
 }
