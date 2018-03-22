@@ -22,9 +22,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.configuration.AppConfiguration;
 
+@Service
 public class LogWatcherService {
     private Path input;
     private WatchService watcher;

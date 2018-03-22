@@ -4,14 +4,17 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import ch.ge.cti.logchainer.service.LogWatcherService;
 
 @SpringBootApplication
-public class LogChainer implements Runnable, CommandLineRunner  {
-    private static LogWatcherService watcher;
+public class LogChainer implements CommandLineRunner{
+    @Autowired
+    private LogWatcherService watcher;
 
     /**
      * logger
@@ -21,22 +24,18 @@ public class LogChainer implements Runnable, CommandLineRunner  {
     public static void main(String[] args) throws IOException {
 	LOG.info("enter main");
 
-	start();
+	start(args);
     }
 
-    private static void start() throws IOException {
+    private static void start(String[] args) throws IOException {
 	LOG.info("enter start");
 
-	watcher = new LogWatcherService();
-
-
-	new Thread(new LogChainer()).start();
-
-	LOG.info("new thread created");
+	SpringApplication app = new SpringApplication(LogChainer.class);
+	app.run(args);
     }
 
-    @Override 
-    public void run() {
+    @Override
+    public void run(String... arg0) throws Exception {
 	LOG.info("run started");
 
 	try {
@@ -45,12 +44,5 @@ public class LogChainer implements Runnable, CommandLineRunner  {
 
 	    LOG.error("Exception was cached", e);
 	}
-
-    }
-
-    @Override
-    public void run(String... arg0) throws Exception {
-	// TODO Auto-generated method stub
-	
     }
 }
