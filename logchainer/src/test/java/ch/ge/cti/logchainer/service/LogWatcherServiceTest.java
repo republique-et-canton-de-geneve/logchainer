@@ -22,7 +22,7 @@ import org.testng.annotations.Test;
 public class LogWatcherServiceTest {
     private WatchService watchService;
     private WatchKey basePathWatchKey;
-    private String testResourcesDirPath = "D:/_codesource_M501/logchainer-base/logchainer/src/test/resources/dirCreationDetectionTest";
+    private static String testResourcesDirPath = "src/test/resources/dirCreationDetectionTest";
 
     @BeforeTest
     public void setUp() throws Exception {
@@ -42,7 +42,8 @@ public class LogWatcherServiceTest {
 	assertEquals(watchKey, basePathWatchKey);
 	List<WatchEvent<?>> eventList = watchKey.pollEvents();
 	assertEquals(eventList.size(), 3);
-	for (WatchEvent event : eventList) {
+	for (@SuppressWarnings("rawtypes")
+	WatchEvent event : eventList) {
 	    assertTrue(event.kind() == StandardWatchEventKinds.ENTRY_CREATE);
 	    assertEquals(event.count(), 1);
 	}
@@ -70,7 +71,8 @@ public class LogWatcherServiceTest {
 	}
 
 	assertEquals(eventList.size(), 1);
-	for (WatchEvent event : eventList) {
+	for (@SuppressWarnings("rawtypes")
+	WatchEvent event : eventList) {
 	    assertTrue(event.kind() == StandardWatchEventKinds.ENTRY_CREATE);
 	}
 

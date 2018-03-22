@@ -16,9 +16,6 @@ public class HashServiceImpl implements HashService {
      */
     private static final Logger LOG = LoggerFactory.getLogger(HashServiceImpl.class.getName());
 
-    private HashServiceImpl() {
-    }
-
     @Override
     public byte[] getLogHashCode(InputStream fileStream) throws IOException {
 	LOG.info("Hashing algorithm entered");

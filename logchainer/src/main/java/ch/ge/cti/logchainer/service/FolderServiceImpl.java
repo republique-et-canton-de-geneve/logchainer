@@ -17,10 +17,6 @@ public class FolderServiceImpl implements FolderService{
      */
     private static final Logger LOG = LoggerFactory.getLogger(FolderServiceImpl.class.getName());
 
-    private FolderServiceImpl() {
-    }
-
-
     @Override
     public String moveFileInputToTmp(String pathFile, String pathInput, String pathTmp) throws IOException {
 	LOG.info("file moving method entered");

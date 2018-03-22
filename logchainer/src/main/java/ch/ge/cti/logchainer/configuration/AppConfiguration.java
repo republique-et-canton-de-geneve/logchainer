@@ -13,7 +13,7 @@ import org.springframework.context.annotation.PropertySource;
 import ch.ge.cti.logchainer.constante.LogChainerConstante;
 
 @Configuration
-@PropertySource(value="file:${configurations.properties}")
+@PropertySource(value="classpath:configurations.properties")
 public class AppConfiguration {
 
     /**
