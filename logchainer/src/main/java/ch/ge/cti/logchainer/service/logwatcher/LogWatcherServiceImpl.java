@@ -117,7 +117,6 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		    byte[] hashCodeOfLog;
 
 		    hashCodeOfLog = getOldFileHash(oldFiles);
-		    LOG.info("hash code is : <{}>", new String(hashCodeOfLog));
 
 		    chainer.chainingLogFile(pFileInTmp, 0,
 			    ("<SHA-256: " + new String(hashCodeOfLog) + "> \n").getBytes());
