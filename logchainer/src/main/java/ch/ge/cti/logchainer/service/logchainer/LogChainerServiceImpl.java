@@ -23,7 +23,7 @@ public class LogChainerServiceImpl implements LogChainerService {
 	LOG.info("temporary file created as a new file");
 
 	try (RandomAccessFile r = new RandomAccessFile(new File(filename), "rw")) {
-	    LOG.info("file : " + filename + " accessed as a readable and writable stream");
+	    LOG.info("file : {0} accessed as a readable and writable stream", filename);
 	    try (RandomAccessFile rtemp = new RandomAccessFile(tempFile, "rw")) {
 		LOG.info("temporary file accessed a readable and writable stream");
 		try (FileChannel sourceChannel = r.getChannel(); FileChannel targetChannel = rtemp.getChannel()) {
@@ -47,7 +47,7 @@ public class LogChainerServiceImpl implements LogChainerService {
 		}
 	    }
 	}
-	tempFile.delete();
-	LOG.info("temp file deleted");
+	if (tempFile.delete())
+	    LOG.info("temp file deleted");
     }
 }

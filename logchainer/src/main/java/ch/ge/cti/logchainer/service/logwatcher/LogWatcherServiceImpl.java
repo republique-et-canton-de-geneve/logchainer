@@ -5,6 +5,7 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
@@ -30,10 +31,6 @@ import ch.ge.cti.logchainer.service.logchainer.LogChainerService;
 @Service
 
 public class LogWatcherServiceImpl implements LogWatcherService {
-    private Path input;
-    private WatchService watcher;
-    private WatchKey key;
-
     @Value("${inputDirectory:toto}")
     private String inputDir;
 
@@ -59,12 +56,12 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     public void processEvents() throws IOException {
 	LOG.info("LogWatcherServiceImpl initialization started");
 
-	this.input = Paths.get(inputDir);
-
-
+	Path input = Paths.get(inputDir);
 	LOG.info("input file directory is : ", inputDir);
 
-	this.watcher = FileSystems.getDefault().newWatchService();
+	WatchService watcher = FileSystems.getDefault().newWatchService();
+
+	WatchKey key;
 
 	try {
 	    key = input.register(watcher, ENTRY_CREATE);
@@ -96,8 +93,6 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		// handling the overflow situation
 		if (kind == OVERFLOW) {
 		    LOG.info("overflow detected");
-
-		    continue;
 		}
 
 		// To obtain the filename if needed.
@@ -113,35 +108,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		    LOG.info("New file detected : "
 			    + (new File(input.toString() + "/" + filename.toString())).getAbsolutePath());
 
-		    String fluxNameTmp = "";
-
-		    for (int i = 0; i < filename.toString().toCharArray().length; ++i) {
-			if (filename.toString().toCharArray()[i] != '_') {
-			    fluxNameTmp += filename.toString().toCharArray()[i];
-			} else {
-			    i = filename.toString().toCharArray().length + 1;
-			}
-		    }
-		    LOG.info("the flux of the file is : " + fluxNameTmp);
-		    final String fluxName = fluxNameTmp;
-
-		    @SuppressWarnings("unchecked")
-		    Collection<File> oldTmpFile = FileUtils.listFiles(new File(tmpDir), new IOFileFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-			    return accept(new File(name));
-			}
-
-			@Override
-			public boolean accept(File file) {
-			    if (file.getName().startsWith(fluxName)) {
-				LOG.info("same flux name noticed for " + file.getName());
-			    } else {
-				LOG.info("no same flux name detected");
-			    }
-			    return (file.getName().startsWith(fluxName) ? true : false);
-			}
-		    }, null);
+		    Collection<File> oldFiles = getOldFiles(getFluxName(filename));
 
 		    String pFileInTmp = mover.moveFileInputToTmp(filename.toString(), input.toString(), tmpDir);
 
@@ -149,26 +116,11 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		    // hashCode
 		    byte[] hashCodeOfLog;
 
-		    if (!oldTmpFile.isEmpty()) {
-			File oldFile = oldTmpFile.stream().findFirst().get();
-			try (InputStream is = new FileInputStream((oldFile))) {
-			    LOG.info("inputStream of the old file opened");
-			    hashCodeOfLog = hasher.getLogHashCode(is);
-			}
-			LOG.info("old file name is : " + oldFile.getName());
-			oldFile.delete();
-			LOG.info("old file deleted");
-		    } else {
-			hashCodeOfLog = hasher.getNullHash();
-			LOG.info("null hash used");
-		    }
-
-		    LOG.info("Hash of the logs received in hashCodeOfLog variable");
-
-		    LOG.info("hash code is : <" + new String(hashCodeOfLog) + ">");
+		    hashCodeOfLog = gtOldFileHash(oldFiles);
+		    LOG.info("hash code is : <{}>", new String(hashCodeOfLog));
 
 		    chainer.chainingLogFile(pFileInTmp, 0,
-			    new String("<SHA-256: " + new String(hashCodeOfLog) + "> \n").getBytes());
+			    ("<SHA-256: " + new String(hashCodeOfLog) + "> \n").getBytes());
 
 		    mover.moveFileTmpToOutput(filename.toString(), tmpDir, outputDir);
 
@@ -187,5 +139,59 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    }
 	}
 
+    }
+
+    private byte[] gtOldFileHash(Collection<File> oldFiles) throws IOException, FileNotFoundException {
+	byte[] hashCodeOfLog;
+	if (oldFiles.stream().findFirst().isPresent()) {
+	    File oldFile = oldFiles.stream().findFirst().get();
+	    try (InputStream is = new FileInputStream((oldFile))) {
+		LOG.info("inputStream of the old file opened");
+		hashCodeOfLog = hasher.getLogHashCode(is);
+	    }
+	    LOG.info("old file name is : " + oldFile.getName());
+	    if (oldFile.delete())
+		LOG.info("old file deleted");
+	} else {
+	    hashCodeOfLog = hasher.getNullHash();
+	    LOG.info("null hash used");
+	}
+	return hashCodeOfLog;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Collection<File> getOldFiles(final String fluxName) {
+	return FileUtils.listFiles(new File(tmpDir), new IOFileFilter() {
+	    @Override
+	    public boolean accept(File dir, String name) {
+		return accept(new File(name));
+	    }
+
+	    @Override
+	    public boolean accept(File file) {
+		if (file.getName().startsWith(fluxName)) {
+		    LOG.info("same flux name noticed for " + file.getName());
+		} else {
+		    LOG.info("no same flux name detected");
+		}
+		return (file.getName().startsWith(fluxName) ? true : false);
+	    }
+	}, null);
+    }
+
+    private String getFluxName(Path filename) {
+	StringBuilder fluxNameTmp = new StringBuilder();
+	boolean endFluxReached = false;
+
+	for (int i = 0; i < filename.toString().toCharArray().length; ++i) {
+	    if (filename.toString().toCharArray()[i] != '_' && !endFluxReached) {
+		fluxNameTmp.append(filename.toString().toCharArray()[i]);
+	    } else {
+		endFluxReached = true;
+	    }
+	}
+	LOG.info("the flux of the file is : {}", fluxNameTmp.toString());
+
+	return fluxNameTmp.toString();
     }
 }

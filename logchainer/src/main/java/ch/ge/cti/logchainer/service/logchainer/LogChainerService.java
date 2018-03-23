@@ -2,6 +2,7 @@ package ch.ge.cti.logchainer.service.logchainer;
 
 import java.io.IOException;
 
+@FunctionalInterface
 public interface LogChainerService {
     /**
      * Writes by inserting the byte array 'content' in the file 'filename' where

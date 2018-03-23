@@ -21,7 +21,7 @@ public class LogChainer implements CommandLineRunner {
      */
     private static final Logger LOG = LoggerFactory.getLogger(LogChainer.class.getName());
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 	LOG.info("enter main");
 
 	start(args);
