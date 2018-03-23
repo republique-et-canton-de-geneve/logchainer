@@ -148,7 +148,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @throws IOException
      * @throws FileNotFoundException
      */
-    private byte[] getOldFileHash(Collection<File> oldFiles) throws IOException, FileNotFoundException {
+    private byte[] getOldFileHash(Collection<File> oldFiles) throws IOException {
 	byte[] hashCodeOfLog;
 	if (oldFiles.stream().findFirst().isPresent()) {
 	    File oldFile = oldFiles.stream().findFirst().get();
