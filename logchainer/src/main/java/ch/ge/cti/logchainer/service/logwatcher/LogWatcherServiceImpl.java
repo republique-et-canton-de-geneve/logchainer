@@ -116,7 +116,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		    // hashCode
 		    byte[] hashCodeOfLog;
 
-		    hashCodeOfLog = gtOldFileHash(oldFiles);
+		    hashCodeOfLog = getOldFileHash(oldFiles);
 		    LOG.info("hash code is : <{}>", new String(hashCodeOfLog));
 
 		    chainer.chainingLogFile(pFileInTmp, 0,
@@ -141,7 +141,15 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
     }
 
-    private byte[] gtOldFileHash(Collection<File> oldFiles) throws IOException, FileNotFoundException {
+    /**
+     * To get the hash of the tmp directory's already existing file
+     * 
+     * @param oldFiles
+     * @return old file's hashCode
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    private byte[] getOldFileHash(Collection<File> oldFiles) throws IOException, FileNotFoundException {
 	byte[] hashCodeOfLog;
 	if (oldFiles.stream().findFirst().isPresent()) {
 	    File oldFile = oldFiles.stream().findFirst().get();
@@ -159,6 +167,12 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	return hashCodeOfLog;
     }
 
+    /**
+     * To get the collection of all already existing same flux files
+     * 
+     * @param fluxName
+     * @return collection of these files
+     */
     @SuppressWarnings("unchecked")
     private Collection<File> getOldFiles(final String fluxName) {
 	return FileUtils.listFiles(new File(tmpDir), new IOFileFilter() {
@@ -179,6 +193,12 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	}, null);
     }
 
+    /**
+     * To get the flux name from a file
+     * 
+     * @param filename
+     * @return fluxname
+     */
     private String getFluxName(Path filename) {
 	StringBuilder fluxNameTmp = new StringBuilder();
 	boolean endFluxReached = false;
