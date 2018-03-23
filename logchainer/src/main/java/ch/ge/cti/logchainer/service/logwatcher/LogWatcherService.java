@@ -1,4 +1,4 @@
-package ch.ge.cti.logchainer.service.logWatcherService;
+package ch.ge.cti.logchainer.service.logwatcher;
 
 import java.io.IOException;
 

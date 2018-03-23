@@ -1,4 +1,4 @@
-package ch.ge.cti.logchainer.service.hashService;
+package ch.ge.cti.logchainer.service.hash;
 
 import java.io.IOException;
 import java.io.InputStream;

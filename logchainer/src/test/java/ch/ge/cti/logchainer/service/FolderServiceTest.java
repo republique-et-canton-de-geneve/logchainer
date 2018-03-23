@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 
 import org.testng.annotations.Test;
 
-import ch.ge.cti.logchainer.service.folderService.FolderServiceImpl;
+import ch.ge.cti.logchainer.service.folder.FolderServiceImpl;
 
 public class FolderServiceTest {
     private static String testResourcesDirPath = "src/test/resources";

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>ch.ge.cti.logchainer</groupId>
 		<artifactId>logchainer-base</artifactId>
-		<version>0.0.7</version>
+		<version>0.0.9-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>logchainer</artifactId>
@@ -40,34 +40,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<source>1.8</source>
-							<additionalparam>${javadoc.opts}</additionalparam>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<configuration>
-					<reportPlugins>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-javadoc-plugin</artifactId>
-							<configuration>
-								<source>1.8</source>
-								<additionalparam>${javadoc.opts}</additionalparam>
-							</configuration>
-						</plugin>
-					</reportPlugins>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

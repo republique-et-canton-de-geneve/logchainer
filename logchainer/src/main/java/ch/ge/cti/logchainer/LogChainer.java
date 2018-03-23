@@ -9,7 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import ch.ge.cti.logchainer.service.logWatcherService.LogWatcherService;
+import ch.ge.cti.logchainer.service.logwatcher.LogWatcherService;
 
 @SpringBootApplication
 public class LogChainer implements CommandLineRunner {
@@ -27,7 +27,7 @@ public class LogChainer implements CommandLineRunner {
 	start(args);
     }
 
-    private static void start(String[] args) throws IOException {
+    private static void start(String[] args) {
 	LOG.info("enter start");
 
 	SpringApplication app = new SpringApplication(LogChainer.class);

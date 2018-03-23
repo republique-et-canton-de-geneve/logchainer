@@ -1,4 +1,4 @@
-package ch.ge.cti.logchainer.service.folderService;
+package ch.ge.cti.logchainer.service.folder;
 
 import java.io.IOException;
 import java.nio.file.CopyOption;
@@ -23,7 +23,7 @@ public class FolderServiceImpl implements FolderService{
 
 	Files.move(Paths.get(pathInput + "/" + pathFile), Paths.get(pathTmp + "/" + pathFile), new CopyOption[] {});
 
-	LOG.info("file successfully moved to directory : " + pathTmp + "/" + pathFile);
+	LOG.info("file successfully moved to directory : {0}" + pathTmp + "/" + pathFile);
 
 	return pathTmp + "/" + pathFile;
     }
