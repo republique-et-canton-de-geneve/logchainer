@@ -14,8 +14,6 @@ import ch.ge.cti.logchainer.service.hashService.HashServiceImpl;
 public class HashServiceTest {
     final static String pathTestFile = "src/test/resources/testHashCode";
 
-    // @Autowired
-    // private HashServiceImpl hasher;
     private HashServiceImpl hasher = new HashServiceImpl();
 
     @Test(description = "hash method test")
