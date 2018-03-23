@@ -37,9 +37,6 @@ public class LogChainer implements CommandLineRunner{
     @Override
     public void run(String... arg0) throws Exception {
 	LOG.info("run started");
-//	String arf = watcher.getMessage();
-
-//	LOG.info("run started => " + arf);
 	try {
 	    watcher.processEvents();
 	} catch (IOException e) {
