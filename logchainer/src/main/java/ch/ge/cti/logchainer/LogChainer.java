@@ -1,4 +1,4 @@
-package ch.ge.cti.logchainer;  
+package ch.ge.cti.logchainer;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import ch.ge.cti.logchainer.service.logWatcherService.LogWatcherService;
 
 @SpringBootApplication
-public class LogChainer implements CommandLineRunner{
+public class LogChainer implements CommandLineRunner {
     @Autowired
     private LogWatcherService watcher;
 
