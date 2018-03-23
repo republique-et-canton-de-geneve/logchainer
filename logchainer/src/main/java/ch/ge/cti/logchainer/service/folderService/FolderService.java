@@ -7,7 +7,7 @@ public interface FolderService {
      * Moves indicated file from the input Directory to the tmp one.
      * 
      * @param pathFile
-     * @param pathDir
+     * @param pathInput
      * @param pathTmp
      * @return file's path once moved
      * @throws IOException
