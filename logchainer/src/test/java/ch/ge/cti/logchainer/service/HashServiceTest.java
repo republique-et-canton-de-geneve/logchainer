@@ -12,13 +12,13 @@ import org.testng.annotations.Test;
 import ch.ge.cti.logchainer.service.hash.HashServiceImpl;
 
 public class HashServiceTest {
-    final static String pathTestFile = "src/test/resources/testHashCode";
+    private final String pathTestFile = "src/test/resources/testHashCode";
 
-    private HashServiceImpl hasher = new HashServiceImpl();
+    private final HashServiceImpl hasher = new HashServiceImpl();
 
     @Test(description = "hash method test")
     public void testHashCode() throws IOException {
-	byte[] refArray = new byte[] { 14, -39, -87, 75, 76, -6, -127, -30, 51, 126, -4, 21, 5, 102, -98, 25, 100, -62,
+	byte[] refArray = new byte[] {14, -39, -87, 75, 76, -6, -127, -30, 51, 126, -4, 21, 5, 102, -98, 25, 100, -62,
 		91, -19, 117, 1, 50, 118, -89, 57, -10, 11, -8, -49, 15, -18 };
 
 	try (InputStream fileToTest = new FileInputStream(new File(pathTestFile))) {
