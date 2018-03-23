@@ -9,13 +9,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import ch.ge.cti.logchainer.service.LogWatcherService;
+import ch.ge.cti.logchainer.service.logWatcherService.LogWatcherService;
 
 @SpringBootApplication
 public class LogChainer implements CommandLineRunner{
     @Autowired
     private LogWatcherService watcher;
-
 
     /**
      * logger
@@ -38,7 +37,9 @@ public class LogChainer implements CommandLineRunner{
     @Override
     public void run(String... arg0) throws Exception {
 	LOG.info("run started");
+//	String arf = watcher.getMessage();
 
+//	LOG.info("run started => " + arf);
 	try {
 	    watcher.processEvents();
 	} catch (IOException e) {
