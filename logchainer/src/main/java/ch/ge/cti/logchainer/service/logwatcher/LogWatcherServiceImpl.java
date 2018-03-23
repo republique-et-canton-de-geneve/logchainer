@@ -29,7 +29,6 @@ import ch.ge.cti.logchainer.service.hash.HashService;
 import ch.ge.cti.logchainer.service.logchainer.LogChainerService;
 
 @Service
-
 public class LogWatcherServiceImpl implements LogWatcherService {
     @Value("${inputDirectory:toto}")
     private String inputDir;
