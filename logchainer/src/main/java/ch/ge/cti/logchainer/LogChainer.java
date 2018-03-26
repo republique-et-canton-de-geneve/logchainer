@@ -41,7 +41,7 @@ public class LogChainer implements CommandLineRunner {
 	    watcher.processEvents();
 	} catch (IOException e) {
 
-	    LOG.error("Exception was cached", e);
+	    LOG.error("Exception was cached", e); 
 	}
     }
 }
