@@ -11,7 +11,7 @@
 
 	<groupId>ch.ge.cti.logchainer</groupId>
 	<artifactId>LOGCHAINER.LOT.BATCH_configuration</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>pom</packaging>
 	<!-- 1.0 car par convention avec le service Integration le pom de configuration 
 		d'un lot ne doit pas changer -->
