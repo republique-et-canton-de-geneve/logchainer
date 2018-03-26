@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>ch.ge.cti.melusine</groupId>
+		<artifactId>pom_parent_configlocale</artifactId>
+		<version>3.2.2</version>
+	</parent>
+
+	<groupId>ch.ge.cti.logchainer</groupId>
+	<artifactId>LOGCHAINER.LOT.BATCH_configuration</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<!-- 1.0 car par convention avec le service Integration le pom de configuration 
+		d'un lot ne doit pas changer -->
+
+	<scm>
+		<connection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base.git</connection>
+		<developerConnection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base.git</developerConnection>
+		<url>https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base.git</url>
+	</scm>
+
+</project>
