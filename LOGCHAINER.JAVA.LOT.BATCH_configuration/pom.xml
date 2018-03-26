@@ -17,9 +17,9 @@
 		d'un lot ne doit pas changer -->
 
 	<scm>
-		<connection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base.git</connection>
-		<developerConnection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base.git</developerConnection>
-		<url>https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base.git</url>
+		<connection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base/tree/master/LOGCHAINER.JAVA.LOT.BATCH_configuration.git</connection>
+		<developerConnection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base/tree/master/LOGCHAINER.JAVA.LOT.BATCH_configuration.git</developerConnection>
+		<url>https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base/tree/master/LOGCHAINER.JAVA.LOT.BATCH_configuration.git</url>
 	</scm>
 
 </project>
