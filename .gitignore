@@ -1,3 +1,7 @@
 /.settings/
 /target/
 /.project
+LOGCHAINER.JAVA.LOT.BATCH_configuration/target/classes/maven_project.properties
+LOGCHAINER.JAVA.LOT.BATCH_configuration/target/arbre-dependances.txt
+LOGCHAINER.JAVA.LOT.BATCH_configuration/release.properties
+LOGCHAINER.JAVA.LOT.BATCH_configuration/pom.xml.releaseBackup
