@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://service.logchainer.ge.ch/"
+	xmlns="http://service.logchainer.ge.ch/"	
+	elementFormDefault="qualified"
+	version="1.0">
+
+
+	<xs:element name="logChainerConf">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="clientConf" type="clientConf"
+					minOccurs="1" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="clientConf">
+		<xs:annotation>
+			<xs:documentation>Client Log Chainer</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ClientId" type="xs:string" />
+			<xs:element name="InputDir" type="xs:string" />
+			<xs:element name="WorkingDir" type="xs:string" />
+			<xs:element name="OutputDir" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

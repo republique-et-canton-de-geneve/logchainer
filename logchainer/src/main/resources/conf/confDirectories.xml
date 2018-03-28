@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<logChainerConf xmlns="http://service.logchainer.ge.ch/">
+	<clientConf>
+		<ClientId>clientTest1</ClientId>
+		<InputDir>/opt/InputDir1</InputDir>
+		<WorkingDir>/opt/WorkingDir1</WorkingDir>
+		<OutputDir>/opt/oputbound1</OutputDir>
+	</clientConf>
+
+	<clientConf>
+		<ClientId>clientTest2</ClientId>
+		<InputDir>/opt/InputDir2</InputDir>
+		<WorkingDir>/opt/WorkingDir2</WorkingDir>
+		<OutputDir>/opt/oputbound2</OutputDir>
+	</clientConf>
+
+	<clientConf>
+		<ClientId>clientTest3</ClientId>
+		<InputDir>/opt/InputDir3</InputDir>
+		<WorkingDir>/opt/WorkingDir3</WorkingDir>
+		<OutputDir>/opt/oputbound3</OutputDir>
+	</clientConf>
+</logChainerConf>

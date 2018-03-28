@@ -33,7 +33,7 @@ public class LogChainer implements CommandLineRunner {
 	SpringApplication app = new SpringApplication(LogChainer.class);
 	app.run(args);
     }
-
+ 
     @Override
     public void run(String... arg0) throws Exception {
 	LOG.info("run started");
