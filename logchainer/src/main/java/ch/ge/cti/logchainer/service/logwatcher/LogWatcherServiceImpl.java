@@ -1,6 +1,5 @@
 package ch.ge.cti.logchainer.service.logwatcher;
 
-//import ch.ge.cti.logchainer.generate.ObjectFactory;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
@@ -15,7 +14,6 @@ import java.nio.file.WatchEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 
-//import javax.naming.spi.ObjectFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -29,7 +27,6 @@ import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.Client;
 import ch.ge.cti.logchainer.generate.LogChainerConf;
-//import org.testng.annotations.ObjectFactory;
 import ch.ge.cti.logchainer.generate.ObjectFactory;
 import ch.ge.cti.logchainer.service.folder.FolderService;
 import ch.ge.cti.logchainer.service.hash.HashService;
@@ -37,15 +34,6 @@ import ch.ge.cti.logchainer.service.logchainer.LogChainerService;
 
 @Service
 public class LogWatcherServiceImpl implements LogWatcherService {
-    // @Value("${inputDirectory:toto}")
-    // private String inputDir;
-    //
-    // @Value("${tmpDirectory}")
-    // private String tmpDir;
-    //
-    // @Value("${outputDirectory}")
-    // private String outputDir;
-
     @Autowired
     private FolderService mover;
     @Autowired
@@ -68,18 +56,11 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	try {
 	    clientConfList = getDirPaths();
 	} catch (JAXBException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+	    LOG.info("Exception while accessing configurations ", e);
 	}
-	LOG.info(clientConfList.getClientConf().get(0).getInputDir());
-
-	LOG.info("end");
 
 	for (int clientNb = 0; clientNb < clientConfList.getClientConf().size(); clientNb++) {
 	    clients.add(new Client(clientConfList.getClientConf().get(clientNb)));
-
-	    // Path input = Paths.get(inputDir);
-	    // LOG.info("input file directory is : ", inputDir);
 
 	    try {
 		clients.get(clientNb).setKey(Paths.get(clients.get(clientNb).getConf().getInputDir())
@@ -247,23 +228,17 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		endFluxReached = true;
 	    }
 	}
-	LOG.info("the flux of the file is : {}", fluxNameTmp.toString());
+	LOG.info("the flux of the file is : {0}", fluxNameTmp.toString());
 
 	return fluxNameTmp.toString();
     }
 
     private LogChainerConf getDirPaths() throws JAXBException {
-	// 1. We need to create JAXContext instance
 	JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
 
-	// 2. Use JAXBContext instance to create the Unmarshaller.
 	Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-	// 3. Use the Unmarshaller to unmarshal the XML document to get an
-	// instance of JAXBElement.
-	LogChainerConf unmarshalledObject = (LogChainerConf) unmarshaller
+	return (LogChainerConf) unmarshaller
 		.unmarshal(ClassLoader.getSystemResourceAsStream("conf/confDirectories.xml"));
-
-	return unmarshalledObject;// (ArrayList<Bean>)unmarshalledObject.getValue();
     }
 }
