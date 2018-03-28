@@ -23,6 +23,7 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.Client;
@@ -34,6 +35,10 @@ import ch.ge.cti.logchainer.service.logchainer.LogChainerService;
 
 @Service
 public class LogWatcherServiceImpl implements LogWatcherService {
+    //default value is at the same level as the logchainer-base file
+    @Value("${xmlDirectoriesConf:../../../../..}")
+    private String xmlDirectoriesConf;
+
     @Autowired
     private FolderService mover;
     @Autowired
@@ -127,7 +132,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     private void newFileTreatment(int clientNb, Path filePath) throws IOException {
 	LOG.info("New file detected : "
 		+ (new File(clients.get(clientNb).getConf().getInputDir() + "/" + filePath.toString()))
-			.getAbsolutePath());
+		.getAbsolutePath());
 
 	Collection<File> oldFiles = getOldFiles(getFluxName(filePath), clients.get(clientNb).getConf().getWorkingDir());
 
@@ -235,10 +240,9 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
     private LogChainerConf getDirPaths() throws JAXBException {
 	JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
-
 	Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
 	return (LogChainerConf) unmarshaller
-		.unmarshal(ClassLoader.getSystemResourceAsStream("conf/confDirectories.xml"));
+		.unmarshal(ClassLoader.getSystemResourceAsStream(xmlDirectoriesConf));
     }
 }
