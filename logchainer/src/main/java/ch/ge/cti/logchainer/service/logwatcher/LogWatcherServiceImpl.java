@@ -36,7 +36,6 @@ import ch.ge.cti.logchainer.service.logchainer.LogChainerService;
 
 @Service
 public class LogWatcherServiceImpl implements LogWatcherService {
-    // default value is at the same level as the logchainer-base file
     @Value("${xmlDirectoriesConf}")
     private String xmlDirectoriesConf;
 
