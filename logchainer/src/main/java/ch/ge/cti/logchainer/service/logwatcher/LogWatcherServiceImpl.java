@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -35,8 +36,8 @@ import ch.ge.cti.logchainer.service.logchainer.LogChainerService;
 
 @Service
 public class LogWatcherServiceImpl implements LogWatcherService {
-    //default value is at the same level as the logchainer-base file
-    @Value("${xmlDirectoriesConf:../../../../..}")
+    // default value is at the same level as the logchainer-base file
+    @Value("${xmlDirectoriesConf}")
     private String xmlDirectoriesConf;
 
     @Autowired
@@ -46,7 +47,6 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     @Autowired
     private HashService hasher;
 
-    private LogChainerConf clientConfList = new LogChainerConf();
     private ArrayList<Client> clients = new ArrayList<>();
 
     /**
@@ -57,15 +57,18 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     @Override
     public void processEvents() throws IOException {
 	LOG.info("LogWatcherServiceImpl initialization started");
+	LogChainerConf clientConfList = new LogChainerConf();
 
 	try {
 	    clientConfList = getDirPaths();
+	    LOG.info("client list accessed");
 	} catch (JAXBException e) {
 	    LOG.info("Exception while accessing configurations ", e);
 	}
 
 	for (int clientNb = 0; clientNb < clientConfList.getClientConf().size(); clientNb++) {
 	    clients.add(new Client(clientConfList.getClientConf().get(clientNb)));
+	    LOG.info("client {} added to the client list", clientConfList.getClientConf().get(clientNb).getClientId());
 
 	    try {
 		clients.get(clientNb).setKey(Paths.get(clients.get(clientNb).getConf().getInputDir())
@@ -74,7 +77,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		LOG.info("key created as an ENTRY_CREATE");
 
 	    } catch (IOException e) {
-		LOG.error("couldn't complete the initialization : {0}", e.toString(), e);
+		LOG.error("couldn't complete the initialization : {}", e.toString(), e);
 		throw e;
 	    }
 	    LOG.info("LogWatcherServiceImpl initialization completed");
@@ -84,22 +87,25 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	for (;;) {
 	    for (int clientNb = 0; clientNb < clientConfList.getClientConf().size(); clientNb++) {
-		// wait for key to be signaled
-		try {
-		    clients.get(clientNb).setKey(clients.get(clientNb).getWatcher().take());
-		} catch (InterruptedException x) {
-		    LOG.error("interruption in the key search ", x);
+		WatchKey watchKey = clients.get(clientNb).getWatcher().poll();
 
-		    return;
+		if (watchKey != null) {
+		    LOG.info("event detected on client {}", clients.get(clientNb).getConf().getClientId());
+		    clients.get(clientNb).setKey(watchKey);
+		    treatmentAfterDetectionOfEvent(clientNb);
 		}
-
-		treatmentAfterDetectionOfEvent(clientNb);
 	    }
 	}
-
     }
 
+    /**
+     * Handle the file after it's detection.
+     * 
+     * @param clientNb
+     * @throws IOException
+     */
     private void treatmentAfterDetectionOfEvent(int clientNb) throws IOException {
+
 	for (WatchEvent<?> event : clients.get(clientNb).getKey().pollEvents()) {
 	    WatchEvent.Kind<?> kind = event.kind();
 
@@ -129,10 +135,17 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	}
     }
 
+    /**
+     * Treatment of the file as an entry create.
+     * 
+     * @param clientNb
+     * @param filePath
+     * @throws IOException
+     */
     private void newFileTreatment(int clientNb, Path filePath) throws IOException {
 	LOG.info("New file detected : "
 		+ (new File(clients.get(clientNb).getConf().getInputDir() + "/" + filePath.toString()))
-		.getAbsolutePath());
+			.getAbsolutePath());
 
 	Collection<File> oldFiles = getOldFiles(getFluxName(filePath), clients.get(clientNb).getConf().getWorkingDir());
 
@@ -153,6 +166,12 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	LOG.info("end of the treatment of the file put in the input directory");
     }
 
+    /**
+     * Reset of the watch key for further use and to see if it's still valid
+     * 
+     * @param clientNb
+     * @return validity of the key
+     */
     private boolean keyReset(int clientNb) {
 	boolean valid = clients.get(clientNb).getKey().reset();
 	if (!valid) {
@@ -238,11 +257,24 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	return fluxNameTmp.toString();
     }
 
-    private LogChainerConf getDirPaths() throws JAXBException {
+    /**
+     * To access the directories' configurations.
+     * 
+     * @return
+     * @throws JAXBException
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    private LogChainerConf getDirPaths() throws JAXBException, FileNotFoundException, IOException {
 	JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
 	Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-	return (LogChainerConf) unmarshaller
-		.unmarshal(ClassLoader.getSystemResourceAsStream(xmlDirectoriesConf));
+	LogChainerConf logchainerConf = new LogChainerConf();
+
+	try (FileInputStream xmlFileStream = new FileInputStream(xmlDirectoriesConf)) {
+	    logchainerConf = (LogChainerConf) unmarshaller.unmarshal(xmlFileStream);
+	}
+
+	return logchainerConf;
     }
 }
