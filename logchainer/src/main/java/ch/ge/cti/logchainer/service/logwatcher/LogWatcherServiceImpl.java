@@ -265,7 +265,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private LogChainerConf getDirPaths() throws JAXBException, FileNotFoundException, IOException {
+    private LogChainerConf getDirPaths() throws JAXBException, IOException{
 	JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
 	Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
