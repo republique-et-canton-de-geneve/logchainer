@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration>
 <configuration>
-	<property file="D:/_workspace_M501/logchainer-base/logchainer/src/main/resources/conf/logback.properties" />
-
 
 	<!-- to screen -->
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
