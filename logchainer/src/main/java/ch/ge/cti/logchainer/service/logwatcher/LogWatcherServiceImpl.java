@@ -238,6 +238,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	    @Override
 	    public boolean accept(File file) {
+		LOG.debug("------------old file flux name {}", getFluxName(file.toPath().getFileName()));
 		if (getFluxName(file.toPath().getFileName()) == fluxName) {
 		    LOG.debug("same flux name noticed for {}", file.getName());
 		} else {
@@ -255,6 +256,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @return fluxname
      */
     private String getFluxName(Path filename) {
+	LOG.debug("getting flux name method entered");
+	
 	StringBuilder fluxNameTmp = new StringBuilder();
 	boolean endFluxReached = false;
 
