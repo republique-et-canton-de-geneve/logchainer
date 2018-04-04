@@ -238,12 +238,12 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	    @Override
 	    public boolean accept(File file) {
-		if (file.getName().startsWith(fluxName)) {
+		if (getFluxName(file.toPath().getFileName()) == fluxName) {
 		    LOG.debug("same flux name noticed for {}", file.getName());
 		} else {
 		    LOG.debug("no same flux name detected");
 		}
-		return (file.getName().startsWith(fluxName) ? true : false);
+		return (getFluxName(file.toPath().getFileName()) == fluxName ? true : false);
 	    }
 	}, null);
     }
