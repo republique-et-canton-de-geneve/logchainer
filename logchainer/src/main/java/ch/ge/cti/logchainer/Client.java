@@ -5,6 +5,9 @@ import java.nio.file.FileSystems;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ch.ge.cti.logchainer.generate.ClientConf;
 
 public class Client {
@@ -12,7 +15,13 @@ public class Client {
     private WatchService watcher;
     private WatchKey key;
 
+    /**
+     * logger
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(Client.class.getName());
+
     public Client(ClientConf conf) throws IOException {
+	LOG.debug("creating object Client");
 	this.conf = conf;
 	this.watcher = FileSystems.getDefault().newWatchService();
     }
@@ -22,6 +31,7 @@ public class Client {
     }
 
     public void setKey(WatchKey key) {
+	LOG.debug("setting the key");
 	this.key = key;
     }
 

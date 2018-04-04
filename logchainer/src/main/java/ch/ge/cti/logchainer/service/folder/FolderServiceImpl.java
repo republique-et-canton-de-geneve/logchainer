@@ -19,24 +19,27 @@ public class FolderServiceImpl implements FolderService {
 
     @Override
     public String moveFileInputToTmp(String pathFile, String pathInput, String pathTmp) throws IOException {
-	LOG.info("file moving method entered");
+	LOG.debug("file moving method entered");
 
+	// the target destination can't contain a same name file
 	Files.move(Paths.get(pathInput + "/" + pathFile), Paths.get(pathTmp + "/" + pathFile), new CopyOption[] {});
 
-	LOG.info("file successfully moved to directory : {0}/{1} ", pathTmp, pathFile);
+	LOG.debug("file successfully moved to directory : {}/{}", pathTmp, pathFile);
 
 	return pathTmp + "/" + pathFile;
     }
 
     @Override
     public String moveFileTmpToOutput(String pathFile, String pathTmp, String pathOutput) throws IOException {
-	LOG.info("file moving method entered");
+	LOG.debug("file moving method entered");
 
+	// if the target destination contains a same name file, it will be
+	// replaced
 	Files.copy(Paths.get(pathTmp + "/" + pathFile), Paths.get(pathOutput + "/" + pathFile),
 		StandardCopyOption.REPLACE_EXISTING);
 
-	LOG.info(
-		"file successfully moved to directory : {0}/{1}, replacing file if one with same name was already existing",
+	LOG.debug(
+		"file successfully moved to directory : {}/{}, replacing file if one with same name was already existing",
 		pathOutput, pathFile);
 
 	return pathOutput + "/" + pathFile;

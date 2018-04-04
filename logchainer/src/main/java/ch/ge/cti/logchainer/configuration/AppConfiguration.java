@@ -7,5 +7,4 @@ import org.springframework.context.annotation.Configuration;
 @PropertySource(value = "file:${application.properties}")
 @ComponentScan("ch.ge.cti.logchainer")
 public class AppConfiguration {
-
 }

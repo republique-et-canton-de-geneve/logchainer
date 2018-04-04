@@ -22,13 +22,13 @@ public class LogChainer implements CommandLineRunner {
     private static final Logger LOG = LoggerFactory.getLogger(LogChainer.class.getName());
 
     public static void main(String[] args) {
-	LOG.info("enter main");
+	LOG.debug("enter main");
 
 	start(args);
     }
 
     private static void start(String[] args) {
-	LOG.info("enter start");
+	LOG.debug("enter start");
 
 	SpringApplication app = new SpringApplication(LogChainer.class);
 	app.run(args);
@@ -36,7 +36,7 @@ public class LogChainer implements CommandLineRunner {
  
     @Override
     public void run(String... arg0) throws Exception {
-	LOG.info("run started");
+	LOG.debug("run started");
 	try {
 	    watcher.processEvents();
 	} catch (IOException e) {

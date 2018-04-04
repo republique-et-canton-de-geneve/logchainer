@@ -55,41 +55,47 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
     @Override
     public void processEvents() throws IOException {
-	LOG.info("LogWatcherServiceImpl initialization started");
+	LOG.debug("LogWatcherServiceImpl initialization started");
 	LogChainerConf clientConfList = new LogChainerConf();
-
+	// Accessing the client list provided by the user
 	try {
 	    clientConfList = getDirPaths();
-	    LOG.info("client list accessed");
+	    LOG.debug("client list accessed");
 	} catch (JAXBException e) {
-	    LOG.info("Exception while accessing configurations ", e);
+	    LOG.error("Exception while accessing configurations ", e);
 	}
 
+	// Registering all clients as Client objects in a list
 	for (int clientNb = 0; clientNb < clientConfList.getClientConf().size(); clientNb++) {
 	    clients.add(new Client(clientConfList.getClientConf().get(clientNb)));
-	    LOG.info("client {} added to the client list", clientConfList.getClientConf().get(clientNb).getClientId());
+	    LOG.debug("client {} added to the client list", clientConfList.getClientConf().get(clientNb).getClientId());
 
 	    try {
 		clients.get(clientNb).setKey(Paths.get(clients.get(clientNb).getConf().getInputDir())
 			.register(clients.get(clientNb).getWatcher(), ENTRY_CREATE));
 
-		LOG.info("key created as an ENTRY_CREATE");
+		LOG.debug("key created as an ENTRY_CREATE");
 
 	    } catch (IOException e) {
 		LOG.error("couldn't complete the initialization : {}", e.toString(), e);
 		throw e;
 	    }
-	    LOG.info("LogWatcherServiceImpl initialization completed");
-
-	    LOG.info("start of the infinity loop");
+	    LOG.debug("LogWatcherServiceImpl initialization completed");
 	}
 
+	// infinity loop to actualize endlessly the search for new files
+	LOG.debug("start of the infinity loop");
 	for (;;) {
+	    // Iterating over all client for each iteration of the infinity loop
 	    for (int clientNb = 0; clientNb < clientConfList.getClientConf().size(); clientNb++) {
 		WatchKey watchKey = clients.get(clientNb).getWatcher().poll();
 
+		// Launches the treatment only if a file was detected
+		// No use of the take method because we don't want to wait until
+		// an event is detected under one client
+		// to move to the next one
 		if (watchKey != null) {
-		    LOG.info("event detected on client {}", clients.get(clientNb).getConf().getClientId());
+		    LOG.debug("event detected on client {}", clients.get(clientNb).getConf().getClientId());
 		    clients.get(clientNb).setKey(watchKey);
 		    treatmentAfterDetectionOfEvent(clientNb);
 		}
@@ -110,7 +116,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	    // handling the overflow situation
 	    if (kind == OVERFLOW) {
-		LOG.info("overflow detected");
+		LOG.debug("overflow detected");
 	    }
 
 	    // To obtain the filename.
@@ -142,27 +148,30 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @throws IOException
      */
     private void newFileTreatment(int clientNb, Path filePath) throws IOException {
-	LOG.info("New file detected : "
-		+ (new File(clients.get(clientNb).getConf().getInputDir() + "/" + filePath.toString()))
+	LOG.debug("New file detected : {}",
+		(new File(clients.get(clientNb).getConf().getInputDir() + "/" + filePath.toString()))
 			.getAbsolutePath());
 
+	// accessing same flux file in the tmp directory
 	Collection<File> oldFiles = getOldFiles(getFluxName(filePath), clients.get(clientNb).getConf().getWorkingDir());
 
+	// moving the file to the tmp directory
 	String pFileInTmp = mover.moveFileInputToTmp(filePath.toString(), clients.get(clientNb).getConf().getInputDir(),
 		clients.get(clientNb).getConf().getWorkingDir());
 
 	// we instantiate a local array to keep and manipulate the
-	// hashCode
-	byte[] hashCodeOfLog;
+	// hashCode of the previous same flux file
+	byte[] hashCodeOfLog = getOldFileHash(oldFiles);
 
-	hashCodeOfLog = getOldFileHash(oldFiles);
-
+	// chaining the log of the previous file to the current one
 	chainer.chainingLogFile(pFileInTmp, 0, ("<SHA-256: " + new String(hashCodeOfLog) + "> \n").getBytes());
 
+	// releasing the file treated into the output directory to be taken in
+	// charge by the user
 	mover.moveFileTmpToOutput(filePath.toString(), clients.get(clientNb).getConf().getWorkingDir(),
 		clients.get(clientNb).getConf().getOutputDir());
 
-	LOG.info("end of the treatment of the file put in the input directory");
+	LOG.debug("end of the treatment of the file put in the input directory");
     }
 
     /**
@@ -174,8 +183,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     private boolean keyReset(int clientNb) {
 	boolean valid = clients.get(clientNb).getKey().reset();
 	if (!valid) {
-
-	    LOG.info("key isn't valid anymore or directory isn't accessible");
+	    LOG.error("directory of client {} is now inaccessible or it's key has become invalid",
+		    clients.get(clientNb).getConf().getClientId());
 	    return false;
 	} else {
 	    return true;
@@ -192,19 +201,22 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      */
     private byte[] getOldFileHash(Collection<File> oldFiles) throws IOException {
 	byte[] hashCodeOfLog;
+	// hashing the provided file, with null hash if there's no file (=no
+	// previous same flux file)
 	if (oldFiles.stream().findFirst().isPresent()) {
 	    File oldFile = oldFiles.stream().findFirst().get();
 	    try (InputStream is = new FileInputStream((oldFile))) {
-		LOG.info("inputStream of the old file opened");
+		LOG.debug("inputStream of the old file opened");
 		hashCodeOfLog = hasher.getLogHashCode(is);
 	    }
-	    LOG.info("old file name is : " + oldFile.getName());
+	    LOG.debug("old file name is : {}", oldFile.getName());
 	    if (oldFile.delete())
-		LOG.info("old file deleted");
+		LOG.debug("old file deleted");
 	} else {
 	    hashCodeOfLog = hasher.getNullHash();
-	    LOG.info("null hash used");
+	    LOG.debug("null hash used");
 	}
+
 	return hashCodeOfLog;
     }
 
@@ -216,6 +228,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      */
     @SuppressWarnings("unchecked")
     private Collection<File> getOldFiles(String fluxName, String workingDir) {
+	// filtering the files to only keep the same as given flux one (should
+	// be unique)
 	return FileUtils.listFiles(new File(workingDir), new IOFileFilter() {
 	    @Override
 	    public boolean accept(File dir, String name) {
@@ -225,9 +239,9 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    @Override
 	    public boolean accept(File file) {
 		if (file.getName().startsWith(fluxName)) {
-		    LOG.info("same flux name noticed for " + file.getName());
+		    LOG.debug("same flux name noticed for {}", file.getName());
 		} else {
-		    LOG.info("no same flux name detected");
+		    LOG.debug("no same flux name detected");
 		}
 		return (file.getName().startsWith(fluxName) ? true : false);
 	    }
@@ -244,6 +258,9 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	StringBuilder fluxNameTmp = new StringBuilder();
 	boolean endFluxReached = false;
 
+	// finding the flux name of the file, knowing each filename is of the
+	// type :
+	// fluxname_timestamp thus we stop at the '_' character
 	for (int i = 0; i < filename.toString().toCharArray().length; ++i) {
 	    if (filename.toString().toCharArray()[i] != '_' && !endFluxReached) {
 		fluxNameTmp.append(filename.toString().toCharArray()[i]);
@@ -251,7 +268,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		endFluxReached = true;
 	    }
 	}
-	LOG.info("the flux of the file is : {0}", fluxNameTmp.toString());
+	LOG.debug("the flux of the file is : {}", fluxNameTmp.toString());
 
 	return fluxNameTmp.toString();
     }
@@ -264,15 +281,19 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private LogChainerConf getDirPaths() throws JAXBException, IOException{
+    private LogChainerConf getDirPaths() throws JAXBException, IOException {
+	LOG.debug("starting to read conf file");
+
 	JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
 	Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
 	LogChainerConf logchainerConf = new LogChainerConf();
 
+	// accessing the xml conf file
 	try (FileInputStream xmlFileStream = new FileInputStream(xmlDirectoriesConf)) {
 	    logchainerConf = (LogChainerConf) unmarshaller.unmarshal(xmlFileStream);
 	}
+	LOG.debug("conf file correctly accessed");
 
 	return logchainerConf;
     }
