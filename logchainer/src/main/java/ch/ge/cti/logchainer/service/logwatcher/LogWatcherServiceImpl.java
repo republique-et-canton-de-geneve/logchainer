@@ -13,8 +13,11 @@ import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -29,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.Client;
+import ch.ge.cti.logchainer.exception.LogChainerException;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.generate.LogChainerConf;
 import ch.ge.cti.logchainer.generate.ObjectFactory;
@@ -62,7 +66,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	// Accessing the client list provided by the user
 	try {
 	    clientConfList = loadConfiguration();
-	    LOG.debug("client list accessed");
+	    LOG.debug("--------------------- client list accessed");
 	} catch (JAXBException e) {
 	    LOG.error("Exception while accessing configurations ", e);
 	    throw e;
@@ -84,7 +88,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		// an event is detected under one client
 		// to move to the next one
 		if (watchKey != null) {
-		    LOG.debug("event detected on client {}", clients.get(clientNb).getConf().getClientId());
+		    LOG.debug("--------------------- event detected on client {}",
+			    clients.get(clientNb).getConf().getClientId());
 		    clients.get(clientNb).setKey(watchKey);
 		    treatmentAfterDetectionOfEvent(clientNb);
 		}
@@ -103,7 +108,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	int clientNb = 0;
 	for (ClientConf client : clientConfList.getClientConf()) {
 	    clients.add(new Client(client));
-	    LOG.debug("client {} added to the client list", client.getClientId());
+	    LOG.debug("--------------------- client {} added to the client list", client.getClientId());
 
 	    try {
 		Path inputDirPath = Paths.get(clients.get(clientNb).getConf().getInputDir());
@@ -125,6 +130,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * 
      * @param clientNb
      * @throws IOException
+     * @throws LogChainerException
      */
     private void treatmentAfterDetectionOfEvent(int clientNb) throws IOException {
 
@@ -163,14 +169,24 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @param clientNb
      * @param filePath
      * @throws IOException
+     * @throws LogChainerException
      */
     private void newFileTreatment(int clientNb, Path filePath) throws IOException {
 	LOG.debug("New file detected : {}",
 		(new File(clients.get(clientNb).getConf().getInputDir() + "/" + filePath.toString()))
 			.getAbsolutePath());
 
+	// define the separator for the file name components, is '_' by
+	// default
+	String separator;
+	if (!clients.get(clientNb).getConf().getFileEncoding().isEmpty()) {
+	    separator = clients.get(clientNb).getConf().getFilePattern().getSeparator();
+	} else {
+	    separator = "_";
+	}
 	// accessing same flux file in the tmp directory
-	Collection<File> oldFiles = getOldFiles(getFluxName(filePath), clients.get(clientNb).getConf().getWorkingDir());
+	Collection<File> oldFiles = getOldFiles(getFluxName(filePath, separator),
+		clients.get(clientNb).getConf().getWorkingDir(), separator);
 
 	// moving the file to the tmp directory
 	String pFileInTmp = mover.moveFileInputToTmp(filePath.toString(), clients.get(clientNb).getConf().getInputDir(),
@@ -180,15 +196,52 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	// hashCode of the previous same flux file
 	byte[] hashCodeOfLog = getOldFileHash(oldFiles);
 
-	// chaining the log of the previous file to the current one
-	chainer.chainingLogFile(pFileInTmp, 0, ("<SHA-256: " + new String(hashCodeOfLog) + "> \n").getBytes());
+	// define the encoding way for encryption into the file, is UTF-8 by
+	// default
+	String encodingType;
+	if (!clients.get(clientNb).getConf().getFileEncoding().isEmpty()) {
+	    encodingType = clients.get(clientNb).getConf().getFileEncoding();
+	} else {
+	    encodingType = "UTF-8";
+	}
+	// chaining the log of the previous file to the current one (with infos:
+	// previous file name and date of chaining)
+	chainer.chainingLogFile(pFileInTmp, 0,
+		messageToInsert(filePath, hashCodeOfLog, oldFiles).getBytes(encodingType));
 
 	// releasing the file treated into the output directory to be taken in
 	// charge by the user
 	mover.moveFileTmpToOutput(filePath.toString(), clients.get(clientNb).getConf().getWorkingDir(),
 		clients.get(clientNb).getConf().getOutputDir());
 
-	LOG.debug("end of the treatment of the file put in the input directory");
+	LOG.info("end of the treatment of the file put in the input directory");
+    }
+
+    /**
+     * Create the text message to insert in the new file.
+     * 
+     * @param filePath
+     * @param hashCodeOfLog
+     * @param oldFiles
+     * @return the message
+     */
+    private String messageToInsert(Path filePath, byte[] hashCodeOfLog, Collection<File> oldFiles) {
+	// Chaining date
+	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	String date = "<Date of chaining: " + dateFormat.format(new Date()) + "> \n";
+
+	// Name of the previous file
+	String previousFile = "< Previous file: ";
+	if (oldFiles.stream().findFirst().isPresent()) {
+	    previousFile += oldFiles.stream().findFirst().get().getName() + "> \n";
+	} else {
+	    previousFile += "none> \n";
+	}
+
+	// HashCode of the previous file
+	String previousFileHashCode = "<SHA-256: " + new String(hashCodeOfLog) + "> \n";
+
+	return previousFile + date + previousFileHashCode;
     }
 
     /**
@@ -244,7 +297,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @return collection of these files
      */
     @SuppressWarnings("unchecked")
-    private Collection<File> getOldFiles(String fluxName, String workingDir) {
+    private Collection<File> getOldFiles(String fluxName, String workingDir, String separator) {
 	// filtering the files to only keep the same as given flux one (should
 	// be unique)
 	return FileUtils.listFiles(new File(workingDir), new IOFileFilter() {
@@ -255,12 +308,12 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	    @Override
 	    public boolean accept(File file) {
-		if (fluxName.equals(getFluxName(file.toPath().getFileName()))) {
+		if (fluxName.equals(getFluxName(file.toPath().getFileName(), separator))) {
 		    LOG.debug("same flux name noticed for {}", file.getName());
 		} else {
 		    LOG.debug("no same flux name detected");
 		}
-		return (fluxName.equals(getFluxName(file.toPath().getFileName())) ? true : false);
+		return (fluxName.equals(getFluxName(file.toPath().getFileName(), separator)) ? true : false);
 	    }
 	}, null);
     }
@@ -270,22 +323,20 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * 
      * @param filename
      * @return fluxname
+     * @throws LogChainerException
      */
-    private String getFluxName(Path filename) {
+    private String getFluxName(Path filename, String separator) {
 	LOG.debug("getting flux name method entered");
+	// if (!filename.toString().contains("_"))
+	// throw new LogChainerException("incorrect filename");
 
 	StringBuilder fluxNameTmp = new StringBuilder();
-	boolean endFluxReached = false;
 
-	// finding the flux name of the file, knowing each filename is of the
-	// type :
-	// fluxname_timestamp thus we stop at the '_' character
-	for (int i = 0; i < filename.toString().toCharArray().length; ++i) {
-	    if (filename.toString().toCharArray()[i] != '_' && !endFluxReached) {
-		fluxNameTmp.append(filename.toString().toCharArray()[i]);
-	    } else {
-		endFluxReached = true;
-	    }
+	// finding the flux name of the file, knowing each flux is situated at
+	// the beginning of the filename (before the separator)
+	String[] nameComponents = filename.toString().split(separator);
+	for (int i = 0; i < nameComponents.length - 1; ++i) {
+	    fluxNameTmp.append(nameComponents[i]);
 	}
 	LOG.debug("the flux of the file is : {}", fluxNameTmp.toString());
 

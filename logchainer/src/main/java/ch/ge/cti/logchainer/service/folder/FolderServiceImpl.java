@@ -39,7 +39,7 @@ public class FolderServiceImpl implements FolderService {
 		StandardCopyOption.REPLACE_EXISTING);
 
 	LOG.debug(
-		"file successfully moved to directory : {}/{}, replacing file if one with same name was already existing",
+		"--------------------- file successfully moved to directory : {}/{}, replacing file if one with same name was already existing",
 		pathOutput, pathFile);
 
 	return pathOutput + "/" + pathFile;

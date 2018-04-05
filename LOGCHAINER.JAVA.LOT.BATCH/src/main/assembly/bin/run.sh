@@ -12,4 +12,5 @@ export CLASSPATH=/d/melusine/M501/Maven/Repository/junit/junit/3.8.1/junit-3.8.1
 
 echo "classpath ="$CLASSPATH
 
+# $JAVA_HOME $VM_ARGS -jar $JAR_HOME -cp $CLASSPATH #ch.ge.cti.logchainer.LogChainer &
 $JAVA_HOME $VM_ARGS -jar $JAR_HOME -cp $CLASSPATH #ch.ge.cti.logchainer.LogChainer

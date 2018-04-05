@@ -24,6 +24,19 @@
 			<xs:element name="InputDir" type="xs:string" />
 			<xs:element name="WorkingDir" type="xs:string" />
 			<xs:element name="OutputDir" type="xs:string" />
+			<xs:element name="filePattern" type="filePattern"
+					minOccurs="0" maxOccurs="1" />
+			<xs:element name="fileEncoding" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="filePattern">
+		<xs:annotation>
+			<xs:documentation>Pattern of the File Name</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="separator" type="xs:string" />
+			<xs:element name="sortingType" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
 </xs:schema>

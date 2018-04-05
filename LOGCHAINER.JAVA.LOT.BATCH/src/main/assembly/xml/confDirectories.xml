@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <logChainerConf xmlns="http://service.logchainer.ge.ch/">
 	<clientConf>
-		<ClientId>clientTest1</ClientId>
-		<InputDir>/opt/InputDir1</InputDir>
-		<WorkingDir>/opt/WorkingDir1</WorkingDir>
-		<OutputDir>/opt/oputbound1</OutputDir>
+		<ClientId>ClientA</ClientId>
+		<InputDir>/home/jservdev/tmp/FANICHETL/emplacementClients/ClientA/input</InputDir>
+		<WorkingDir>/home/jservdev/tmp/FANICHETL/emplacementClients/ClientA/workingDir</WorkingDir>
+		<OutputDir>/home/jservdev/tmp/FANICHETL/emplacementClients/ClientA/output</OutputDir>
 	</clientConf>
 
 	<clientConf>
-		<ClientId>clientTest2</ClientId>
-		<InputDir>/opt/InputDir2</InputDir>
-		<WorkingDir>/opt/WorkingDir2</WorkingDir>
-		<OutputDir>/opt/oputbound2</OutputDir>
-	</clientConf>
-
-	<clientConf>
-		<ClientId>clientTest3</ClientId>
-		<InputDir>/opt/InputDir3</InputDir>
-		<WorkingDir>/opt/WorkingDir3</WorkingDir>
-		<OutputDir>/opt/oputbound3</OutputDir>
+		<ClientId>ClientB</ClientId>
+		<InputDir>/home/jservdev/tmp/FANICHETL/emplacementClients/ClientB/input</InputDir>
+		<WorkingDir>/home/jservdev/tmp/FANICHETL/emplacementClients/ClientB/workingDir</WorkingDir>
+		<OutputDir>/home/jservdev/tmp/FANICHETL/emplacementClients/ClientB/output</OutputDir>
+		<filePattern>
+			<separator>-</separator>
+			<sortingType>alphabetically</sortingType>
+		</filePattern>
+		<fileEncoding>UTF-8</fileEncoding>
 	</clientConf>
 </logChainerConf>

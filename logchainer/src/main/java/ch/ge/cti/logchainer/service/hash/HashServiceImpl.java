@@ -18,13 +18,13 @@ public class HashServiceImpl implements HashService {
 
     @Override
     public byte[] getLogHashCode(InputStream fileStream) throws IOException {
-	LOG.debug("Hashing algorithm job");
+	LOG.debug("--------------------- Hashing algorithm job");
 	return DigestUtils.sha256(fileStream);
     }
 
     @Override
     public byte[] getNullHash() {
-	LOG.debug("null hash method job");
+	LOG.debug("--------------------- null hash method job");
 	return new byte[] {};
     }
 }
