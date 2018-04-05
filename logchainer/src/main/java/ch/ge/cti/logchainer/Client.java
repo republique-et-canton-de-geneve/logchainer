@@ -10,6 +10,13 @@ import org.slf4j.LoggerFactory;
 
 import ch.ge.cti.logchainer.generate.ClientConf;
 
+/**
+ * Grouping all client related attributs, such as the directories, the watcher
+ * and it's watchKey.
+ * 
+ * @author FANICHETL
+ *
+ */
 public class Client {
     private ClientConf conf;
     private WatchService watcher;
