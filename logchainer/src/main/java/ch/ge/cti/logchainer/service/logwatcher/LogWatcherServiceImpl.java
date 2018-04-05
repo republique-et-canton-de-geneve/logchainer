@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.Client;
+import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.generate.LogChainerConf;
 import ch.ge.cti.logchainer.generate.ObjectFactory;
 import ch.ge.cti.logchainer.service.folder.FolderService;
@@ -54,34 +56,21 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     private static final Logger LOG = LoggerFactory.getLogger(LogWatcherServiceImpl.class.getName());
 
     @Override
-    public void processEvents() throws IOException {
+    public void processEvents() throws IOException, JAXBException {
 	LOG.debug("LogWatcherServiceImpl initialization started");
 	LogChainerConf clientConfList = new LogChainerConf();
 	// Accessing the client list provided by the user
 	try {
-	    clientConfList = getDirPaths();
+	    clientConfList = loadConfiguration();
 	    LOG.debug("client list accessed");
 	} catch (JAXBException e) {
 	    LOG.error("Exception while accessing configurations ", e);
+	    throw e;
 	}
 
 	// Registering all clients as Client objects in a list
-	for (int clientNb = 0; clientNb < clientConfList.getClientConf().size(); clientNb++) {
-	    clients.add(new Client(clientConfList.getClientConf().get(clientNb)));
-	    LOG.debug("client {} added to the client list", clientConfList.getClientConf().get(clientNb).getClientId());
-
-	    try {
-		clients.get(clientNb).setKey(Paths.get(clients.get(clientNb).getConf().getInputDir())
-			.register(clients.get(clientNb).getWatcher(), ENTRY_CREATE));
-
-		LOG.debug("key created as an ENTRY_CREATE");
-
-	    } catch (IOException e) {
-		LOG.error("couldn't complete the initialization : {}", e.toString(), e);
-		throw e;
-	    }
-	    LOG.debug("LogWatcherServiceImpl initialization completed");
-	}
+	initializeFileWatcherByclient(clientConfList);
+	LOG.debug("LogWatcherServiceImpl initialization completed");
 
 	// infinity loop to actualize endlessly the search for new files
 	LOG.debug("start of the infinity loop");
@@ -100,6 +89,34 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		    treatmentAfterDetectionOfEvent(clientNb);
 		}
 	    }
+	}
+    }
+
+    /**
+     * Create a list for all clients to be registered as Client objects in.
+     * 
+     * @param clientConfList
+     * @throws IOException
+     */
+    private void initializeFileWatcherByclient(LogChainerConf clientConfList) throws IOException {
+	// keeping track of the client number
+	int clientNb = 0;
+	for (ClientConf client : clientConfList.getClientConf()) {
+	    clients.add(new Client(client));
+	    LOG.debug("client {} added to the client list", client.getClientId());
+
+	    try {
+		Path inputDirPath = Paths.get(clients.get(clientNb).getConf().getInputDir());
+		WatchService watcher = clients.get(clientNb).getWatcher();
+		clients.get(clientNb).setKey(inputDirPath.register(watcher, ENTRY_CREATE));
+
+		LOG.debug("key created as an ENTRY_CREATE");
+
+	    } catch (IOException e) {
+		LOG.error("couldn't complete the initialization : {}", e.toString(), e);
+		throw e;
+	    }
+	    clientNb++;
 	}
     }
 
@@ -256,7 +273,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      */
     private String getFluxName(Path filename) {
 	LOG.debug("getting flux name method entered");
-	
+
 	StringBuilder fluxNameTmp = new StringBuilder();
 	boolean endFluxReached = false;
 
@@ -283,7 +300,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private LogChainerConf getDirPaths() throws JAXBException, IOException {
+    private LogChainerConf loadConfiguration() throws JAXBException, IOException {
 	LOG.debug("starting to read conf file");
 
 	JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
