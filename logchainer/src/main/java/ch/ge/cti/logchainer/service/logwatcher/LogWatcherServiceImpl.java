@@ -16,6 +16,7 @@ import java.nio.file.WatchService;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
@@ -66,7 +67,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	// Accessing the client list provided by the user
 	try {
 	    clientConfList = loadConfiguration();
-	    LOG.debug("--------------------- client list accessed");
+	    LOG.info("--------------------- client list accessed");
 	} catch (JAXBException e) {
 	    LOG.error("Exception while accessing configurations ", e);
 	    throw e;
@@ -88,13 +89,51 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		// an event is detected under one client
 		// to move to the next one
 		if (watchKey != null) {
-		    LOG.debug("--------------------- event detected on client {}",
+		    LOG.info("--------------------- event detected on client {}",
 			    clients.get(clientNb).getConf().getClientId());
-		    clients.get(clientNb).setKey(watchKey);
-		    treatmentAfterDetectionOfEvent(clientNb);
+		    if (checkNewEvent(watchKey, clientNb)) {
+			clients.get(clientNb).setKey(watchKey);
+		    }
+		    if (checkWaitingTime(clientNb, watchKey))
+			treatmentAfterDetectionOfEvent(clientNb);
 		}
 	    }
 	}
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean checkNewEvent(WatchKey watchKey, int clientNb) {
+	WatchKey tempWatchKey = watchKey;
+	boolean newEvent = true;
+
+	for (WatchEvent<?> event : tempWatchKey.pollEvents()) {
+	    String filename = ((WatchEvent<Path>) event.context()).toString();
+	    if (clients.get(clientNb).getEventList().contains(filename)) {
+		newEvent = false;
+	    } else {
+		registerNewEvent(clientNb, filename,
+			(Calendar.HOUR_OF_DAY * 3600 + Calendar.MINUTE * 60 + Calendar.SECOND));
+	    }
+	}
+	return newEvent;
+    }
+
+    private void registerNewEvent(int clientNb, String filename, int time) {
+	clients.get(clientNb).addFileWithArrivingTime(filename, time);
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean checkWaitingTime(int clientNb, WatchKey watchKey) {
+	WatchKey tempWatchKey = watchKey;
+	boolean enoughTime = false;
+
+	for (WatchEvent<?> event : tempWatchKey.pollEvents()) {
+	    String filename = ((WatchEvent<Path>) event.context()).toString();
+	    if (clients.get(clientNb).getFileArrivingTimeMap().get(filename) + 5 * 60 <= Calendar.HOUR_OF_DAY * 3600
+		    + Calendar.MINUTE * 60 + Calendar.SECOND)
+		enoughTime = true;
+	}
+	return enoughTime;
     }
 
     /**
@@ -133,7 +172,6 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @throws LogChainerException
      */
     private void treatmentAfterDetectionOfEvent(int clientNb) throws IOException {
-
 	for (WatchEvent<?> event : clients.get(clientNb).getKey().pollEvents()) {
 	    WatchEvent.Kind<?> kind = event.kind();
 
