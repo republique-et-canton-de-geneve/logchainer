@@ -32,6 +32,7 @@ public class LogChainer implements CommandLineRunner {
 	SpringApplication app = new SpringApplication(LogChainer.class);
 	// disable the spring banner
 	app.setBannerMode(Banner.Mode.OFF);
+	
 	app.run(args);
     }
 

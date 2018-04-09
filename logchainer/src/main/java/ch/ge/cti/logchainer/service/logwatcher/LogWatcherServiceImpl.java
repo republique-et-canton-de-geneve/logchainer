@@ -10,13 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
@@ -32,7 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import ch.ge.cti.logchainer.Client;
+import ch.ge.cti.logchainer.clients.Client;
 import ch.ge.cti.logchainer.exception.LogChainerException;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.generate.LogChainerConf;
@@ -74,7 +73,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	}
 
 	// Registering all clients as Client objects in a list
-	initializeFileWatcherByclient(clientConfList);
+	initializeFileWatcherByClient(clientConfList);
 	LOG.debug("LogWatcherServiceImpl initialization completed");
 
 	// infinity loop to actualize endlessly the search for new files
@@ -91,49 +90,31 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		if (watchKey != null) {
 		    LOG.info("--------------------- event detected on client {}",
 			    clients.get(clientNb).getConf().getClientId());
-		    if (checkNewEvent(watchKey, clientNb)) {
-			clients.get(clientNb).setKey(watchKey);
-		    }
-		    if (checkWaitingTime(clientNb, watchKey))
-			treatmentAfterDetectionOfEvent(clientNb);
+
+		    clients.get(clientNb).setKey(watchKey);
+		    clients.get(clientNb).registerEvent();
 		}
+		
+		isFileTreatmentReadyToBeLaunched(clientNb);
 	    }
 	}
     }
 
-    @SuppressWarnings("unchecked")
-    private boolean checkNewEvent(WatchKey watchKey, int clientNb) {
-	WatchKey tempWatchKey = watchKey;
-	boolean newEvent = true;
+    private void isFileTreatmentReadyToBeLaunched(int clientNb) throws IOException {
+//	LOG.debug("finding if the treatment is to be launched");
+	
+	for (int infoNb : clients.get(clientNb).getTimeInfosMap().keySet()) {
+	    int actualTime = LocalDateTime.now().getHour() * 3600 + LocalDateTime.now().getMinute() * 60
+		    + LocalDateTime.now().getSecond();
+//	    LOG.info("comparing arriving time with current time");
 
-	for (WatchEvent<?> event : tempWatchKey.pollEvents()) {
-	    String filename = ((WatchEvent<Path>) event.context()).toString();
-	    if (clients.get(clientNb).getEventList().contains(filename)) {
-		newEvent = false;
-	    } else {
-		registerNewEvent(clientNb, filename,
-			(Calendar.HOUR_OF_DAY * 3600 + Calendar.MINUTE * 60 + Calendar.SECOND));
+	    if (infoNb + 10 < actualTime) {
+		LOG.info("enough time waited");
+		String filename = clients.get(clientNb).getTimeInfosMap().get(infoNb).getFilename();
+		Path filePath = Paths.get(filename);
+		treatmentAfterDetectionOfEvent(clientNb, filePath, infoNb);
 	    }
 	}
-	return newEvent;
-    }
-
-    private void registerNewEvent(int clientNb, String filename, int time) {
-	clients.get(clientNb).addFileWithArrivingTime(filename, time);
-    }
-
-    @SuppressWarnings("unchecked")
-    private boolean checkWaitingTime(int clientNb, WatchKey watchKey) {
-	WatchKey tempWatchKey = watchKey;
-	boolean enoughTime = false;
-
-	for (WatchEvent<?> event : tempWatchKey.pollEvents()) {
-	    String filename = ((WatchEvent<Path>) event.context()).toString();
-	    if (clients.get(clientNb).getFileArrivingTimeMap().get(filename) + 5 * 60 <= Calendar.HOUR_OF_DAY * 3600
-		    + Calendar.MINUTE * 60 + Calendar.SECOND)
-		enoughTime = true;
-	}
-	return enoughTime;
     }
 
     /**
@@ -142,7 +123,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @param clientConfList
      * @throws IOException
      */
-    private void initializeFileWatcherByclient(LogChainerConf clientConfList) throws IOException {
+    private void initializeFileWatcherByClient(LogChainerConf clientConfList) throws IOException {
 	// keeping track of the client number
 	int clientNb = 0;
 	for (ClientConf client : clientConfList.getClientConf()) {
@@ -171,34 +152,28 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @throws IOException
      * @throws LogChainerException
      */
-    private void treatmentAfterDetectionOfEvent(int clientNb) throws IOException {
-	for (WatchEvent<?> event : clients.get(clientNb).getKey().pollEvents()) {
-	    WatchEvent.Kind<?> kind = event.kind();
-
-	    // handling the overflow situation
-	    if (kind == OVERFLOW) {
-		LOG.debug("overflow detected");
-	    }
-
-	    // To obtain the filename.
-	    // the filename is the context of the event.
-	    @SuppressWarnings("unchecked")
-	    WatchEvent<Path> ev = (WatchEvent<Path>) event;
-	    Path filePath = ev.context();
-
-	    if (kind == ENTRY_CREATE) {
-		// We now refer to the code part
-		// treating of a new file appearing
-		// in the directoy.
-		newFileTreatment(clientNb, filePath);
-	    }
-
-	    // Reseting the key to be able to use it again
-	    // If the key is not valid or the directory is inacessible
-	    // ends the loop.
-	    if (!keyReset(clientNb))
-		break;
+    private void treatmentAfterDetectionOfEvent(int clientNb, Path filePath, int infoNb) throws IOException {
+	// handling the overflow situation
+	if (clients.get(clientNb).getTimeInfosMap().get(infoNb).getKind() == OVERFLOW) {
+	    LOG.debug("overflow detected");
 	}
+
+	if (clients.get(clientNb).getTimeInfosMap().get(infoNb).getKind() == ENTRY_CREATE) {
+	    // We now refer to the code part
+	    // treating of a new file appearing
+	    // in the directoy.
+	    newFileTreatment(clientNb, filePath);
+	}
+
+	if (reset(clientNb, infoNb))
+	    LOG.info("file {} treated", filePath.getFileName());
+	//
+	// // Reseting the key to be able to use it again
+	// // If the key is not valid or the directory is inacessible
+	// // ends the loop.
+	// if (!keyReset(clientNb))
+	// break;
+
     }
 
     /**
@@ -288,15 +263,26 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @param clientNb
      * @return validity of the key
      */
-    private boolean keyReset(int clientNb) {
-	boolean valid = clients.get(clientNb).getKey().reset();
-	if (!valid) {
-	    LOG.error("directory of client {} is now inaccessible or it's key has become invalid",
-		    clients.get(clientNb).getConf().getClientId());
-	    return false;
-	} else {
+    private boolean reset(int clientNb, int infoNb) {
+	if (clients.get(clientNb).getTimeInfosMap().keySet().remove(infoNb)) {
+	    LOG.debug("file references successfully removed from map");
 	    return true;
+	} else {
+	    // TODO
+	    // ??????? error a remonter ?????
+	    LOG.debug("could not delete the file from map");
+	    ;
+	    return false;
 	}
+	// boolean valid = clients.get(clientNb).getKey().reset();
+	// if (!valid) {
+	// LOG.error("directory of client {} is now inaccessible or it's key has
+	// become invalid",
+	// clients.get(clientNb).getConf().getClientId());
+	// return false;
+	// } else {
+	// return true;
+	// }
     }
 
     /**
@@ -336,6 +322,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      */
     @SuppressWarnings("unchecked")
     private Collection<File> getOldFiles(String fluxName, String workingDir, String separator) {
+	LOG.info("!!!!!!!!!!!!!!directory {}", new File(workingDir).toString());
 	// filtering the files to only keep the same as given flux one (should
 	// be unique)
 	return FileUtils.listFiles(new File(workingDir), new IOFileFilter() {
