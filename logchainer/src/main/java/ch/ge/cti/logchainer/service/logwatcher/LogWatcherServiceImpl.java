@@ -65,10 +65,10 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     @Override
     public void processEvents() throws IOException, JAXBException {
 	LOG.debug("LogWatcherServiceImpl initialization started");
-	LogChainerConf clientConfList = new LogChainerConf();
+	LogChainerConf clientsConf = new LogChainerConf();
 	// Accessing the client list provided by the user
 	try {
-	    clientConfList = loadConfiguration();
+	    clientsConf = loadConfiguration();
 	    LOG.info("--------------------- client list accessed");
 	} catch (JAXBException e) {
 	    LOG.error("Exception while accessing configurations ", e);
@@ -76,26 +76,27 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	}
 
 	// Registering all clients as Client objects in a list
-	initializeFileWatcherByClient(clientConfList);
+	initializeFileWatcherByClient(clientsConf);
 	LOG.debug("LogWatcherServiceImpl initialization completed");
 
 	// infinity loop to actualize endlessly the search for new files
 	LOG.debug("start of the infinity loop");
-	for (;;) {
+	boolean loop = true;
+	while (loop) {	    
 	    // Iterating over all client for each iteration of the infinity loop
-	    for (int clientNb = 0; clientNb < clientConfList.getClientConf().size(); clientNb++) {
-		WatchKey watchKey = clients.get(clientNb).getWatcher().poll();
+	    for (int clientNb = 0; clientNb < clientsConf.getListeClientConf().size(); clientNb++) {
+		Client currentClient = clients.get(clientNb);
+		WatchKey watchKey = currentClient.getWatcher().poll();
 
 		// Launches the treatment only if a file was detected
 		// No use of the take method because we don't want to wait until
 		// an event is detected under one client
 		// to move to the next one
 		if (watchKey != null) {
-		    LOG.info("--------------------- event detected on client {}",
-			    clients.get(clientNb).getConf().getClientId());
+		    LOG.info("--------------------- event detected on client {}", currentClient.getConf().getClientId());
 
-		    clients.get(clientNb).setKey(watchKey);
-		    clients.get(clientNb).registerEvent();
+		    currentClient.setKey(watchKey);
+		    currentClient.registerEvent();
 		}
 
 		isFileTreatmentReadyToBeLaunched(clientNb);
@@ -104,62 +105,64 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     }
 
     private void isFileTreatmentReadyToBeLaunched(int clientNb) throws IOException {
+	Client client = clients.get(clientNb);
 	// LOG.debug("finding if the treatment is to be launched");
 	String separator;
-	if (!clients.get(clientNb).getConf().getFilePattern().getSeparator().isEmpty()) {
-	    separator = clients.get(clientNb).getConf().getFilePattern().getSeparator();
+	// 1- Si 
+	if (!client.getConf().getFilePattern().getSeparator().isEmpty()) {
+	    separator = client.getConf().getFilePattern().getSeparator();
 	} else {
 	    separator = "_";
 	}
 	
 	String sorter;
-	if (!clients.get(clientNb).getConf().getFilePattern().getSortingType().isEmpty()) {
-	    sorter = clients.get(clientNb).getConf().getFilePattern().getSortingType();
+	if (!client.getConf().getFilePattern().getSortingType().isEmpty()) {
+	    sorter = client.getConf().getFilePattern().getSortingType();
 	} else {
 	    sorter = "numerical";
 	}
 
-	for (int infoTime : clients.get(clientNb).getTimeInfosMap().keySet()) {
+	for (int infoTime : client.getTimeInfosMap().keySet()) {
 	    int actualTime = LocalDateTime.now().getHour() * 3600 + LocalDateTime.now().getMinute() * 60
 		    + LocalDateTime.now().getSecond();
 	    // LOG.info("comparing arriving time with current time");
 
-	    Path filename = Paths.get(clients.get(clientNb).getTimeInfosMap().get(infoTime).getFilename());
+	    Path filename = Paths.get(client.getTimeInfosMap().get(infoTime).getFilename());
 	    String fluxname = getFluxName(filename, separator);
 
-	    if (clients.get(clientNb).isNewFlux(fluxname)) {
-		clients.get(clientNb).addFlux(fluxname);
+	    if (client.isNewFlux(fluxname)) {
+		client.addFlux(fluxname);
 	    }
 
-	    clients.get(clientNb).addClientInfosToFlux(fluxname, clients.get(clientNb).getTimeInfosMap().get(infoTime));
+	    client.addClientInfosToFlux(fluxname, client.getTimeInfosMap().get(infoTime));
 
 	    if (infoTime + 10 < actualTime) {
 		LOG.info("enough time waited");
-		clients.get(clientNb).getTimeInfosMap().get(infoTime).setReadyToBeTreated(true);
+		client.getTimeInfosMap().get(infoTime).setReadyToBeTreated(true);
 
 
 	    }
 	}
-	for (String fluxname : clients.get(clientNb).getFluxInfosMap().keySet()) {
+	for (String fluxname : client.getFluxInfosMap().keySet()) {
 	    sortClientInfos(clientNb, sorter, fluxname);
 
 	    boolean fluxReadyToBeTreated = true;
-	    for (ClientInstanceInfos clientInfos : clients.get(clientNb).getFluxInfosMap().get(fluxname)) {
+	    for (ClientInstanceInfos clientInfos : client.getFluxInfosMap().get(fluxname)) {
 		if (!clientInfos.isReadyToBeTreated())
 		    fluxReadyToBeTreated = false;
 	    }
 
 	    if (fluxReadyToBeTreated) {
 		boolean finished = true;
-		for (ClientInstanceInfos clientInfos : clients.get(clientNb).getFluxInfosMap().get(fluxname)) {
-		    String filename = clients.get(clientNb).getTimeInfosMap().get(clientInfos).getFilename();
+		for (ClientInstanceInfos clientInfos : client.getFluxInfosMap().get(fluxname)) {
+		    String filename = client.getTimeInfosMap().get(clientInfos).getFilename();
 		    Path filePath = Paths.get(filename);
 		    int arrivingTime = clientInfos.getArrivingTime();
 		    if (!treatmentAfterDetectionOfEvent(clientNb, filePath, arrivingTime))
 			finished = false;
 		}
 		if (finished)
-		    clients.get(clientNb).removeFlux(fluxname); 
+		    client.removeFlux(fluxname); 
 	    }
 	}
     }
@@ -192,15 +195,15 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     /**
      * Create a list for all clients to be registered as Client objects in.
      * 
-     * @param clientConfList
+     * @param clientsConf
      * @throws IOException
      */
-    private void initializeFileWatcherByClient(LogChainerConf clientConfList) throws IOException {
+    private void initializeFileWatcherByClient(LogChainerConf clientsConf) throws IOException {
 	// keeping track of the client number
 	int clientNb = 0;
-	for (ClientConf client : clientConfList.getClientConf()) {
-	    clients.add(new Client(client));
-	    LOG.info("client {} added to the client list", client.getClientId());
+	for (ClientConf clientConf : clientsConf.getListeClientConf()) {
+	    clients.add(new Client(clientConf));
+	    LOG.info("client {} added to the client list", clientConf.getClientId());
 
 	    try {
 		Path inputDirPath = Paths.get(clients.get(clientNb).getConf().getInputDir());

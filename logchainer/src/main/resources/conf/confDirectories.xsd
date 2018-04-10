@@ -9,8 +9,7 @@
 	<xs:element name="logChainerConf">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="clientConf" type="clientConf"
-					minOccurs="1" maxOccurs="unbounded" />
+				<xs:element name="listeClientConf" type="clientConf" minOccurs="1" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
