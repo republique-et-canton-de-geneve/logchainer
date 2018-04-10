@@ -34,7 +34,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.clients.Client;
-import ch.ge.cti.logchainer.clients.ClientInstanceInfos;
+import ch.ge.cti.logchainer.clients.FileFromClient;
 import ch.ge.cti.logchainer.exception.LogChainerException;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.generate.LogChainerConf;
@@ -111,7 +111,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	} else {
 	    separator = "_";
 	}
-	
+
 	String sorter;
 	if (!clients.get(clientNb).getConf().getFilePattern().getSortingType().isEmpty()) {
 	    sorter = clients.get(clientNb).getConf().getFilePattern().getSortingType();
@@ -119,72 +119,78 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    sorter = "numerical";
 	}
 
-	for (int infoTime : clients.get(clientNb).getTimeInfosMap().keySet()) {
+	for (FileFromClient file : clients.get(clientNb).getFilesFromClient()) {
 	    int actualTime = LocalDateTime.now().getHour() * 3600 + LocalDateTime.now().getMinute() * 60
 		    + LocalDateTime.now().getSecond();
 	    // LOG.info("comparing arriving time with current time");
 
-	    Path filename = Paths.get(clients.get(clientNb).getTimeInfosMap().get(infoTime).getFilename());
-	    String fluxname = getFluxName(filename, separator);
+	    if (!file.isRegistered()) {
+		Path filename = Paths.get(file.getFilename());
+		String fluxname = getFluxName(filename, separator);
 
-	    if (clients.get(clientNb).isNewFlux(fluxname)) {
-		clients.get(clientNb).addFlux(fluxname);
+		if (clients.get(clientNb).isNewFlux(fluxname)) {
+		    clients.get(clientNb).addFlux(fluxname);
+		}
+
+		clients.get(clientNb).addFileToFlux(fluxname, file);
+		file.setRegistered(true);
 	    }
 
-	    clients.get(clientNb).addClientInfosToFlux(fluxname, clients.get(clientNb).getTimeInfosMap().get(infoTime));
-
-	    if (infoTime + 10 < actualTime) {
-		LOG.info("enough time waited");
-		clients.get(clientNb).getTimeInfosMap().get(infoTime).setReadyToBeTreated(true);
-
-
+	    if (file.getArrivingTime() + 10 < actualTime) {
+		LOG.debug("enough time waited");
+		file.setReadyToBeTreated(true);
 	    }
 	}
-	for (String fluxname : clients.get(clientNb).getFluxInfosMap().keySet()) {
-	    sortClientInfos(clientNb, sorter, fluxname);
 
+	for (String fluxname : clients.get(clientNb).getFluxFileMap().keySet()) {
 	    boolean fluxReadyToBeTreated = true;
-	    for (ClientInstanceInfos clientInfos : clients.get(clientNb).getFluxInfosMap().get(fluxname)) {
-		if (!clientInfos.isReadyToBeTreated())
+	    for (FileFromClient file : clients.get(clientNb).getFluxFileMap().get(fluxname)) {
+		if (!file.isReadyToBeTreated())
 		    fluxReadyToBeTreated = false;
 	    }
 
 	    if (fluxReadyToBeTreated) {
+		LOG.debug("flux starting to be treated");
+		sortFiles(clientNb, separator, sorter, fluxname);
+		
 		boolean finished = true;
-		for (ClientInstanceInfos clientInfos : clients.get(clientNb).getFluxInfosMap().get(fluxname)) {
-		    String filename = clients.get(clientNb).getTimeInfosMap().get(clientInfos).getFilename();
+		for (FileFromClient file : clients.get(clientNb).getFluxFileMap().get(fluxname)) {
+		    String filename = file.getFilename();
 		    Path filePath = Paths.get(filename);
-		    int arrivingTime = clientInfos.getArrivingTime();
+		    int arrivingTime = file.getArrivingTime();
 		    if (!treatmentAfterDetectionOfEvent(clientNb, filePath, arrivingTime))
 			finished = false;
 		}
-		if (finished)
-		    clients.get(clientNb).removeFlux(fluxname); 
+		if (finished) {
+		    if (clients.get(clientNb).removeFlux(fluxname))
+			LOG.debug("flux treated and removed from list in client");
+		}
 	    }
 	}
     }
 
-    private void sortClientInfos(int clientNb, String sorter, String fluxname) {
-	Collections.sort(clients.get(clientNb).getFluxInfosMap().get(fluxname), new Comparator<ClientInstanceInfos>() {
-	@Override
-	public int compare(ClientInstanceInfos clientInfos1, ClientInstanceInfos clientInfos2) {
-	    String sortingStamp1 = getSortingStamp(clientInfos1.getFilename(), sorter);
-	    String sortingStamp2 = getSortingStamp(clientInfos2.getFilename(), sorter);
-	    
-	    if (("alphabetical").equals(sorter)) {
-		return sortingStamp1.compareTo(sortingStamp2);
-	    } else {
-		int stamp1 = Integer.parseInt(sortingStamp1);
-		int stamp2 = Integer.parseInt(sortingStamp2);
-		if (stamp1 < stamp2) {
-		    return -1;
-		} else if (stamp1 == stamp2) {
-		    return 0;
+    private void sortFiles(int clientNb, String separator, String sorter, String fluxname) {
+	LOG.debug("sorting the file list");
+	Collections.sort(clients.get(clientNb).getFluxFileMap().get(fluxname), new Comparator<FileFromClient>() {
+	    @Override
+	    public int compare(FileFromClient file1, FileFromClient file2) {
+		String sortingStamp1 = getSortingStamp(file1.getFilename(), separator);
+		String sortingStamp2 = getSortingStamp(file2.getFilename(), separator);
+
+		if (("alphabetical").equals(sorter)) {
+		    return sortingStamp1.compareTo(sortingStamp2);
 		} else {
-		    return 1;
+		    int stamp1 = Integer.parseInt(sortingStamp1);
+		    int stamp2 = Integer.parseInt(sortingStamp2);
+		    if (stamp1 < stamp2) {
+			return -1;
+		    } else if (stamp1 == stamp2) {
+			return 0;
+		    } else {
+			return 1;
+		    }
 		}
 	    }
-	}
 	});
     }
 
@@ -226,11 +232,11 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      */
     private boolean treatmentAfterDetectionOfEvent(int clientNb, Path filePath, int infoNb) throws IOException {
 	// handling the overflow situation
-	if (clients.get(clientNb).getTimeInfosMap().get(infoNb).getKind() == OVERFLOW) {
+	if (clients.get(clientNb).getFilesFromClient().get(infoNb).getKind() == OVERFLOW) {
 	    LOG.debug("overflow detected");
 	}
 
-	if (clients.get(clientNb).getTimeInfosMap().get(infoNb).getKind() == ENTRY_CREATE) {
+	if (clients.get(clientNb).getFilesFromClient().get(infoNb).getKind() == ENTRY_CREATE) {
 	    // We now refer to the code part
 	    // treating of a new file appearing
 	    // in the directoy.
@@ -342,7 +348,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @return validity of the key
      */
     private boolean reset(int clientNb, int infoNb) {
-	if (clients.get(clientNb).getTimeInfosMap().remove(infoNb) != null) {
+	if (clients.get(clientNb).getFilesFromClient().remove(infoNb) != null) {
 	    LOG.debug("file references successfully removed from map");
 	    return true;
 	} else {
@@ -447,7 +453,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
     private String getSortingStamp(String filename, String separator) {
 	String[] nameComponents = filename.split(separator);
-	String[] nameStampComponents = nameComponents[nameComponents.length-1].split(".");
+	String[] nameStampComponents = nameComponents[nameComponents.length-1].split("\\.");
 
 	return nameStampComponents[0];
     }

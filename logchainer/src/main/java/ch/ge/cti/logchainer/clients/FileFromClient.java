@@ -6,18 +6,19 @@ import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ClientInstanceInfos {
+public class FileFromClient {
     private final String filename;
     private final int arrivingTime;
     private boolean readyToBeTreated = false;
     private WatchEvent.Kind<?> kind;
+    private boolean registered;
 
     /**
      * logger
      */
-    private static final Logger LOG = LoggerFactory.getLogger(ClientInstanceInfos.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(FileFromClient.class.getName());
 
-    protected ClientInstanceInfos(String filename) {
+    protected FileFromClient(String filename) {
 	LOG.debug("client infos instantiated");
 	this.filename = filename;
 	this.arrivingTime = LocalDateTime.now().getHour() * 3600 + LocalDateTime.now().getMinute() * 60
@@ -46,5 +47,13 @@ public class ClientInstanceInfos {
 
     public void setKind(WatchEvent.Kind<?> kind) {
 	this.kind = kind;
+    }
+
+    public boolean isRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
     }
 }

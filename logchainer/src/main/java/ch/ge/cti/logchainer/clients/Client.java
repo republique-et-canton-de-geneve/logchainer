@@ -26,8 +26,8 @@ public class Client {
     private ClientConf conf;
     private WatchService watcher;
     private WatchKey key;
-    private Map<Integer, ClientInstanceInfos> timeInfosMap;
-    private Map<String, ArrayList<ClientInstanceInfos>> fluxInfosMap;
+    private ArrayList<FileFromClient> filesFromClient;
+    private Map<String, ArrayList<FileFromClient>> fluxFileMap;
 
     /**
      * logger
@@ -38,8 +38,8 @@ public class Client {
 	LOG.debug("creating object Client");
 	this.conf = conf;
 	this.watcher = FileSystems.getDefault().newWatchService();
-	this.timeInfosMap = new HashMap<Integer, ClientInstanceInfos>();
-	this.fluxInfosMap = new HashMap<String, ArrayList<ClientInstanceInfos>>();
+	this.filesFromClient = new ArrayList<FileFromClient>();
+	this.fluxFileMap = new HashMap<String, ArrayList<FileFromClient>>();
     }
 
     public WatchKey getKey() {
@@ -54,10 +54,10 @@ public class Client {
     @SuppressWarnings("unchecked")
     public void registerEvent() {
 	for (WatchEvent<?> event : key.pollEvents()) {
-	    ClientInstanceInfos clientInfos = new ClientInstanceInfos(((WatchEvent<Path>) event).context().toString());
+	    FileFromClient clientInfos = new FileFromClient(((WatchEvent<Path>) event).context().toString());
 	    boolean toRegister = true;
 
-	    for (ClientInstanceInfos info : timeInfosMap.values()) {
+	    for (FileFromClient info : filesFromClient) {
 		if (info.getFilename().equals(clientInfos.getFilename())) {
 		    toRegister = false;
 		    LOG.debug("file already registered");
@@ -66,7 +66,8 @@ public class Client {
 
 	    if (toRegister) {
 		clientInfos.setKind(event.kind());
-		timeInfosMap.put(clientInfos.getArrivingTime(), clientInfos);
+		clientInfos.setRegistered(false);
+		filesFromClient.add(clientInfos);
 		LOG.debug("file registered");
 	    }
 	}
@@ -82,28 +83,28 @@ public class Client {
 	return conf;
     }
 
-    public Map<Integer, ClientInstanceInfos> getTimeInfosMap() {
-	return timeInfosMap;
+    public ArrayList<FileFromClient> getFilesFromClient() {
+	return filesFromClient;
     }
     
-    public Map<String, ArrayList<ClientInstanceInfos>> getFluxInfosMap() {
-        return fluxInfosMap;
+    public Map<String, ArrayList<FileFromClient>> getFluxFileMap() {
+        return fluxFileMap;
     }
     
     public void addFlux(String fluxname) {
-	fluxInfosMap.put(fluxname, new ArrayList<ClientInstanceInfos>());
+	fluxFileMap.put(fluxname, new ArrayList<FileFromClient>());
     }
     
     public boolean isNewFlux(String fluxname) {
-	return !fluxInfosMap.containsKey(fluxname);
+	return !fluxFileMap.containsKey(fluxname);
     }
     
     public boolean removeFlux(String fluxname) {
 	
-	return fluxInfosMap.remove(fluxname) != null; 
+	return fluxFileMap.remove(fluxname) != null; 
     }
     
-    public void addClientInfosToFlux(String fluxname, ClientInstanceInfos clientInfos) {
-	fluxInfosMap.get(fluxname).add(clientInfos);
+    public void addFileToFlux(String fluxname, FileFromClient clientInfos) {
+	fluxFileMap.get(fluxname).add(clientInfos);
     }
 }
