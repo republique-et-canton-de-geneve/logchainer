@@ -10,8 +10,8 @@ public class ClientInstanceInfos {
     private final String filename;
     private final int arrivingTime;
     private boolean readyToBeTreated = false;
-    private WatchEvent.Kind<?> kind; 
-    
+    private WatchEvent.Kind<?> kind;
+
     /**
      * logger
      */
@@ -41,10 +41,10 @@ public class ClientInstanceInfos {
     }
 
     public WatchEvent.Kind<?> getKind() {
-        return kind;
+	return kind;
     }
 
     public void setKind(WatchEvent.Kind<?> kind) {
-        this.kind = kind;
+	this.kind = kind;
     }
 }

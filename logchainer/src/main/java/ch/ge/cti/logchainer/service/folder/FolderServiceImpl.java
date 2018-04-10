@@ -38,8 +38,8 @@ public class FolderServiceImpl implements FolderService {
 	Files.copy(Paths.get(pathTmp + "/" + pathFile), Paths.get(pathOutput + "/" + pathFile),
 		StandardCopyOption.REPLACE_EXISTING);
 
-	LOG.debug(
-		"--------------------- file successfully moved to directory : {}/{}, replacing file if one with same name was already existing",
+	LOG.info(
+		"file successfully moved to directory : {}/{}, replacing file if one with same name was already existing",
 		pathOutput, pathFile);
 
 	return pathOutput + "/" + pathFile;

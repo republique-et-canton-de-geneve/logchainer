@@ -94,19 +94,19 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		    clients.get(clientNb).setKey(watchKey);
 		    clients.get(clientNb).registerEvent();
 		}
-		
+
 		isFileTreatmentReadyToBeLaunched(clientNb);
 	    }
 	}
     }
 
     private void isFileTreatmentReadyToBeLaunched(int clientNb) throws IOException {
-//	LOG.debug("finding if the treatment is to be launched");
-	
+	// LOG.debug("finding if the treatment is to be launched");
+
 	for (int infoNb : clients.get(clientNb).getTimeInfosMap().keySet()) {
 	    int actualTime = LocalDateTime.now().getHour() * 3600 + LocalDateTime.now().getMinute() * 60
 		    + LocalDateTime.now().getSecond();
-//	    LOG.info("comparing arriving time with current time");
+	    // LOG.info("comparing arriving time with current time");
 
 	    if (infoNb + 10 < actualTime) {
 		LOG.info("enough time waited");
@@ -128,7 +128,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	int clientNb = 0;
 	for (ClientConf client : clientConfList.getClientConf()) {
 	    clients.add(new Client(client));
-	    LOG.debug("--------------------- client {} added to the client list", client.getClientId());
+	    LOG.info("client {} added to the client list", client.getClientId());
 
 	    try {
 		Path inputDirPath = Paths.get(clients.get(clientNb).getConf().getInputDir());
@@ -322,7 +322,6 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      */
     @SuppressWarnings("unchecked")
     private Collection<File> getOldFiles(String fluxName, String workingDir, String separator) {
-	LOG.info("!!!!!!!!!!!!!!directory {}", new File(workingDir).toString());
 	// filtering the files to only keep the same as given flux one (should
 	// be unique)
 	return FileUtils.listFiles(new File(workingDir), new IOFileFilter() {

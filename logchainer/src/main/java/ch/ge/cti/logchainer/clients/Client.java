@@ -38,7 +38,7 @@ public class Client {
 	this.watcher = FileSystems.getDefault().newWatchService();
 	this.timeInfosMap = new HashMap<Integer, ClientInstanceInfos>();
     }
-    
+
     public WatchKey getKey() {
 	return key;
     }
@@ -53,21 +53,21 @@ public class Client {
 	for (WatchEvent<?> event : key.pollEvents()) {
 	    ClientInstanceInfos clientInfos = new ClientInstanceInfos(((WatchEvent<Path>) event).context().toString());
 	    boolean toRegister = true;
-	    
+
 	    for (ClientInstanceInfos info : timeInfosMap.values()) {
 		if (info.getFilename().equals(clientInfos.getFilename())) {
 		    toRegister = false;
 		    LOG.debug("file already registered");
 		}
 	    }
-	    
+
 	    if (toRegister) {
 		clientInfos.setKind(event.kind());
 		timeInfosMap.put(clientInfos.getArrivingTime(), clientInfos);
 		LOG.debug("file registered");
 	    }
 	}
-	
+
 	key.reset();
     }
 
@@ -78,8 +78,8 @@ public class Client {
     public ClientConf getConf() {
 	return conf;
     }
-    
+
     public Map<Integer, ClientInstanceInfos> getTimeInfosMap() {
-        return timeInfosMap;
+	return timeInfosMap;
     }
 }
