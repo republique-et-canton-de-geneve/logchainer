@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ public class Client {
     private WatchService watcher;
     private WatchKey key;
     private Map<Integer, ClientInstanceInfos> timeInfosMap;
+    private Map<String, ArrayList<ClientInstanceInfos>> fluxInfosMap;
 
     /**
      * logger
@@ -37,6 +39,7 @@ public class Client {
 	this.conf = conf;
 	this.watcher = FileSystems.getDefault().newWatchService();
 	this.timeInfosMap = new HashMap<Integer, ClientInstanceInfos>();
+	this.fluxInfosMap = new HashMap<String, ArrayList<ClientInstanceInfos>>();
     }
 
     public WatchKey getKey() {
@@ -81,5 +84,26 @@ public class Client {
 
     public Map<Integer, ClientInstanceInfos> getTimeInfosMap() {
 	return timeInfosMap;
+    }
+    
+    public Map<String, ArrayList<ClientInstanceInfos>> getFluxInfosMap() {
+        return fluxInfosMap;
+    }
+    
+    public void addFlux(String fluxname) {
+	fluxInfosMap.put(fluxname, new ArrayList<ClientInstanceInfos>());
+    }
+    
+    public boolean isNewFlux(String fluxname) {
+	return !fluxInfosMap.containsKey(fluxname);
+    }
+    
+    public boolean removeFlux(String fluxname) {
+	
+	return fluxInfosMap.remove(fluxname) != null; 
+    }
+    
+    public void addClientInfosToFlux(String fluxname, ClientInstanceInfos clientInfos) {
+	fluxInfosMap.get(fluxname).add(clientInfos);
     }
 }
