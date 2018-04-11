@@ -1,4 +1,4 @@
-package ch.ge.cti.logchainer.clients;
+package ch.ge.cti.logchainer.beans;
 
 import java.nio.file.WatchEvent;
 import java.time.LocalDateTime;
@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FileFromClient {
+public class FileWatched {
     private final String filename;
     private final int arrivingTime;
     private boolean readyToBeTreated = false;
@@ -16,9 +16,9 @@ public class FileFromClient {
     /**
      * logger
      */
-    private static final Logger LOG = LoggerFactory.getLogger(FileFromClient.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(FileWatched.class.getName());
 
-    protected FileFromClient(String filename) {
+    public FileWatched(String filename) {
 	LOG.debug("client infos instantiated");
 	this.filename = filename;
 	this.arrivingTime = LocalDateTime.now().getHour() * 3600 + LocalDateTime.now().getMinute() * 60
