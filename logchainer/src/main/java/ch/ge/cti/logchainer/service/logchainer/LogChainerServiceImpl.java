@@ -55,5 +55,7 @@ public class LogChainerServiceImpl implements LogChainerService {
 	// delete the temporary file so that it doesn't appear in the directory
 	if (tempFile.delete())
 	    LOG.debug("temp file deleted");
+	
+	LOG.info("log chaining completed for file {}", filename);
     }
 }

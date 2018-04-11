@@ -24,7 +24,7 @@ public class FolderServiceImpl implements FolderService {
 	// the target destination can't contain a same name file
 	Files.move(Paths.get(pathInput + "/" + pathFile), Paths.get(pathTmp + "/" + pathFile), new CopyOption[] {});
 
-	LOG.debug("file successfully moved to directory : {}/{}", pathTmp, pathFile);
+	LOG.info("file successfully moved to directory : {}/{}", pathTmp, pathFile);
 
 	return pathTmp + "/" + pathFile;
     }

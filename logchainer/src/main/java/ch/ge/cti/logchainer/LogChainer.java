@@ -25,7 +25,7 @@ import ch.ge.cti.logchainer.service.logwatcher.LogWatcherService;
 public class LogChainer implements CommandLineRunner {
     @Value("${xmlDirectoriesConf}")
     private String xmlDirectoriesConf;
-    
+
     @Autowired
     private LogWatcherService watcher;
 
@@ -40,20 +40,25 @@ public class LogChainer implements CommandLineRunner {
 	start(args);
     }
 
+    /**
+     * Launch the process.
+     * 
+     * @param args
+     */
     private static void start(String[] args) {
 	LOG.debug("enter start");
 
 	SpringApplication app = new SpringApplication(LogChainer.class);
 	// disable the spring banner
 	app.setBannerMode(Banner.Mode.OFF);
-	
+
 	app.run(args);
     }
 
     @Override
     public void run(String... arg0) throws Exception {
 	LOG.debug("run started");
-	
+
 	LOG.debug("LogWatcherServiceImpl initialization started");
 	LogChainerConf clientConfList = new LogChainerConf();
 	// Accessing the client list provided by the user
@@ -75,7 +80,7 @@ public class LogChainer implements CommandLineRunner {
 	    watcher.processEvents();
 	}
     }
-    
+
     /**
      * To access the directories' configurations.
      * 

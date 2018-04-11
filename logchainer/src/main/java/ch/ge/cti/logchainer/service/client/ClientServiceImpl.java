@@ -14,10 +14,10 @@ import ch.ge.cti.logchainer.beans.FileWatched;
 import ch.ge.cti.logchainer.service.flux.FluxService;
 
 @Service
-public class ClientServiceImpl implements ClientService{
+public class ClientServiceImpl implements ClientService {
     @Autowired
     private FluxService fluxActor;
-    
+
     /**
      * logger
      */
@@ -26,35 +26,42 @@ public class ClientServiceImpl implements ClientService{
     @Override
     @SuppressWarnings("unchecked")
     public void registerEvent(Client client) {
+	// iterating on all events in the key
 	for (WatchEvent<?> event : client.getKey().pollEvents()) {
-	    FileWatched clientInfos = new FileWatched(((WatchEvent<Path>) event).context().toString());
+	    FileWatched fileToRegister = new FileWatched(((WatchEvent<Path>) event).context().toString());
 	    boolean toRegister = true;
 
-	    for (FileWatched info : client.getFilesWatched()) {
-		if (info.getFilename().equals(clientInfos.getFilename())) {
+	    // checking if the file has already been registered
+	    for (FileWatched file : client.getFilesWatched()) {
+		if (file.getFilename().equals(fileToRegister.getFilename())) {
 		    toRegister = false;
 		    LOG.debug("file already registered");
 		}
 	    }
 
+	    // registering the file and instantiating it
 	    if (toRegister) {
-		clientInfos.setKind(event.kind());
-		clientInfos.setRegistered(false);
-		client.getFilesWatched().add(clientInfos);
+		fileToRegister.setKind(event.kind());
+		fileToRegister.setRegistered(false);
+		client.getFilesWatched().add(fileToRegister);
 		LOG.debug("file registered");
 	    }
 	}
-
-	client.getKey().reset();
+	// reseting the to be able to use it again
+	if (!client.getKey().reset()) {
+	    LOG.error("client directory inaccessible or key corrupted");
+	    // TODO
+	}
     }
-    
+
     @Override
     public void deleteAllTreatedFluxFromMap(ArrayList<String> allDoneFlux, Client client) {
+	// removing the flux one by one
 	for (String fluxname : allDoneFlux) {
-	    if(fluxActor.removeFlux(fluxname, client)) {
+	    if (fluxActor.removeFlux(fluxname, client)) {
 		LOG.debug("flux {} has been removed from the map", fluxname);
 	    } else {
-		//TODO
+		// TODO
 		LOG.error("could not delete flux from map");
 	    }
 	}
