@@ -86,28 +86,26 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	boolean loop = true;
 	while (loop) {
 	    // Iterating over all client for each iteration of the infinity loop
-	    for (int clientNb = 0; clientNb < clients.size(); clientNb++) {
-		Client currentClient = clients.get(clientNb);
-		WatchKey watchKey = currentClient.getWatcher().poll();
+	    for (Client client : clients) {
+		WatchKey watchKey = client.getWatcher().poll();
 
 		// Launches the treatment only if a file was detected
 		// No use of the take method because we don't want to wait until
 		// an event is detected under one client
 		// to move to the next one
 		if (watchKey != null) {
-		    LOG.info("--------------------- event detected on client {}",
-			    currentClient.getConf().getClientId());
+		    LOG.info("--------------------- event detected on client {}", client.getConf().getClientId());
 
-		    currentClient.setKey(watchKey);
-		    currentClient.registerEvent();
+		    client.setKey(watchKey);
+		    client.registerEvent();
 		}
 
-		isFileTreatmentReadyToBeLaunched(currentClient, clientNb);
+		isFileTreatmentReadyToBeLaunched(client);
 	    }
 	}
     }
 
-    private void isFileTreatmentReadyToBeLaunched(Client client, int clientNb) throws IOException {
+    private void isFileTreatmentReadyToBeLaunched(Client client) throws IOException {
 	// LOG.debug("finding if the treatment is to be launched");
 	String separator;
 	if (!client.getConf().getFilePattern().getSeparator().isEmpty()) {
@@ -146,6 +144,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    }
 	}
 
+	ArrayList<String> allDoneFlux = new ArrayList<String>();
 	for (Map.Entry<String, ArrayList<FileFromClient>> flux : client.getFluxFileMap().entrySet()) {
 	    boolean fluxReadyToBeTreated = true;
 	    for (FileFromClient file : flux.getValue()) {
@@ -155,23 +154,26 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	    if (fluxReadyToBeTreated) {
 		LOG.debug("flux {} starting to be treated", flux.getKey());
-		sortFiles(clientNb, separator, sorter, flux.getValue());
+		sortFiles(separator, sorter, flux.getValue());
 		LOG.debug("flux sorted");
 
 		boolean finished = true;
 		for (FileFromClient file : flux.getValue()) {
 		    String filename = file.getFilename();
 		    Path filePath = Paths.get(filename);
-		    if (!treatmentAfterDetectionOfEvent(clientNb, filePath, file))
+		    if (!treatmentAfterDetectionOfEvent(client, filePath, file))
 			finished = false;
 		}
-		if (finished)
-		    client.removeFlux(flux.getKey());
+		if (finished) {
+		    allDoneFlux.add(flux.getKey());
+		    LOG.info("flux {} entirely treated", flux.getKey());
+		}
 	    }
 	}
+	client.deleteAllTreatedFluxFromMap(allDoneFlux);
     }
 
-    private void sortFiles(int clientNb, String separator, String sorter, ArrayList<FileFromClient> files) {
+    private void sortFiles(String separator, String sorter, ArrayList<FileFromClient> files) {
 	LOG.debug("sorting the file list");
 	if (("alphabetical").equals(sorter)) {
 	    LOG.debug("sorting by alphabetical order");
@@ -236,7 +238,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @throws IOException
      * @throws LogChainerException
      */
-    private boolean treatmentAfterDetectionOfEvent(int clientNb, Path filePath, FileFromClient file) throws IOException {
+    private boolean treatmentAfterDetectionOfEvent(Client client, Path filePath, FileFromClient file)
+	    throws IOException {
 	LOG.debug("start of the file treatment");
 	// handling the overflow situation
 	if (file.getKind() == OVERFLOW) {
@@ -247,10 +250,10 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    // We now refer to the code part
 	    // treating of a new file appearing
 	    // in the directoy.
-	    newFileTreatment(clientNb, filePath);
+	    newFileTreatment(client, filePath);
 	}
 
-	if (reset(clientNb, file)) {
+	if (reset(client, file)) {
 	    LOG.info("file {} treated", filePath.getFileName());
 	    return true;
 	} else {
@@ -274,26 +277,25 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @throws IOException
      * @throws LogChainerException
      */
-    private void newFileTreatment(int clientNb, Path filePath) throws IOException {
+    private void newFileTreatment(Client client, Path filePath) throws IOException {
 	LOG.debug("New file detected : {}",
-		(new File(clients.get(clientNb).getConf().getInputDir() + "/" + filePath.toString()))
-			.getAbsolutePath());
+		(new File(client.getConf().getInputDir() + "/" + filePath.toString())).getAbsolutePath());
 
 	// define the separator for the file name components, is '_' by
 	// default
 	String separator;
-	if (!clients.get(clientNb).getConf().getFilePattern().getSeparator().isEmpty()) {
-	    separator = clients.get(clientNb).getConf().getFilePattern().getSeparator();
+	if (!client.getConf().getFilePattern().getSeparator().isEmpty()) {
+	    separator = client.getConf().getFilePattern().getSeparator();
 	} else {
 	    separator = "_";
 	}
 	// accessing same flux file in the tmp directory
-	Collection<File> oldFiles = getOldFiles(getFluxName(filePath, separator),
-		clients.get(clientNb).getConf().getWorkingDir(), separator);
+	Collection<File> oldFiles = getOldFiles(getFluxName(filePath, separator), client.getConf().getWorkingDir(),
+		separator);
 
 	// moving the file to the tmp directory
-	String pFileInTmp = mover.moveFileInputToTmp(filePath.toString(), clients.get(clientNb).getConf().getInputDir(),
-		clients.get(clientNb).getConf().getWorkingDir());
+	String pFileInTmp = mover.moveFileInputToTmp(filePath.toString(), client.getConf().getInputDir(),
+		client.getConf().getWorkingDir());
 
 	// we instantiate a local array to keep and manipulate the
 	// hashCode of the previous same flux file
@@ -302,8 +304,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	// define the encoding way for encryption into the file, is UTF-8 by
 	// default
 	String encodingType;
-	if (!clients.get(clientNb).getConf().getFileEncoding().isEmpty()) {
-	    encodingType = clients.get(clientNb).getConf().getFileEncoding();
+	if (!client.getConf().getFileEncoding().isEmpty()) {
+	    encodingType = client.getConf().getFileEncoding();
 	} else {
 	    encodingType = "UTF-8";
 	}
@@ -314,10 +316,10 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	// releasing the file treated into the output directory to be taken in
 	// charge by the user
-	mover.moveFileTmpToOutput(filePath.toString(), clients.get(clientNb).getConf().getWorkingDir(),
-		clients.get(clientNb).getConf().getOutputDir());
+	mover.moveFileTmpToOutput(filePath.toString(), client.getConf().getWorkingDir(),
+		client.getConf().getOutputDir());
 
-	LOG.info("end of the treatment of the file put in the input directory");
+	LOG.info("end of the treatment of the file {} put in the input directory", filePath.toString());
     }
 
     /**
@@ -353,14 +355,14 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @param clientNb
      * @return validity of the key
      */
-    private boolean reset(int clientNb, FileFromClient file) {
-	if (clients.get(clientNb).getFilesFromClient().remove(file)) {
+    private boolean reset(Client client, FileFromClient file) {
+	if (client.getFilesFromClient().remove(file)) {
 	    LOG.debug("file references successfully removed from map");
 	    return true;
 	} else {
 	    // TODO
 	    // ??????? error a remonter ?????
-	    LOG.debug("could not delete the file from map");
+	    LOG.debug("could not delete the file from list");
 	    ;
 	    return false;
 	}

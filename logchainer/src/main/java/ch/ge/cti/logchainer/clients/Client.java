@@ -76,6 +76,17 @@ public class Client {
 
 	key.reset();
     }
+    
+    public void deleteAllTreatedFluxFromMap(ArrayList<String> allDoneFlux) {
+	for (String fluxname : allDoneFlux) {
+	    if(removeFlux(fluxname)) {
+		LOG.debug("flux {} has been removed from the map", fluxname);
+	    } else {
+		//TODO
+		LOG.error("could not delete flux from map");
+	    }
+	}
+    }
 
     public WatchService getWatcher() {
 	return watcher;
@@ -102,7 +113,6 @@ public class Client {
     }
     
     public boolean removeFlux(String fluxname) {
-	
 	return fluxFileMap.remove(fluxname) != null; 
     }
     
