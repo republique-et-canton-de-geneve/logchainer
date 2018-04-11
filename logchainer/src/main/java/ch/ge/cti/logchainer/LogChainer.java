@@ -39,6 +39,10 @@ public class LogChainer implements CommandLineRunner {
     @Override
     public void run(String... arg0) throws Exception {
 	LOG.debug("run started");
+	
+	// 1- Chargement des conf avec confService 
+	// 2- Boucle infir et logWatcher
+	
 	watcher.processEvents();
     }
 }

@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -35,6 +36,7 @@ import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.clients.Client;
 import ch.ge.cti.logchainer.clients.FileFromClient;
+import ch.ge.cti.logchainer.constante.LogChainerConstante;
 import ch.ge.cti.logchainer.exception.LogChainerException;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.generate.LogChainerConf;
@@ -81,10 +83,12 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	// infinity loop to actualize endlessly the search for new files
 	LOG.debug("start of the infinity loop");
-	for (;;) {
+	boolean loop = true;
+	while (loop) {
 	    // Iterating over all client for each iteration of the infinity loop
-	    for (int clientNb = 0; clientNb < clientConfList.getClientConf().size(); clientNb++) {
-		WatchKey watchKey = clients.get(clientNb).getWatcher().poll();
+	    for (int clientNb = 0; clientNb < clients.size(); clientNb++) {
+		Client currentClient = clients.get(clientNb);
+		WatchKey watchKey = currentClient.getWatcher().poll();
 
 		// Launches the treatment only if a file was detected
 		// No use of the take method because we don't want to wait until
@@ -92,34 +96,34 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		// to move to the next one
 		if (watchKey != null) {
 		    LOG.info("--------------------- event detected on client {}",
-			    clients.get(clientNb).getConf().getClientId());
+			    currentClient.getConf().getClientId());
 
-		    clients.get(clientNb).setKey(watchKey);
-		    clients.get(clientNb).registerEvent();
+		    currentClient.setKey(watchKey);
+		    currentClient.registerEvent();
 		}
 
-		isFileTreatmentReadyToBeLaunched(clientNb);
+		isFileTreatmentReadyToBeLaunched(currentClient, clientNb);
 	    }
 	}
     }
 
-    private void isFileTreatmentReadyToBeLaunched(int clientNb) throws IOException {
+    private void isFileTreatmentReadyToBeLaunched(Client client, int clientNb) throws IOException {
 	// LOG.debug("finding if the treatment is to be launched");
 	String separator;
-	if (!clients.get(clientNb).getConf().getFilePattern().getSeparator().isEmpty()) {
-	    separator = clients.get(clientNb).getConf().getFilePattern().getSeparator();
+	if (!client.getConf().getFilePattern().getSeparator().isEmpty()) {
+	    separator = client.getConf().getFilePattern().getSeparator();
 	} else {
-	    separator = "_";
+	    separator = LogChainerConstante.SEPARATOR_DEFAULT;
 	}
 
 	String sorter;
-	if (!clients.get(clientNb).getConf().getFilePattern().getSortingType().isEmpty()) {
-	    sorter = clients.get(clientNb).getConf().getFilePattern().getSortingType();
+	if (!client.getConf().getFilePattern().getSortingType().isEmpty()) {
+	    sorter = client.getConf().getFilePattern().getSortingType();
 	} else {
-	    sorter = "numerical";
+	    sorter = LogChainerConstante.SORT_DEFAULT;
 	}
 
-	for (FileFromClient file : clients.get(clientNb).getFilesFromClient()) {
+	for (FileFromClient file : client.getFilesFromClient()) {
 	    int actualTime = LocalDateTime.now().getHour() * 3600 + LocalDateTime.now().getMinute() * 60
 		    + LocalDateTime.now().getSecond();
 	    // LOG.info("comparing arriving time with current time");
@@ -128,11 +132,11 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		Path filename = Paths.get(file.getFilename());
 		String fluxname = getFluxName(filename, separator);
 
-		if (clients.get(clientNb).isNewFlux(fluxname)) {
-		    clients.get(clientNb).addFlux(fluxname);
+		if (client.isNewFlux(fluxname)) {
+		    client.addFlux(fluxname);
 		}
 
-		clients.get(clientNb).addFileToFlux(fluxname, file);
+		client.addFileToFlux(fluxname, file);
 		file.setRegistered(true);
 	    }
 
@@ -142,29 +146,27 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    }
 	}
 
-	for (String fluxname : clients.get(clientNb).getFluxFileMap().keySet()) {
+	for (Map.Entry<String, ArrayList<FileFromClient>> flux : client.getFluxFileMap().entrySet()) {
 	    boolean fluxReadyToBeTreated = true;
-	    for (FileFromClient file : clients.get(clientNb).getFluxFileMap().get(fluxname)) {
+	    for (FileFromClient file : flux.getValue()) {
 		if (!file.isReadyToBeTreated())
 		    fluxReadyToBeTreated = false;
 	    }
 
 	    if (fluxReadyToBeTreated) {
 		LOG.debug("flux starting to be treated");
-		sortFiles(clientNb, separator, sorter, fluxname);
-		
+		sortFiles(clientNb, separator, sorter, flux.getKey());
+
 		boolean finished = true;
-		for (FileFromClient file : clients.get(clientNb).getFluxFileMap().get(fluxname)) {
+		for (FileFromClient file : flux.getValue()) {
 		    String filename = file.getFilename();
 		    Path filePath = Paths.get(filename);
 		    int arrivingTime = file.getArrivingTime();
 		    if (!treatmentAfterDetectionOfEvent(clientNb, filePath, arrivingTime))
 			finished = false;
 		}
-		if (finished) {
-		    if (clients.get(clientNb).removeFlux(fluxname))
-			LOG.debug("flux treated and removed from list in client");
-		}
+		if (finished)
+		    client.removeFlux(flux.getKey());
 	    }
 	}
     }
@@ -194,7 +196,6 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	});
     }
 
-
     /**
      * Create a list for all clients to be registered as Client objects in.
      * 
@@ -204,7 +205,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     private void initializeFileWatcherByClient(LogChainerConf clientConfList) throws IOException {
 	// keeping track of the client number
 	int clientNb = 0;
-	for (ClientConf client : clientConfList.getClientConf()) {
+	for (ClientConf client : clientConfList.getListeClientConf()) {
 	    clients.add(new Client(client));
 	    LOG.info("client {} added to the client list", client.getClientId());
 
@@ -250,7 +251,6 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    return false;
 	}
 
-
 	//
 	// // Reseting the key to be able to use it again
 	// // If the key is not valid or the directory is inacessible
@@ -271,7 +271,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     private void newFileTreatment(int clientNb, Path filePath) throws IOException {
 	LOG.debug("New file detected : {}",
 		(new File(clients.get(clientNb).getConf().getInputDir() + "/" + filePath.toString()))
-		.getAbsolutePath());
+			.getAbsolutePath());
 
 	// define the separator for the file name components, is '_' by
 	// default
@@ -453,7 +453,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
     private String getSortingStamp(String filename, String separator) {
 	String[] nameComponents = filename.split(separator);
-	String[] nameStampComponents = nameComponents[nameComponents.length-1].split("\\.");
+	String[] nameStampComponents = nameComponents[nameComponents.length - 1].split("\\.");
 
 	return nameStampComponents[0];
     }

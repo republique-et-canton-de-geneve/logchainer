@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <logChainerConf xmlns="http://service.logchainer.ge.ch/">
-	<clientConf>
+	<listeClientConf>
 		<ClientId>ClientA</ClientId>
 		<InputDir>/home/jservdev/tmp/FANICHETL/emplacementClients/ClientA/input</InputDir>
 		<WorkingDir>/home/jservdev/tmp/FANICHETL/emplacementClients/ClientA/workingDir</WorkingDir>
 		<OutputDir>/home/jservdev/tmp/FANICHETL/emplacementClients/ClientA/output</OutputDir>
-	</clientConf>
+	</listeClientConf>
 
 	<clientConf>
 		<ClientId>ClientB</ClientId>

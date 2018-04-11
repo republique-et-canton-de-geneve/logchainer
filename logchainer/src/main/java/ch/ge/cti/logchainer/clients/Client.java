@@ -26,7 +26,9 @@ public class Client {
     private ClientConf conf;
     private WatchService watcher;
     private WatchKey key;
+    // Variable des fichioers wahtched
     private ArrayList<FileFromClient> filesFromClient;
+    //private ArrayList<FileFromClient> filesWatched;
     private Map<String, ArrayList<FileFromClient>> fluxFileMap;
 
     /**
@@ -42,9 +44,9 @@ public class Client {
 	this.fluxFileMap = new HashMap<String, ArrayList<FileFromClient>>();
     }
 
-    public WatchKey getKey() {
-	return key;
-    }
+//    public WatchKey getKey() {
+//	return key;
+//    }
 
     public void setKey(WatchKey key) {
 	LOG.debug("setting the key");
