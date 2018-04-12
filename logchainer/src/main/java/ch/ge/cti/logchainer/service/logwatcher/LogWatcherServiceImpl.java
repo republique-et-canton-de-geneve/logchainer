@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchKey;
@@ -22,8 +23,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 
-import javax.xml.bind.JAXBException;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.slf4j.Logger;
@@ -34,7 +33,7 @@ import org.springframework.stereotype.Service;
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
 import ch.ge.cti.logchainer.constante.LogChainerConstante;
-import ch.ge.cti.logchainer.exception.LogChainerException;
+import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.generate.LogChainerConf;
 import ch.ge.cti.logchainer.service.client.ClientService;
@@ -67,7 +66,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     private static final Logger LOG = LoggerFactory.getLogger(LogWatcherServiceImpl.class.getName());
 
     @Override
-    public void initializeFileWatcherByClient(LogChainerConf clientConfList) throws IOException {
+    public void initializeFileWatcherByClient(LogChainerConf clientConfList) {
 	// keeping track of the client number
 	int clientNb = 0;
 	for (ClientConf client : clientConfList.getListeClientConf()) {
@@ -83,15 +82,14 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		clients.get(clientNb).setKey(inputDirPath.register(watcher, ENTRY_CREATE));
 		LOG.debug("key created as an ENTRY_CREATE");
 	    } catch (IOException e) {
-		LOG.error("couldn't complete the initialization : {}", e.toString(), e);
-		throw e;
+		throw new BusinessException("couldn't complete the initialization", e);
 	    }
 	    clientNb++;
 	}
     }
 
     @Override
-    public void processEvents() throws IOException, JAXBException {
+    public void processEvents() {
 	// Iterating over all client for each iteration of the infinity loop
 	for (Client client : clients) {
 	    // registering events (wether anything happened or not)
@@ -117,9 +115,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * treated.
      * 
      * @param client
-     * @throws IOException
      */
-    private void waitingForFileToBeReadyToBeLaunched(Client client) throws IOException {
+    private void waitingForFileToBeReadyToBeLaunched(Client client) {
 	// looking at each detected files per client
 	for (FileWatched file : client.getFilesWatched()) {
 	    // present time
@@ -184,10 +181,9 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @param client
      * @param allDoneFlux
      * @param flux
-     * @throws IOException
      */
     private void fluxTreatment(Client client, ArrayList<String> allDoneFlux,
-	    Map.Entry<String, ArrayList<FileWatched>> flux) throws IOException {
+	    Map.Entry<String, ArrayList<FileWatched>> flux) {
 	LOG.debug("flux {} starting to be treated", flux.getKey());
 	sortFiles(component.getSeparator(client), component.getSorter(client), flux.getValue());
 	LOG.debug("flux sorted");
@@ -197,9 +193,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	// iterating on all the files of one flux
 	for (FileWatched file : flux.getValue()) {
 	    String filename = file.getFilename();
-	    Path filePath = Paths.get(filename);
 	    // checking if the file's treatment is complete
-	    if (!treatmentAfterDetectionOfEvent(client, filePath, file))
+	    if (!treatmentAfterDetectionOfEvent(client, filename, file))
 		finished = false;
 	}
 	// registering the flux as completed (thus ready for deletion)
@@ -217,9 +212,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      */
     private void registerFile(Client client, FileWatched file) {
 	LOG.debug("registering file {}", file.getFilename());
-	Path filename = Paths.get(file.getFilename());
 	// getting the name of the file's flux
-	String fluxname = fluxActor.getFluxName(filename, component.getSeparator(client));
+	String fluxname = fluxActor.getFluxName(file.getFilename(), component.getSeparator(client));
 
 	// registering the flux if it doesn't already exist
 	if (fluxActor.isNewFlux(fluxname, client)) {
@@ -279,10 +273,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * Control in which way the file will be handled.
      * 
      * @param clientNb
-     * @throws IOException
-     * @throws LogChainerException
      */
-    private boolean treatmentAfterDetectionOfEvent(Client client, Path filePath, FileWatched file) throws IOException {
+    private boolean treatmentAfterDetectionOfEvent(Client client, String filename, FileWatched file) {
 	LOG.debug("start of the file treatment");
 	// handling the overflow situation
 	if (file.getKind() == OVERFLOW) {
@@ -292,12 +284,12 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	// handling a file creation case
 	if (file.getKind() == ENTRY_CREATE) {
 	    // launching the file treatment
-	    newFileTreatment(client, filePath);
+	    newFileTreatment(client, filename);
 	}
 
 	// handling the file situation once it's treatment is done
 	if (reset(client, file)) {
-	    LOG.info("file {} treated", filePath.getFileName());
+	    LOG.info("file {} treated", filename);
 	    return true;
 	} else {
 	    return false;
@@ -308,45 +300,46 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * Treatment of the file as an entry create.
      * 
      * @param clientNb
-     * @param filePath
-     * @throws IOException
-     * @throws LogChainerException
+     * @param filename
      */
-    private void newFileTreatment(Client client, Path filePath) throws IOException {
+    private void newFileTreatment(Client client, String filename) {
 	LOG.debug("New file detected : {}",
-		(new File(client.getConf().getInputDir() + "/" + filePath.toString())).getAbsolutePath());
+		(new File(client.getConf().getInputDir() + "/" + filename)).getAbsolutePath());
 
 	// accessing same flux file in the tmp directory
-	Collection<File> previousFiles = getPreviousFiles(fluxActor.getFluxName(filePath, component.getSeparator(client)),
+	Collection<File> previousFiles = getPreviousFiles(fluxActor.getFluxName(filename, component.getSeparator(client)),
 		client.getConf().getWorkingDir(), component.getSeparator(client));
 
 	// moving the file to the tmp directory
-	String pFileInTmp = mover.moveFileInputToTmp(filePath.toString(), client.getConf().getInputDir(),
+	String pFileInTmp = mover.moveFileInputToTmp(filename, client.getConf().getInputDir(),
 		client.getConf().getWorkingDir());
 
 	// chaining the log of the previous file to the current one (with infos:
 	// previous file name and date of chaining)
-	chainer.chainingLogFile(pFileInTmp, 0, messageToInsert(getPreviousFileHash(previousFiles), previousFiles)
-		.getBytes(component.getEncodingType(client)));
+	try {
+	    chainer.chainingLogFile(pFileInTmp, 0, messageToInsert(getPreviousFileHash(previousFiles), previousFiles)
+		    .getBytes(component.getEncodingType(client)));
+	} catch (UnsupportedEncodingException e) {
+	    throw new BusinessException("Given encoding type is incorrect : unsupported", e);
+	}
 
 	// releasing the file treated into the output directory to be taken in
 	// charge by the user
-	mover.moveFileTmpToOutput(filePath.toString(), client.getConf().getWorkingDir(),
+	mover.moveFileTmpToOutput(filename, client.getConf().getWorkingDir(),
 		client.getConf().getOutputDir());
 
-	if (!filePath.toString().isEmpty())
-	    LOG.info("end of the treatment of the file {} put in the input directory", filePath.toString());
+	if (!filename.isEmpty())
+	    LOG.info("end of the treatment of the file {} put in the input directory", filename);
     }
 
     /**
      * Create the text message to insert in the new file.
      * 
-     * @param filePath
      * @param hashCodeOfLog
-     * @param oldFiles
+     * @param previousFiles
      * @return the message
      */
-    private String messageToInsert(byte[] hashCodeOfLog, Collection<File> oldFiles) {
+    private String messageToInsert(byte[] hashCodeOfLog, Collection<File> previousFiles) {
 	LOG.debug("computing the message to insert");
 	// Chaining date
 	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -354,8 +347,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	// Name of the previous file
 	String previousFile = "<Previous file: ";
-	if (oldFiles.stream().findFirst().isPresent()) {
-	    previousFile += oldFiles.stream().findFirst().get().getName() + "> \n";
+	if (previousFiles.stream().findFirst().isPresent()) {
+	    previousFile += previousFiles.stream().findFirst().get().getName() + "> \n";
 	} else {
 	    previousFile += "none> \n";
 	}
@@ -379,8 +372,6 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    LOG.debug("file references successfully removed from map");
 	    return true;
 	} else {
-	    // TODO
-	    // ??????? error a remonter ?????
 	    LOG.debug("could not delete the file from list");
 	    return false;
 	}
@@ -389,23 +380,25 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     /**
      * Get the hash of the tmp directory's already existing file.
      * 
-     * @param oldFiles
-     * @return old file's hashCode
-     * @throws IOException
-     * @throws FileNotFoundException
+     * @param previousFiles
+     * @return previous file's hashCode
      */
-    private byte[] getPreviousFileHash(Collection<File> oldFiles) throws IOException {
+    private byte[] getPreviousFileHash(Collection<File> previousFiles) {
 	byte[] hashCodeOfLog;
 	// hashing the provided file, with null hash if there's no file (=no
 	// previous same flux file)
-	if (oldFiles.stream().findFirst().isPresent()) {
-	    File oldFile = oldFiles.stream().findFirst().get();
-	    try (InputStream is = new FileInputStream((oldFile))) {
+	if (previousFiles.stream().findFirst().isPresent()) {
+	    File previousFile = previousFiles.stream().findFirst().get();
+	    try (InputStream is = new FileInputStream((previousFile))) {
 		LOG.debug("inputStream of the previous file opened");
 		hashCodeOfLog = hasher.getLogHashCode(is);
+	    } catch (FileNotFoundException e) {
+		throw new BusinessException("File {} couldn't be found", previousFile.getName(), e);
+	    } catch (IOException e) {
+		throw new BusinessException(e);
 	    }
-	    LOG.debug("previous file name is : {}", oldFile.getName());
-	    if (oldFile.delete())
+	    LOG.debug("previous file name is : {}", previousFile.getName());
+	    if (previousFile.delete())
 		LOG.debug("previous file deleted");
 	} else {
 	    hashCodeOfLog = hasher.getNullHash();
@@ -434,12 +427,12 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	    @Override
 	    public boolean accept(File file) {
-		if (fluxName.equals(fluxActor.getFluxName(file.toPath().getFileName(), separator))) {
+		if (fluxName.equals(fluxActor.getFluxName(file.getName(), separator))) {
 		    LOG.debug("same flux name noticed for {}", file.getName());
 		} else {
 		    LOG.debug("no same flux name detected");
 		}
-		return (fluxName.equals(fluxActor.getFluxName(file.toPath().getFileName(), separator)) ? true : false);
+		return (fluxName.equals(fluxActor.getFluxName(file.getName(), separator)) ? true : false);
 	    }
 	}, null);
     }

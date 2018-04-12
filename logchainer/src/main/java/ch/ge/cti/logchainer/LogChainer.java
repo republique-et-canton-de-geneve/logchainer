@@ -17,6 +17,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import ch.ge.cti.logchainer.exception.BusinessException;
+import ch.ge.cti.logchainer.exception.LogChainerExceptionHandlerService;
 import ch.ge.cti.logchainer.generate.LogChainerConf;
 import ch.ge.cti.logchainer.generate.ObjectFactory;
 import ch.ge.cti.logchainer.service.logwatcher.LogWatcherService;
@@ -28,6 +30,8 @@ public class LogChainer implements CommandLineRunner {
 
     @Autowired
     private LogWatcherService watcher;
+    @Autowired
+    private LogChainerExceptionHandlerService exceptionHandler;
 
     /**
      * logger
@@ -56,7 +60,7 @@ public class LogChainer implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... arg0) throws Exception {
+    public void run(String... arg0) {
 	LOG.debug("run started");
 
 	LOG.debug("LogWatcherServiceImpl initialization started");
@@ -64,10 +68,9 @@ public class LogChainer implements CommandLineRunner {
 	// Accessing the client list provided by the user
 	try {
 	    clientConfList = loadConfiguration();
-	    LOG.info("--------------------- client list accessed");
+	    LOG.info("client list accessed");
 	} catch (JAXBException e) {
-	    LOG.error("Exception while accessing configurations ", e);
-	    throw e;
+	    throw new BusinessException("Error while loading the configurations from the xml file", e);
 	}
 
 	// Registering all clients as Client objects in a list
@@ -77,7 +80,11 @@ public class LogChainer implements CommandLineRunner {
 	// infinity loop to actualize endlessly the search for new files
 	LOG.debug("start of the infinity loop");
 	while (true) {
-	    watcher.processEvents();
+	     try {
+		 watcher.processEvents();
+	     } catch (RuntimeException e) {
+		 exceptionHandler.handleException(e);
+	     }
 	}
     }
 
@@ -89,17 +96,20 @@ public class LogChainer implements CommandLineRunner {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private LogChainerConf loadConfiguration() throws JAXBException, IOException {
+    private LogChainerConf loadConfiguration() throws JAXBException {
 	LOG.debug("starting to read conf file");
+	LogChainerConf logchainerConf = new LogChainerConf();
 
 	JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
 	Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-	LogChainerConf logchainerConf = new LogChainerConf();
-
 	// accessing the xml conf file
 	try (FileInputStream xmlFileStream = new FileInputStream(xmlDirectoriesConf)) {
 	    logchainerConf = (LogChainerConf) unmarshaller.unmarshal(xmlFileStream);
+	} catch (FileNotFoundException e) {
+	    throw new BusinessException("xml configuration file not found", e);
+	} catch (IOException e) {
+	    throw new BusinessException(e);
 	}
 	LOG.debug("conf file correctly accessed");
 

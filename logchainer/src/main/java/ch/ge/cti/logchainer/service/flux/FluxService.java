@@ -1,7 +1,5 @@
 package ch.ge.cti.logchainer.service.flux;
 
-import java.nio.file.Path;
-
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
 
@@ -47,7 +45,7 @@ public interface FluxService {
      * @param filename
      * @return fluxname
      */
-    String getFluxName(Path filename, String separator);
+    String getFluxName(String filename, String separator);
     
     /**
      * Get the stamp used to sort files.

@@ -1,6 +1,5 @@
 package ch.ge.cti.logchainer.service.hash;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 public interface HashService {
@@ -9,9 +8,8 @@ public interface HashService {
      * 
      * @param fileStream
      * @return the result of the hash algorithm
-     * @throws IOException
      */
-    byte[] getLogHashCode(InputStream fileStream) throws IOException;
+    byte[] getLogHashCode(InputStream fileStream);
 
     /**
      * To get a HashCode for a null object (defined by programmer)

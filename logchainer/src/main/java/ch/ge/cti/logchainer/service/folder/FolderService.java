@@ -1,7 +1,5 @@
 package ch.ge.cti.logchainer.service.folder;
 
-import java.io.IOException;
-
 public interface FolderService {
     /**
      * Moves indicated file from the input Directory to the tmp one.
@@ -10,9 +8,8 @@ public interface FolderService {
      * @param pathInput
      * @param pathTmp
      * @return file's path once moved
-     * @throws IOException
      */
-    String moveFileInputToTmp(String pathFile, String pathInput, String pathTmp) throws IOException;
+    String moveFileInputToTmp(String pathFile, String pathInput, String pathTmp);
 
     /**
      * Moves indicated file from the tmp Directory to the output one.
@@ -21,7 +18,6 @@ public interface FolderService {
      * @param pathTmp
      * @param pathOutput
      * @return file's path once moved
-     * @throws IOException
      */
-    String moveFileTmpToOutput(String pathFile, String pathTmp, String pathOutput) throws IOException;
+    String moveFileTmpToOutput(String pathFile, String pathTmp, String pathOutput);
 }

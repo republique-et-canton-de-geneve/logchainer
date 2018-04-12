@@ -1,7 +1,5 @@
 package ch.ge.cti.logchainer.service.logchainer;
 
-import java.io.IOException;
-
 @FunctionalInterface
 public interface LogChainerService {
     /**
@@ -14,7 +12,6 @@ public interface LogChainerService {
      *            - where the insertion starts (0 for the beginning)
      * @param content
      *            - message to insert, has to be converted as a byte array
-     * @throws IOException
      */
-    void chainingLogFile(String filename, long offset, byte[] content) throws IOException;
+    void chainingLogFile(String filename, long offset, byte[] content);
 }

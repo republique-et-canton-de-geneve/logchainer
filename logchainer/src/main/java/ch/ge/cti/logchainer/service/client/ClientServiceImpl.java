@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
+import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.service.flux.FluxService;
 
 @Service
@@ -50,7 +51,7 @@ public class ClientServiceImpl implements ClientService {
 	// reseting the to be able to use it again
 	if (!client.getKey().reset()) {
 	    LOG.error("client directory inaccessible or key corrupted");
-	    // TODO
+	    throw new BusinessException("Key of client {} has encountered an issue", client.getConf().getClientId());
 	}
     }
 
@@ -61,7 +62,6 @@ public class ClientServiceImpl implements ClientService {
 	    if (fluxActor.removeFlux(fluxname, client)) {
 		LOG.debug("flux {} has been removed from the map", fluxname);
 	    } else {
-		// TODO
 		LOG.error("could not delete flux from map");
 	    }
 	}

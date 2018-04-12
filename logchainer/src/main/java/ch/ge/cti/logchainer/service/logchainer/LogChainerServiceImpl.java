@@ -1,6 +1,7 @@
 package ch.ge.cti.logchainer.service.logchainer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
@@ -8,6 +9,8 @@ import java.nio.channels.FileChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import ch.ge.cti.logchainer.exception.BusinessException;
 
 @Service
 public class LogChainerServiceImpl implements LogChainerService {
@@ -17,7 +20,7 @@ public class LogChainerServiceImpl implements LogChainerService {
     private static final Logger LOG = LoggerFactory.getLogger(LogChainerServiceImpl.class.getName());
 
     @Override
-    public void chainingLogFile(String filename, long offset, byte[] content) throws IOException {
+    public void chainingLogFile(String filename, long offset, byte[] content) {
 	LOG.debug("Log chaining method entered");
 	File tempFile = new File(filename + "~");
 	LOG.debug("temporary file created as a new file");
@@ -49,13 +52,24 @@ public class LogChainerServiceImpl implements LogChainerService {
 		    targetChannel.position(0L);
 		    sourceChannel.transferFrom(targetChannel, newOffset, (fileSize - offset));
 		    LOG.debug("post insertion part transfered back from temp channel to original one");
+		} catch (IOException e) {
+		    throw new BusinessException("problem with the stream manipulations", e);
 		}
+	    } catch (FileNotFoundException e) {
+		throw new BusinessException("Unable to access the temporary file {}, created here to be used as memory",
+			tempFile.getName(), e);
+	    } catch (IOException e) {
+		throw new BusinessException(e);
 	    }
+	} catch (FileNotFoundException e) {
+	    throw new BusinessException("Unable to find the file {}", filename, e);
+	} catch (IOException e) {
+	    throw new BusinessException(e);
 	}
 	// delete the temporary file so that it doesn't appear in the directory
 	if (tempFile.delete())
 	    LOG.debug("temp file deleted");
-	
+
 	LOG.info("log chaining completed for file {}", filename);
     }
 }

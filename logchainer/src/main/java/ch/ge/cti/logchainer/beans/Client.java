@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.generate.ClientConf;
 
 /**
@@ -38,10 +39,15 @@ public class Client {
      */
     private static final Logger LOG = LoggerFactory.getLogger(Client.class.getName());
 
-    public Client(ClientConf conf) throws IOException {
+    public Client(ClientConf conf) {
 	LOG.debug("creating object Client");
 	this.conf = conf;
-	this.watcher = FileSystems.getDefault().newWatchService();
+	try {
+	    this.watcher = FileSystems.getDefault().newWatchService();
+	} catch (IOException e) {
+	    throw new BusinessException("Error while creating the client's {} watchService", this.conf.getClientId(),
+		    e);
+	}
 	this.filesWatched = new ArrayList<>();
 	this.fluxFileMap = new HashMap<>();
     }
@@ -71,9 +77,9 @@ public class Client {
     public List<FileWatched> getFilesWatched() {
 	return filesWatched;
     }
-    
+
     @Bean
     public Map<String, ArrayList<FileWatched>> getFluxFileMap() {
-        return fluxFileMap;
+	return fluxFileMap;
     }
 }

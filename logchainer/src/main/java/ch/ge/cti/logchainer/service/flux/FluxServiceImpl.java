@@ -1,6 +1,5 @@
 package ch.ge.cti.logchainer.service.flux;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 import org.slf4j.Logger;
@@ -40,17 +39,13 @@ public class FluxServiceImpl implements FluxService {
     }
     
     @Override
-    public String getFluxName(Path filename, String separator) {
+    public String getFluxName(String filename, String separator) {
 	LOG.debug("getting flux name method entered");
-	//TODO
-	// if (!filename.toString().contains("_"))
-	// throw new LogChainerException("incorrect filename");
-
 	StringBuilder fluxNameTmp = new StringBuilder();
 
 	// finding the flux name of the file, knowing each flux is situated at
 	// the beginning of the filename (before the separator)
-	String[] nameComponents = filename.toString().split(separator);
+	String[] nameComponents = filename.split(separator);
 	for (int i = 0; i < nameComponents.length - 1; ++i) {
 	    fluxNameTmp.append(nameComponents[i]);
 	}
