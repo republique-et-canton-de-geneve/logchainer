@@ -6,6 +6,7 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class Client {
     private WatchKey key;
     // Variable des fichioers wahtched
     private ArrayList<FileWatched> filesWatched;
-    //private ArrayList<FileFromClient> filesWatched;
+    // Map the flux to the files it contains
     private Map<String, ArrayList<FileWatched>> fluxFileMap;
 
     /**
@@ -41,8 +42,8 @@ public class Client {
 	LOG.debug("creating object Client");
 	this.conf = conf;
 	this.watcher = FileSystems.getDefault().newWatchService();
-	this.filesWatched = new ArrayList<FileWatched>();
-	this.fluxFileMap = new HashMap<String, ArrayList<FileWatched>>();
+	this.filesWatched = new ArrayList<>();
+	this.fluxFileMap = new HashMap<>();
     }
 
     @Bean
@@ -67,7 +68,7 @@ public class Client {
     }
 
     @Bean
-    public ArrayList<FileWatched> getFilesWatched() {
+    public List<FileWatched> getFilesWatched() {
 	return filesWatched;
     }
     

@@ -142,7 +142,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	}
 
 	// registering all the treated files into a list
-	ArrayList<String> allDoneFlux = new ArrayList<String>();
+	ArrayList<String> allDoneFlux = new ArrayList<>();
 	// iterating over all the flux
 	for (Map.Entry<String, ArrayList<FileWatched>> flux : client.getFluxFileMap().entrySet()) {
 	    // checking if the file can be treated
@@ -326,7 +326,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	// chaining the log of the previous file to the current one (with infos:
 	// previous file name and date of chaining)
-	chainer.chainingLogFile(pFileInTmp, 0, messageToInsert(filePath, getPreviousFileHash(previousFiles), previousFiles)
+	chainer.chainingLogFile(pFileInTmp, 0, messageToInsert(getPreviousFileHash(previousFiles), previousFiles)
 		.getBytes(component.getEncodingType(client)));
 
 	// releasing the file treated into the output directory to be taken in
@@ -334,7 +334,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	mover.moveFileTmpToOutput(filePath.toString(), client.getConf().getWorkingDir(),
 		client.getConf().getOutputDir());
 
-	LOG.info("end of the treatment of the file {} put in the input directory", filePath.toString());
+	if (!filePath.toString().isEmpty())
+	    LOG.info("end of the treatment of the file {} put in the input directory", filePath.toString());
     }
 
     /**
@@ -345,7 +346,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @param oldFiles
      * @return the message
      */
-    private String messageToInsert(Path filePath, byte[] hashCodeOfLog, Collection<File> oldFiles) {
+    private String messageToInsert(byte[] hashCodeOfLog, Collection<File> oldFiles) {
 	LOG.debug("computing the message to insert");
 	// Chaining date
 	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

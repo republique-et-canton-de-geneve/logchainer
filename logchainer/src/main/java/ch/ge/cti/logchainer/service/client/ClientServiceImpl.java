@@ -2,7 +2,7 @@ package ch.ge.cti.logchainer.service.client;
 
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +55,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void deleteAllTreatedFluxFromMap(ArrayList<String> allDoneFlux, Client client) {
+    public void deleteAllTreatedFluxFromMap(List<String> allDoneFlux, Client client) {
 	// removing the flux one by one
 	for (String fluxname : allDoneFlux) {
 	    if (fluxActor.removeFlux(fluxname, client)) {

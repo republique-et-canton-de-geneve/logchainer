@@ -42,6 +42,7 @@ public class FluxServiceImpl implements FluxService {
     @Override
     public String getFluxName(Path filename, String separator) {
 	LOG.debug("getting flux name method entered");
+	//TODO
 	// if (!filename.toString().contains("_"))
 	// throw new LogChainerException("incorrect filename");
 
@@ -53,7 +54,8 @@ public class FluxServiceImpl implements FluxService {
 	for (int i = 0; i < nameComponents.length - 1; ++i) {
 	    fluxNameTmp.append(nameComponents[i]);
 	}
-	LOG.debug("the flux of the file {} is : {}", filename, fluxNameTmp.toString());
+	if (!fluxNameTmp.toString().isEmpty())
+	    LOG.debug("the flux of the file {} is : {}", filename, fluxNameTmp.toString());
 
 	return fluxNameTmp.toString();
     }

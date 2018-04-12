@@ -1,6 +1,6 @@
 package ch.ge.cti.logchainer.service.client;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import ch.ge.cti.logchainer.beans.Client;
 
@@ -19,5 +19,5 @@ public interface ClientService {
      * @param allDoneFlux
      * @param client
      */
-    void deleteAllTreatedFluxFromMap(ArrayList<String> allDoneFlux, Client client);
+    void deleteAllTreatedFluxFromMap(List<String> allDoneFlux, Client client);
 }
