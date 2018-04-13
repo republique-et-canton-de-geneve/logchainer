@@ -4,25 +4,30 @@
 		<format>zip</format>
 	</formats>
 	<includeBaseDirectory>true</includeBaseDirectory>
-	
+
 	<files>
 		<file>
 			<source>src/main/assembly/config/application.properties</source>
-			<outputDirectory>/</outputDirectory>
+			<outputDirectory>/conf</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
+			<source>src/main/assembly/config/errorMessages.properties</source>
+			<outputDirectory>/conf</outputDirectory>
 			<filtered>true</filtered>
 		</file>
 		<file>
 			<source>src/main/assembly/config/logback.properties</source>
-			<outputDirectory>/</outputDirectory>
+			<outputDirectory>/conf</outputDirectory>
 			<filtered>true</filtered>
 		</file>
 		<file>
 			<source>src/main/assembly/bin/run.sh</source>
-			<outputDirectory>/</outputDirectory>
+			<outputDirectory>/bin</outputDirectory>
 			<filtered>true</filtered>
 		</file>
 	</files>
-	
+
 	<fileSets>
 		<fileSet>
 			<directory>src/main/assembly</directory>
@@ -41,20 +46,9 @@
 				<include>*.jar</include>
 			</includes>
 		</fileSet>
-		<fileSet>
-			<directory>src/main/config/temp</directory>
-			<outputDirectory>./temp</outputDirectory>
-			<includes>
-				<include>*.*</include>
-			</includes>
-		</fileSet>
-		<fileSet>
-			<directory>src/main/config/out</directory>
-			<outputDirectory>./out</outputDirectory>
-			<includes>
-				<include>*.*</include>
-			</includes>
-		</fileSet>
+
+		<!-- <fileSet> <directory>src/main/config/out</directory> <outputDirectory>/out</outputDirectory> 
+			<includes> <include>*.*</include> </includes> </fileSet> -->
 	</fileSets>
 
 	<dependencySets>

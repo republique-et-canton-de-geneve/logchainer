@@ -11,8 +11,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 
 import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.generate.ClientConf;
@@ -24,7 +22,6 @@ import ch.ge.cti.logchainer.generate.ClientConf;
  * @author FANICHETL
  *
  */
-@Component
 public class Client {
     private ClientConf conf;
     private WatchService watcher;
@@ -51,33 +48,27 @@ public class Client {
 	this.fluxFileMap = new HashMap<>();
     }
 
-    @Bean
     public WatchKey getKey() {
 	return key;
     }
 
-    @Bean
     public void setKey(WatchKey key) {
 	LOG.debug("setting the key");
 	this.key = key;
     }
 
-    @Bean
     public WatchService getWatcher() {
 	return watcher;
     }
 
-    @Bean
     public ClientConf getConf() {
 	return conf;
     }
 
-    @Bean
     public List<FileWatched> getFilesWatched() {
 	return filesWatched;
     }
 
-    @Bean
     public Map<String, ArrayList<FileWatched>> getFluxFileMap() {
 	return fluxFileMap;
     }

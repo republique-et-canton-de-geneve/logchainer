@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
 
+@Service
 public class FluxServiceImpl implements FluxService {
     /**
      * logger
