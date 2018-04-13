@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
@@ -346,9 +347,10 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	String date = "<Date of chaining: " + dateFormat.format(new Date()) + "> \n";
 
 	// Name of the previous file
-	String previousFile = "<Previous file: ";
-	if (previousFiles.stream().findFirst().isPresent()) {
-	    previousFile += previousFiles.stream().findFirst().get().getName() + "> \n";
+	String previousFile = "<Previous file: "; 
+	Optional<File> previousFirstFile = previousFiles.stream().findFirst();
+	if (previousFirstFile.isPresent()) {
+	    previousFile += previousFirstFile.get().getName() + "> \n";
 	} else {
 	    previousFile += "none> \n";
 	}
@@ -387,8 +389,9 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	byte[] hashCodeOfLog;
 	// hashing the provided file, with null hash if there's no file (=no
 	// previous same flux file)
-	if (previousFiles.stream().findFirst().isPresent()) {
-	    File previousFile = previousFiles.stream().findFirst().get();
+	Optional<File> previousFirstFile = previousFiles.stream().findFirst();
+	if (previousFirstFile.isPresent()) {
+	    File previousFile = previousFirstFile.get();
 	    try (InputStream is = new FileInputStream((previousFile))) {
 		LOG.debug("inputStream of the previous file opened");
 		hashCodeOfLog = hasher.getLogHashCode(is);
