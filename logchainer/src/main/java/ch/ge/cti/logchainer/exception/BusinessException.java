@@ -6,21 +6,16 @@ package ch.ge.cti.logchainer.exception;
 @SuppressWarnings("serial")
 public class BusinessException extends RuntimeException {
 //    private static final long serialVersionUID = 6088765962073071589L;
-
-    private final String fieldInError;
-    private final String messageKey;
-    private final Object[] parameters;
+    private final String locationError;
 
     /**
      * @param messageKey   clé du message résolvable par le bean messageSource
      * @param fieldInError nom de l'attribut en erreur
      * @param parameters   liste des paramètres associés au message
      */
-    public BusinessException(String messageKey, String fieldInError, Object... parameters) {
+    public BusinessException(String locationError) {
 	super();
-	this.messageKey = messageKey;
-	this.fieldInError = fieldInError;
-	this.parameters = parameters;
+	this.locationError = locationError;
     }
 
     /**
@@ -29,49 +24,18 @@ public class BusinessException extends RuntimeException {
      * @param cause        cause de l'erreur de validation si provoquée par une exception
      * @param parameters   liste des paramètres associés au message
      */
-    public BusinessException(String messageKey, String fieldInError, Throwable cause, Object... parameters) {
+    public BusinessException(String locationError, Throwable cause) {
 	super(cause);
-	this.messageKey = messageKey;
-	this.fieldInError = fieldInError;
-	this.parameters = parameters;
-    }
-
-    /**
-     * @param messageKey clé du message résolvable par le bean messageSource
-     */
-    public BusinessException(String messageKey) {
-	this(messageKey, "");
-    }
-
-    /**
-     * @param messageKey clé du message résolvable par le bean messageSource
-     * @param parameters liste des paramètres associés au message
-     */
-    public BusinessException(String messageKey, Object... parameters) {
-	this(messageKey, "", parameters);
+	this.locationError = locationError;
     }
     
     public BusinessException(Throwable cause) {
-	this("", "", cause);
-    }
-    
-    public BusinessException(String message, Throwable cause) {
-	this(message, "", cause);
-    }
-    
-    public BusinessException(String messageKey, Throwable cause, Object... parameters) {
-	this(messageKey, "", cause, parameters);
+	this("", cause);
     }
 
-    public String getFieldInError() {
-	return fieldInError;
+    public String getlocationError() {
+	return locationError;
     }
 
-    public String getMessageKey() {
-	return messageKey;
-    }
 
-    public Object[] getParameters() {
-	return parameters;
-    }
 }

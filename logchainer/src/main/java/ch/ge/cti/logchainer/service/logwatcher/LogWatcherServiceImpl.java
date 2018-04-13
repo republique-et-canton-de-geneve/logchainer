@@ -396,7 +396,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		LOG.debug("inputStream of the previous file opened");
 		hashCodeOfLog = hasher.getLogHashCode(is);
 	    } catch (FileNotFoundException e) {
-		throw new BusinessException("File {} couldn't be found", previousFile.getName(), e);
+		throw new BusinessException(previousFile.getName(), e);
 	    } catch (IOException e) {
 		throw new BusinessException(e);
 	    }

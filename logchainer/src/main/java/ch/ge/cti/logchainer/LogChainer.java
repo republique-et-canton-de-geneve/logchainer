@@ -40,7 +40,7 @@ public class LogChainer implements CommandLineRunner {
 
     public static void main(String[] args) {
 	LOG.debug("enter main");
-
+	
 	start(args);
     }
 
@@ -70,7 +70,7 @@ public class LogChainer implements CommandLineRunner {
 	    clientConfList = loadConfiguration();
 	    LOG.info("client list accessed");
 	} catch (JAXBException e) {
-	    throw new BusinessException("Error while loading the configurations from the xml file", e);
+	    throw new BusinessException(e);
 	}
 
 	// Registering all clients as Client objects in a list

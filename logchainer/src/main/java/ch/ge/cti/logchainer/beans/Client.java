@@ -45,8 +45,7 @@ public class Client {
 	try {
 	    this.watcher = FileSystems.getDefault().newWatchService();
 	} catch (IOException e) {
-	    throw new BusinessException("Error while creating the client's {} watchService", this.conf.getClientId(),
-		    e);
+	    throw new BusinessException(this.conf.getClientId(), e);
 	}
 	this.filesWatched = new ArrayList<>();
 	this.fluxFileMap = new HashMap<>();

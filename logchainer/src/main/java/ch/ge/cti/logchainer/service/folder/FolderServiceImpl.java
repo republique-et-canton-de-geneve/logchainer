@@ -32,10 +32,9 @@ public class FolderServiceImpl implements FolderService {
 	try {
 	    Files.move(fileInInput, fileInTmp, new CopyOption[] {});
 	} catch (FileNotFoundException e) {
-	    throw new BusinessException("File {} could not be found in the input directory", e, fileInInput.toString());
+	    throw new BusinessException(fileInInput.toString(), e);
 	} catch (FileAlreadyExistsException e) {
-	    throw new BusinessException("File in working directory with same name as actual file {} already existing",
-		    e, fileInTmp.toString());
+	    throw new BusinessException(fileInTmp.toString(), e);
 	} catch (IOException e) {
 	    throw new BusinessException(e);
 	}

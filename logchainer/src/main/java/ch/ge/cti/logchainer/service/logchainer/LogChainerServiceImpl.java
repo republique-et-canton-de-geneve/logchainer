@@ -34,7 +34,7 @@ public class LogChainerServiceImpl implements LogChainerService {
 	    LOG.debug("file : {} accessed as a readable and writable stream", filename);
 	    accessToTmpFile(offset, content, tempFile, r);
 	} catch (FileNotFoundException e) {
-	    throw new BusinessException("Unable to find the file {}", filename, e);
+	    throw new BusinessException(filename, e);
 	} catch (IOException e) {
 	    throw new BusinessException(e);
 	}
@@ -58,8 +58,7 @@ public class LogChainerServiceImpl implements LogChainerService {
 	    LOG.debug("temporary file accessed as a readable and writable stream");
 	    insertionOfMessage(offset, content, r, rtemp);
 	} catch (FileNotFoundException e) {
-	    throw new BusinessException("Unable to access the temporary file {}, created here to be used as memory",
-		    tempFile.getName(), e);
+	    throw new BusinessException(tempFile.getName(), e);
 	} catch (IOException e) {
 	    throw new BusinessException(e);
 	}
@@ -93,7 +92,7 @@ public class LogChainerServiceImpl implements LogChainerService {
 	    sourceChannel.transferFrom(targetChannel, newOffset, (fileSize - offset));
 	    LOG.debug("post insertion part transfered back from temp channel to original one");
 	} catch (IOException e) {
-	    throw new BusinessException("problem with the stream manipulations", e);
+	    throw new BusinessException(e);
 	}
     }
 }

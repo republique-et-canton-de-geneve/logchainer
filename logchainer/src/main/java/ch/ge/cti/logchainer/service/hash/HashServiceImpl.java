@@ -26,7 +26,7 @@ public class HashServiceImpl implements HashService {
 	try {
 	    hashToReturn = DigestUtils.sha256(fileStream);
 	} catch (IOException e) {
-	    throw new BusinessException("Exception while reading from the stream", e);
+	    throw new BusinessException(e);
 	}
 	
 	return hashToReturn;

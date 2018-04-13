@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
-import ch.ge.cti.logchainer.exception.BusinessException;
+import ch.ge.cti.logchainer.exception.CorruptedKeyException;
 import ch.ge.cti.logchainer.exception.NameException;
 import ch.ge.cti.logchainer.service.flux.FluxService;
 import ch.ge.cti.logchainer.service.properties.UtilsComponents;
@@ -38,7 +38,7 @@ public class ClientServiceImpl implements ClientService {
 
 	    // checking the validity of the filename
 	    if (!fileToRegister.getFilename().contains(component.getSeparator(client)))
-		throw new NameException("file {} doesn't contain any valid separator", fileToRegister.getFilename());
+		throw new NameException(fileToRegister.getFilename());
 
 	    // checking if the file has already been registered
 	    for (FileWatched file : client.getFilesWatched()) {
@@ -58,8 +58,7 @@ public class ClientServiceImpl implements ClientService {
 	}
 	// reseting the to be able to use it again
 	if (!client.getKey().reset()) {
-	    LOG.error("client directory inaccessible or key corrupted");
-	    throw new BusinessException("Key of client {} has encountered an issue", client.getConf().getClientId());
+	    throw new CorruptedKeyException(client.getConf().getClientId());
 	}
     }
 
