@@ -3,8 +3,9 @@ package ch.ge.cti.logchainer.exception;
 /**
  * Exception de base utilisée pour traiter les erreurs métiers.
  */
+@SuppressWarnings("serial")
 public class BusinessException extends RuntimeException {
-    private static final long serialVersionUID = 6088765962073071589L;
+//    private static final long serialVersionUID = 6088765962073071589L;
 
     private final String fieldInError;
     private final String messageKey;
@@ -56,6 +57,10 @@ public class BusinessException extends RuntimeException {
     
     public BusinessException(String message, Throwable cause) {
 	this(message, "", cause);
+    }
+    
+    public BusinessException(String messageKey, Throwable cause, Object... parameters) {
+	this(messageKey, "", cause, parameters);
     }
 
     public String getFieldInError() {

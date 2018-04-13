@@ -12,12 +12,16 @@ import org.springframework.stereotype.Service;
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
 import ch.ge.cti.logchainer.exception.BusinessException;
+import ch.ge.cti.logchainer.exception.NameException;
 import ch.ge.cti.logchainer.service.flux.FluxService;
+import ch.ge.cti.logchainer.service.properties.UtilsComponents;
 
 @Service
 public class ClientServiceImpl implements ClientService {
     @Autowired
-    private FluxService fluxActor;
+    private FluxService fluxService;
+    @Autowired
+    private UtilsComponents component;
 
     /**
      * logger
@@ -31,6 +35,10 @@ public class ClientServiceImpl implements ClientService {
 	for (WatchEvent<?> event : client.getKey().pollEvents()) {
 	    FileWatched fileToRegister = new FileWatched(((WatchEvent<Path>) event).context().toString());
 	    boolean toRegister = true;
+
+	    // checking the validity of the filename
+	    if (!fileToRegister.getFilename().contains(component.getSeparator(client)))
+		throw new NameException("file {} doesn't contain any valid separator", fileToRegister.getFilename());
 
 	    // checking if the file has already been registered
 	    for (FileWatched file : client.getFilesWatched()) {
@@ -59,7 +67,7 @@ public class ClientServiceImpl implements ClientService {
     public void deleteAllTreatedFluxFromMap(List<String> allDoneFlux, Client client) {
 	// removing the flux one by one
 	for (String fluxname : allDoneFlux) {
-	    if (fluxActor.removeFlux(fluxname, client)) {
+	    if (fluxService.removeFlux(fluxname, client)) {
 		LOG.debug("flux {} has been removed from the map", fluxname);
 	    } else {
 		LOG.error("could not delete flux from map");

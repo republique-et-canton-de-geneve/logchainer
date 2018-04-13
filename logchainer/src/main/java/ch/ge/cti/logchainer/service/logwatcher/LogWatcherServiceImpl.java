@@ -52,9 +52,9 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     @Autowired
     private HashService hasher;
     @Autowired
-    private ClientService clientActor;
+    private ClientService clientService;
     @Autowired
-    private FluxService fluxActor;
+    private FluxService fluxService;
     @Autowired
     private UtilsComponents component;
 
@@ -103,7 +103,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		LOG.info("event detected on client {}", client.getConf().getClientId());
 
 		client.setKey(watchKey);
-		clientActor.registerEvent(client);
+		clientService.registerEvent(client);
 	    }
 
 	    waitingForFileToBeReadyToBeLaunched(client);
@@ -151,7 +151,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	}
 	// once all files in a flux have been treated, deleting the flux in the
 	// map
-	clientActor.deleteAllTreatedFluxFromMap(allDoneFlux, client);
+	clientService.deleteAllTreatedFluxFromMap(allDoneFlux, client);
     }
 
     /**
@@ -213,16 +213,16 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     private void registerFile(Client client, FileWatched file) {
 	LOG.debug("registering file {}", file.getFilename());
 	// getting the name of the file's flux
-	String fluxname = fluxActor.getFluxName(file.getFilename(), component.getSeparator(client));
+	String fluxname = fluxService.getFluxName(file.getFilename(), component.getSeparator(client));
 
 	// registering the flux if it doesn't already exist
-	if (fluxActor.isNewFlux(fluxname, client)) {
-	    fluxActor.addFlux(fluxname, client);
+	if (fluxService.isNewFlux(fluxname, client)) {
+	    fluxService.addFlux(fluxname, client);
 	    LOG.debug("new flux {} added to the map", fluxname);
 	}
 
 	// registering the file as a relation to it's flux
-	fluxActor.addFileToFlux(fluxname, file, client);
+	fluxService.addFileToFlux(fluxname, file, client);
 	// indicating the file has been registered
 	file.setRegistered(true);
 	LOG.debug("file {} registered", file.getFilename());
@@ -247,8 +247,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    @Override
 	    public int compare(FileWatched file1, FileWatched file2) {
 		// getting both file's stamp which are used to sort them
-		String sortingStamp1 = fluxActor.getSortingStamp(file1.getFilename(), separator);
-		String sortingStamp2 = fluxActor.getSortingStamp(file2.getFilename(), separator);
+		String sortingStamp1 = fluxService.getSortingStamp(file1.getFilename(), separator);
+		String sortingStamp2 = fluxService.getSortingStamp(file2.getFilename(), separator);
 
 		// case where the sorting type is alphabetical
 		if (("alphabetical").equals(sorter)) {
@@ -307,7 +307,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		(new File(client.getConf().getInputDir() + "/" + filename)).getAbsolutePath());
 
 	// accessing same flux file in the tmp directory
-	Collection<File> previousFiles = getPreviousFiles(fluxActor.getFluxName(filename, component.getSeparator(client)),
+	Collection<File> previousFiles = getPreviousFiles(fluxService.getFluxName(filename, component.getSeparator(client)),
 		client.getConf().getWorkingDir(), component.getSeparator(client));
 
 	// moving the file to the tmp directory
@@ -427,12 +427,12 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	    @Override
 	    public boolean accept(File file) {
-		if (fluxName.equals(fluxActor.getFluxName(file.getName(), separator))) {
+		if (fluxName.equals(fluxService.getFluxName(file.getName(), separator))) {
 		    LOG.debug("same flux name noticed for {}", file.getName());
 		} else {
 		    LOG.debug("no same flux name detected");
 		}
-		return (fluxName.equals(fluxActor.getFluxName(file.getName(), separator)) ? true : false);
+		return (fluxName.equals(fluxService.getFluxName(file.getName(), separator)) ? true : false);
 	    }
 	}, null);
     }
