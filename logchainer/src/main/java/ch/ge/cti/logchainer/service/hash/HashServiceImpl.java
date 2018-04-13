@@ -21,14 +21,14 @@ public class HashServiceImpl implements HashService {
     @Override
     public byte[] getLogHashCode(InputStream fileStream) {
 	LOG.info("Hashing algorithm job");
-	byte[] hashToReturn = new byte[]{};
-	
+	byte[] hashToReturn = new byte[] {};
+
 	try {
 	    hashToReturn = DigestUtils.sha256(fileStream);
 	} catch (IOException e) {
 	    throw new BusinessException(e);
 	}
-	
+
 	return hashToReturn;
     }
 

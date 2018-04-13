@@ -18,7 +18,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import ch.ge.cti.logchainer.exception.BusinessException;
-import ch.ge.cti.logchainer.exception.LogChainerExceptionHandlerService;
+import ch.ge.cti.logchainer.exception.LogChainerExceptionHandlerServiceImpl;
 import ch.ge.cti.logchainer.generate.LogChainerConf;
 import ch.ge.cti.logchainer.generate.ObjectFactory;
 import ch.ge.cti.logchainer.service.logwatcher.LogWatcherService;
@@ -31,7 +31,7 @@ public class LogChainer implements CommandLineRunner {
     @Autowired
     private LogWatcherService watcher;
     @Autowired
-    private LogChainerExceptionHandlerService exceptionHandler;
+    private LogChainerExceptionHandlerServiceImpl exceptionHandler;
 
     /**
      * logger
@@ -40,7 +40,7 @@ public class LogChainer implements CommandLineRunner {
 
     public static void main(String[] args) {
 	LOG.debug("enter main");
-	
+
 	start(args);
     }
 
@@ -80,11 +80,11 @@ public class LogChainer implements CommandLineRunner {
 	// infinity loop to actualize endlessly the search for new files
 	LOG.debug("start of the infinity loop");
 	while (true) {
-	     try {
-		 watcher.processEvents();
-	     } catch (RuntimeException e) {
-		 exceptionHandler.handleException(e);
-	     }
+	    try {
+		watcher.processEvents();
+	    } catch (RuntimeException e) {
+		exceptionHandler.handleException(e);
+	    }
 	}
     }
 

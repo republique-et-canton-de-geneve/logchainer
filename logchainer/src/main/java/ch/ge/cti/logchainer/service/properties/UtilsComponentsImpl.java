@@ -24,7 +24,7 @@ public class UtilsComponentsImpl implements UtilsComponents {
 	    return LogChainerConstante.SEPARATOR_DEFAULT;
 	}
     }
-    
+
     @Override
     public String getEncodingType(Client client) {
 	if (!client.getConf().getFileEncoding().isEmpty()) {

@@ -13,8 +13,8 @@ public interface UtilsComponents {
     String getSorter(Client client);
 
     /**
-     * Get the configured separator String or the default one if none is defined by
-     * the user. Default is "_".
+     * Get the configured separator String or the default one if none is defined
+     * by the user. Default is "_".
      * 
      * @param client
      * @return the separator
@@ -22,8 +22,8 @@ public interface UtilsComponents {
     String getSeparator(Client client);
 
     /**
-     * Get the configured encoding type String or the default one if none is defined by
-     * the user. Default is "UTF-8".
+     * Get the configured encoding type String or the default one if none is
+     * defined by the user. Default is "UTF-8".
      * 
      * @param client
      * @return the encoding type

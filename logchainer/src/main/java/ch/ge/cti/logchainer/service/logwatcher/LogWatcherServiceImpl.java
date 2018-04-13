@@ -308,8 +308,9 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		(new File(client.getConf().getInputDir() + "/" + filename)).getAbsolutePath());
 
 	// accessing same flux file in the tmp directory
-	Collection<File> previousFiles = getPreviousFiles(fluxService.getFluxName(filename, component.getSeparator(client)),
-		client.getConf().getWorkingDir(), component.getSeparator(client));
+	Collection<File> previousFiles = getPreviousFiles(
+		fluxService.getFluxName(filename, component.getSeparator(client)), client.getConf().getWorkingDir(),
+		component.getSeparator(client));
 
 	// moving the file to the tmp directory
 	String pFileInTmp = mover.moveFileInputToTmp(filename, client.getConf().getInputDir(),
@@ -326,8 +327,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	// releasing the file treated into the output directory to be taken in
 	// charge by the user
-	mover.moveFileTmpToOutput(filename, client.getConf().getWorkingDir(),
-		client.getConf().getOutputDir());
+	mover.moveFileTmpToOutput(filename, client.getConf().getWorkingDir(), client.getConf().getOutputDir());
 
 	if (!filename.isEmpty())
 	    LOG.info("end of the treatment of the file {} put in the input directory", filename);
@@ -347,7 +347,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	String date = "<Date of chaining: " + dateFormat.format(new Date()) + "> \n";
 
 	// Name of the previous file
-	String previousFile = "<Previous file: "; 
+	String previousFile = "<Previous file: ";
 	Optional<File> previousFirstFile = previousFiles.stream().findFirst();
 	if (previousFirstFile.isPresent()) {
 	    previousFile += previousFirstFile.get().getName() + "> \n";

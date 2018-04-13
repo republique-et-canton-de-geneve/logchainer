@@ -56,10 +56,10 @@ public class FileWatched {
     }
 
     public boolean isRegistered() {
-        return registered;
+	return registered;
     }
 
     public void setRegistered(boolean registered) {
-        this.registered = registered;
+	this.registered = registered;
     }
 }

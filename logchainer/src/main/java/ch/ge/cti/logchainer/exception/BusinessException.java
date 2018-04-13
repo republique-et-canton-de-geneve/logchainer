@@ -1,17 +1,16 @@
 package ch.ge.cti.logchainer.exception;
 
 /**
- * Exception de base utilisée pour traiter les erreurs métiers.
+ * Exception used in case of expected exceptions occurrence.
  */
 @SuppressWarnings("serial")
 public class BusinessException extends RuntimeException {
-//    private static final long serialVersionUID = 6088765962073071589L;
+    // private static final long serialVersionUID = 6088765962073071589L;
     private final String locationError;
 
     /**
-     * @param messageKey   clé du message résolvable par le bean messageSource
-     * @param fieldInError nom de l'attribut en erreur
-     * @param parameters   liste des paramètres associés au message
+     * @param locationError
+     *            file or localization where the error occurred
      */
     public BusinessException(String locationError) {
 	super();
@@ -19,16 +18,20 @@ public class BusinessException extends RuntimeException {
     }
 
     /**
-     * @param messageKey   clé du message résolvable par le bean messageSource
-     * @param fieldInError nom de l'attribut en erreur
-     * @param cause        cause de l'erreur de validation si provoquée par une exception
-     * @param parameters   liste des paramètres associés au message
+     * @param locationError
+     *            file or localization where the error occurred
+     * @param cause
+     *            cause of the error
      */
     public BusinessException(String locationError, Throwable cause) {
 	super(cause);
 	this.locationError = locationError;
     }
-    
+
+    /**
+     * @param cause
+     *            cause of the error
+     */
     public BusinessException(Throwable cause) {
 	this("", cause);
     }
@@ -36,6 +39,5 @@ public class BusinessException extends RuntimeException {
     public String getlocationError() {
 	return locationError;
     }
-
 
 }

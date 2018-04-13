@@ -15,31 +15,31 @@ public class FluxServiceImpl implements FluxService {
      * logger
      */
     private static final Logger LOG = LoggerFactory.getLogger(FluxServiceImpl.class.getName());
-    
+
     @Override
     public void addFlux(String fluxname, Client client) {
 	LOG.debug("adding flux {} to client {}", fluxname, client.getConf().getClientId());
 	client.getFluxFileMap().put(fluxname, new ArrayList<FileWatched>());
     }
-    
+
     @Override
     public boolean isNewFlux(String fluxname, Client client) {
 	LOG.debug("flux {} is detected as a new flux", fluxname);
 	return !client.getFluxFileMap().containsKey(fluxname);
     }
-    
+
     @Override
     public boolean removeFlux(String fluxname, Client client) {
 	LOG.debug("removing flux {} from list", fluxname);
-	return client.getFluxFileMap().remove(fluxname) != null; 
+	return client.getFluxFileMap().remove(fluxname) != null;
     }
-    
+
     @Override
     public void addFileToFlux(String fluxname, FileWatched file, Client client) {
 	LOG.debug("mapping file {} to the flux {}", file.getFilename(), fluxname);
 	client.getFluxFileMap().get(fluxname).add(file);
     }
-    
+
     @Override
     public String getFluxName(String filename, String separator) {
 	LOG.debug("getting flux name method entered");
@@ -62,7 +62,7 @@ public class FluxServiceImpl implements FluxService {
 	LOG.debug("getting stamp method entered");
 	String[] nameComponents = filename.split(separator);
 	String[] nameStampComponents = nameComponents[nameComponents.length - 1].split("\\.");
-	
+
 	LOG.debug("the stamp of the file {} is : {}", filename, nameStampComponents[0]);
 	return nameStampComponents[0];
     }

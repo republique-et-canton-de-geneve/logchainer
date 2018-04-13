@@ -1,64 +1,18 @@
 package ch.ge.cti.logchainer.exception;
 
-import java.io.FileNotFoundException;
-import java.nio.file.FileAlreadyExistsException;
+public interface ExceptionMessageLoader {
+    /**
+     * Get the correct error message related to the exception occurring.
+     * 
+     * @param e
+     * @return the message
+     */
+    String getExceptionMessage(BusinessException e);
 
-import javax.xml.bind.JAXBException;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-@Service
-public class ExceptionMessageLoader {
-    private boolean programmToBeInterrupted;
-    
-    @Value("${JAXBException}")
-    private String jaxbException;
-
-    @Value("${FileNotFoundException}")
-    private String fileNotFoundException;
-
-    @Value("${FileAlreadyExistsException}")
-    private String fileAlreadyExistsException;
-
-    @Value("${NameException}")
-    private String nameException;
-
-    @Value("${CorruptedKeyException}")
-    private String corruptedKeyException;
-
-    @Value("${WatchServiceError}")
-    private String watchServiceError;
-
-    @Value("${IOException}")
-    private String ioException;
-
-    public String getExceptionMessage(BusinessException e) {
-	if (e.getCause() instanceof JAXBException) {
-	    programmToBeInterrupted = true;
-	    return jaxbException;
-	} else if (e.getCause() instanceof FileNotFoundException) {
-	    programmToBeInterrupted = true;
-	    return fileNotFoundException;
-	} else if (e.getCause() instanceof FileAlreadyExistsException) {
-	    programmToBeInterrupted = true;
-	    return fileAlreadyExistsException;
-	} else if (e instanceof NameException) {
-	    programmToBeInterrupted = false;
-	    return nameException;
-	} else if (e instanceof CorruptedKeyException) {
-	    programmToBeInterrupted = false;
-	    return corruptedKeyException;
-	} else if (e instanceof WatchServiceError) {
-	    programmToBeInterrupted = true;
-	    return watchServiceError;
-	} else {
-	    programmToBeInterrupted = true;
-	    return ioException;
-	}
-    }
-
-    public boolean isProgrammToBeInterrupted() {
-	return programmToBeInterrupted;
-    }
+    /**
+     * Define if the programm must be stopped because of the exception.
+     * 
+     * @return
+     */
+    boolean isProgrammToBeInterrupted();
 }

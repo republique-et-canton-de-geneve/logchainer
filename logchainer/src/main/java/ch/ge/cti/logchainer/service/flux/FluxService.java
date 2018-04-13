@@ -11,7 +11,7 @@ public interface FluxService {
      * @param client
      */
     void addFlux(String fluxname, Client client);
-    
+
     /**
      * Check if given flux is already registered.
      * 
@@ -20,7 +20,7 @@ public interface FluxService {
      * @return
      */
     boolean isNewFlux(String fluxname, Client client);
-    
+
     /**
      * Remove flux from the flux list of the client.
      * 
@@ -29,7 +29,7 @@ public interface FluxService {
      * @return
      */
     boolean removeFlux(String fluxname, Client client);
-    
+
     /**
      * Add a file to a given flux in the map of the client.
      * 
@@ -38,7 +38,7 @@ public interface FluxService {
      * @param client
      */
     void addFileToFlux(String fluxname, FileWatched clientInfos, Client client);
-    
+
     /**
      * Get the flux name from a file.
      * 
@@ -46,7 +46,7 @@ public interface FluxService {
      * @return fluxname
      */
     String getFluxName(String filename, String separator);
-    
+
     /**
      * Get the stamp used to sort files.
      * 
