@@ -32,35 +32,7 @@ public class LogChainerServiceImpl implements LogChainerService {
 	// at the end of the file (meaning after the added content)
 	try (RandomAccessFile r = new RandomAccessFile(new File(filename), "rw")) {
 	    LOG.debug("file : {} accessed as a readable and writable stream", filename);
-	    try (RandomAccessFile rtemp = new RandomAccessFile(tempFile, "rw")) {
-		LOG.debug("temporary file accessed as a readable and writable stream");
-		try (FileChannel sourceChannel = r.getChannel(); FileChannel targetChannel = rtemp.getChannel()) {
-		    LOG.debug("source channel and target (temporary) channel opened");
-		    long fileSize = r.length();
-
-		    sourceChannel.transferTo(offset, (fileSize - offset), targetChannel);
-		    LOG.debug("post insertion file part transfered to temp channel");
-
-		    sourceChannel.truncate(offset);
-		    LOG.debug("post insertion file part truncated from original channel");
-
-		    r.seek(offset);
-		    r.write(content);
-		    LOG.debug("content written in the original file's channel");
-
-		    long newOffset = r.getFilePointer();
-		    targetChannel.position(0L);
-		    sourceChannel.transferFrom(targetChannel, newOffset, (fileSize - offset));
-		    LOG.debug("post insertion part transfered back from temp channel to original one");
-		} catch (IOException e) {
-		    throw new BusinessException("problem with the stream manipulations", e);
-		}
-	    } catch (FileNotFoundException e) {
-		throw new BusinessException("Unable to access the temporary file {}, created here to be used as memory",
-			tempFile.getName(), e);
-	    } catch (IOException e) {
-		throw new BusinessException(e);
-	    }
+	    accessToTmpFile(offset, content, tempFile, r);
 	} catch (FileNotFoundException e) {
 	    throw new BusinessException("Unable to find the file {}", filename, e);
 	} catch (IOException e) {
@@ -71,5 +43,57 @@ public class LogChainerServiceImpl implements LogChainerService {
 	    LOG.debug("temp file deleted");
 
 	LOG.info("log chaining completed for file {}", filename);
+    }
+
+    /**
+     * Accessing the the tmp file.
+     * 
+     * @param offset
+     * @param content
+     * @param tempFile
+     * @param r
+     */
+    private void accessToTmpFile(long offset, byte[] content, File tempFile, RandomAccessFile r) {
+	try (RandomAccessFile rtemp = new RandomAccessFile(tempFile, "rw")) {
+	    LOG.debug("temporary file accessed as a readable and writable stream");
+	    insertionOfMessage(offset, content, r, rtemp);
+	} catch (FileNotFoundException e) {
+	    throw new BusinessException("Unable to access the temporary file {}, created here to be used as memory",
+		    tempFile.getName(), e);
+	} catch (IOException e) {
+	    throw new BusinessException(e);
+	}
+    }
+
+    /**
+     * Insertion of the message into the file.
+     * 
+     * @param offset
+     * @param content
+     * @param r
+     * @param rtemp
+     */
+    private void insertionOfMessage(long offset, byte[] content, RandomAccessFile r, RandomAccessFile rtemp) {
+	try (FileChannel sourceChannel = r.getChannel(); FileChannel targetChannel = rtemp.getChannel()) {
+	    LOG.debug("source channel and target (temporary) channel opened");
+	    long fileSize = r.length();
+
+	    sourceChannel.transferTo(offset, (fileSize - offset), targetChannel);
+	    LOG.debug("post insertion file part transfered to temp channel");
+
+	    sourceChannel.truncate(offset);
+	    LOG.debug("post insertion file part truncated from original channel");
+
+	    r.seek(offset);
+	    r.write(content);
+	    LOG.debug("content written in the original file's channel");
+
+	    long newOffset = r.getFilePointer();
+	    targetChannel.position(0L);
+	    sourceChannel.transferFrom(targetChannel, newOffset, (fileSize - offset));
+	    LOG.debug("post insertion part transfered back from temp channel to original one");
+	} catch (IOException e) {
+	    throw new BusinessException("problem with the stream manipulations", e);
+	}
     }
 }

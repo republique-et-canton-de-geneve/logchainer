@@ -11,9 +11,6 @@ public class LogChainerExceptionHandlerService {
      */
     private static final Logger LOG = LoggerFactory.getLogger(LogChainerExceptionHandlerService.class.getName());
 
-    public LogChainerExceptionHandlerService() {
-    }
-
     public void handleException(RuntimeException exception) {
 	if (exception.getClass().equals(BusinessException.class)) {
 	    BusinessException businessException = (BusinessException) exception;
