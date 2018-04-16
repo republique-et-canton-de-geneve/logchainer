@@ -322,7 +322,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    chainer.chainingLogFile(pFileInTmp, 0, messageToInsert(getPreviousFileHash(previousFiles), previousFiles)
 		    .getBytes(component.getEncodingType(client)));
 	} catch (UnsupportedEncodingException e) {
-	    throw new BusinessException("Given encoding type is incorrect : unsupported", e);
+	    throw new BusinessException(e);
 	}
 
 	// releasing the file treated into the output directory to be taken in
