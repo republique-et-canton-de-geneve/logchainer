@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>ch.ge.cti.logchainer</groupId>
 			<artifactId>logchainer</artifactId>
-			<version>1.0.4-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 
