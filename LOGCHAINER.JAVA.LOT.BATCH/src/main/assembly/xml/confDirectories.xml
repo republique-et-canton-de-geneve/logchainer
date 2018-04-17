@@ -2,20 +2,27 @@
 <logChainerConf xmlns="http://service.logchainer.ge.ch/">
 	<listeClientConf>
 		<ClientId>ClientA</ClientId>
-		<InputDir>/home/jservdev/tmp/FANICHETL/emplacementClients/ClientA/input</InputDir>
-		<WorkingDir>/home/jservdev/tmp/FANICHETL/emplacementClients/ClientA/workingDir</WorkingDir>
-		<OutputDir>/home/jservdev/tmp/FANICHETL/emplacementClients/ClientA/output</OutputDir>
-	</listeClientConf>
-
-	<clientConf>
-		<ClientId>ClientB</ClientId>
-		<InputDir>/home/jservdev/tmp/FANICHETL/emplacementClients/ClientB/input</InputDir>
-		<WorkingDir>/home/jservdev/tmp/FANICHETL/emplacementClients/ClientB/workingDir</WorkingDir>
-		<OutputDir>/home/jservdev/tmp/FANICHETL/emplacementClients/ClientB/output</OutputDir>
+		<InputDir>D:/temp/logchainer/ClientA/input</InputDir>
+		<WorkingDir>D:/temp/logchainer/ClientA/tmp</WorkingDir>
+		<OutputDir>D:/temp/logchainer/ClientA/output</OutputDir>
+		<CorruptedFilesDir>D:/temp/logchainer/ClientA/corruptedFiles</CorruptedFilesDir>
 		<filePattern>
-			<separator>-</separator>
+			<separator>_</separator>
 			<sortingType>alphabetically</sortingType>
 		</filePattern>
 		<fileEncoding>UTF-8</fileEncoding>
-	</clientConf>
+	</listeClientConf>
+
+	<listeClientConf>
+		<ClientId>ClientB</ClientId>
+		<InputDir>D:/temp/logchainer/ClientB/input</InputDir>
+		<WorkingDir>D:/temp/logchainer/ClientB/tmp</WorkingDir>
+		<OutputDir>D:/temp/logchainer/ClientB/output</OutputDir>
+		<CorruptedFilesDir>D:/temp/logchainer/ClientB/corruptedFiles</CorruptedFilesDir>
+		<filePattern>
+			<separator>_</separator>
+			<sortingType>alphabetically</sortingType>
+		</filePattern>
+		<fileEncoding>UTF-8</fileEncoding>
+	</listeClientConf>
 </logChainerConf>
