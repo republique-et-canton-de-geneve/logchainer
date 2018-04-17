@@ -22,6 +22,11 @@
 			<filtered>true</filtered>
 		</file>
 		<file>
+			<source>src/main/assembly/xml/confDirectories.xml</source>
+			<outputDirectory>/conf</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
 			<source>src/main/assembly/bin/run.sh</source>
 			<outputDirectory>/bin</outputDirectory>
 			<filtered>true</filtered>
