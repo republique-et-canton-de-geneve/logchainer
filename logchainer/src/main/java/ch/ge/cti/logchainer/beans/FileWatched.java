@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class FileWatched {
+    private final int CONVERT_HOUR_TO_SECONDS = 3600;
+    private final int CONVERT_MINUTE_TO_SECONDS = 60;
+
     private final String filename;
     private final int arrivingTime;
     private boolean readyToBeTreated = false;
@@ -27,8 +30,8 @@ public class FileWatched {
     public FileWatched(String filename) {
 	LOG.debug("client infos instantiated");
 	this.filename = filename;
-	this.arrivingTime = LocalDateTime.now().getHour() * 3600 + LocalDateTime.now().getMinute() * 60
-		+ LocalDateTime.now().getSecond();
+	this.arrivingTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
+		+ LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS + LocalDateTime.now().getSecond();
     }
 
     public String getFilename() {

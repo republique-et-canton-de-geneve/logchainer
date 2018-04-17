@@ -51,7 +51,7 @@ public class FluxServiceImpl implements FluxService {
 	for (int i = 0; i < nameComponents.length - 1; ++i) {
 	    fluxNameTmp.append(nameComponents[i]);
 	}
-	if (!fluxNameTmp.toString().isEmpty())
+	if (LOG.isDebugEnabled())
 	    LOG.debug("the flux of the file {} is : {}", filename, fluxNameTmp.toString());
 
 	return fluxNameTmp.toString();

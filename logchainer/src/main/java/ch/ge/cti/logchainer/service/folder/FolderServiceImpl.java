@@ -17,6 +17,8 @@ import ch.ge.cti.logchainer.exception.BusinessException;
 
 @Service
 public class FolderServiceImpl implements FolderService {
+    private final String FILE_SEPARATOR_CHAR = "/";
+
     /**
      * logger
      */
@@ -27,8 +29,8 @@ public class FolderServiceImpl implements FolderService {
 	LOG.debug("file moving method entered");
 
 	// the target destination can't contain a same name file
-	Path fileInInput = Paths.get(pathProvidingDir + "/" + pathFile);
-	Path fileInTmp = Paths.get(pathArrivingDir + "/" + pathFile);
+	Path fileInInput = Paths.get(pathProvidingDir + FILE_SEPARATOR_CHAR + pathFile);
+	Path fileInTmp = Paths.get(pathArrivingDir + FILE_SEPARATOR_CHAR + pathFile);
 	try {
 	    Files.move(fileInInput, fileInTmp, new CopyOption[] {});
 	} catch (FileNotFoundException e) {
@@ -39,7 +41,8 @@ public class FolderServiceImpl implements FolderService {
 	    throw new BusinessException(e);
 	}
 
-	LOG.info("file successfully moved to directory : {}", fileInTmp.toString());
+	if (LOG.isInfoEnabled())
+	    LOG.info("file successfully moved to directory : {}", fileInTmp.toString());
 
 	return fileInTmp.toString();
     }
@@ -50,16 +53,18 @@ public class FolderServiceImpl implements FolderService {
 
 	// if the target destination contains a same name file, it will be
 	// replaced
-	Path fileInTmp = Paths.get(pathProvidingDir + "/" + pathFile);
-	Path fileInOutput = Paths.get(pathArrivingDir + "/" + pathFile);
+	Path fileInTmp = Paths.get(pathProvidingDir + FILE_SEPARATOR_CHAR + pathFile);
+	Path fileInOutput = Paths.get(pathArrivingDir + FILE_SEPARATOR_CHAR + pathFile);
 	try {
 	    Files.copy(fileInTmp, fileInOutput, StandardCopyOption.REPLACE_EXISTING);
 	} catch (IOException e) {
 	    throw new BusinessException(e);
 	}
 
-	LOG.info("file successfully moved to directory : {}, replacing file if one with same name was already existing",
-		fileInOutput.toString());
+	if (LOG.isInfoEnabled())
+	    LOG.info(
+		    "file successfully moved to directory : {}, replacing file if one with same name was already existing",
+		    fileInOutput.toString());
 
 	return fileInOutput.toString();
     }

@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchKey;
@@ -58,6 +59,9 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     private FluxService fluxService;
     @Autowired
     private UtilsComponents component;
+
+    private final int CONVERT_HOUR_TO_SECONDS = 3600;
+    private final int CONVERT_MINUTE_TO_SECONDS = 60;
 
     private ArrayList<Client> clients = new ArrayList<>();
 
@@ -125,8 +129,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	// looking at each detected files per client
 	for (FileWatched file : client.getFilesWatched()) {
 	    // present time
-	    int actualTime = LocalDateTime.now().getHour() * 3600 + LocalDateTime.now().getMinute() * 60
-		    + LocalDateTime.now().getSecond();
+	    int actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
+		    + LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS + LocalDateTime.now().getSecond();
 
 	    // registration of the file
 	    if (!file.isRegistered()) {
@@ -308,8 +312,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @param filename
      */
     private void newFileTreatment(Client client, String filename) {
-	LOG.debug("New file detected : {}",
-		(new File(client.getConf().getInputDir() + "/" + filename)).getAbsolutePath());
+	LOG.debug("New file detected : {}", (new File(client.getConf().getInputDir(), filename)).getAbsolutePath());
 
 	// accessing same flux file in the tmp directory
 	Collection<File> previousFiles = getPreviousFiles(
@@ -323,8 +326,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	// chaining the log of the previous file to the current one (with infos:
 	// previous file name and date of chaining)
 	try {
-	    chainer.chainingLogFile(pFileInTmp, 0, messageToInsert(getPreviousFileHash(previousFiles), previousFiles)
-		    .getBytes(component.getEncodingType(client)));
+	    String message = messageToInsert(getPreviousFileHash(previousFiles), previousFiles, client);
+	    chainer.chainingLogFile(pFileInTmp, 0, message.getBytes(component.getEncodingType(client)));
 	} catch (UnsupportedEncodingException e) {
 	    throw new BusinessException(e);
 	}
@@ -345,7 +348,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @param previousFiles
      * @return the message
      */
-    private String messageToInsert(byte[] hashCodeOfLog, Collection<File> previousFiles) {
+    private String messageToInsert(byte[] hashCodeOfLog, Collection<File> previousFiles, Client client) {
 	LOG.debug("computing the message to insert");
 	// Chaining date
 	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -361,7 +364,12 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	}
 
 	// HashCode of the previous file
-	String previousFileHashCode = "<SHA-256: " + new String(hashCodeOfLog) + "> \n";
+	String previousFileHashCode;
+	try {
+	    previousFileHashCode = "<SHA-256: " + new String(hashCodeOfLog, component.getEncodingType(client)) + "> \n";
+	} catch (UnsupportedEncodingException e) {
+	    throw new BusinessException(e);
+	}
 
 	LOG.debug("message ready to be inserted");
 	return previousFile + date + previousFileHashCode;
@@ -406,8 +414,13 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		throw new BusinessException(e);
 	    }
 	    LOG.debug("previous file name is : {}", previousFile.getName());
-	    if (previousFile.delete())
+
+	    try {
+		Files.delete(previousFile.toPath());
 		LOG.debug("previous file deleted");
+	    } catch (IOException e) {
+		throw new BusinessException("couldn't delete the previous same flux file from working directory", e);
+	    }
 	} else {
 	    hashCodeOfLog = hasher.getNullHash();
 	    LOG.debug("null hash used");

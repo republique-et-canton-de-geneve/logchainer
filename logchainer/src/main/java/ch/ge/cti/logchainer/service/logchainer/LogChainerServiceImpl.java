@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +40,12 @@ public class LogChainerServiceImpl implements LogChainerService {
 	    throw new BusinessException(e);
 	}
 	// delete the temporary file so that it doesn't appear in the directory
-	if (tempFile.delete())
+	try {
+	    Files.delete(tempFile.toPath());
 	    LOG.debug("temp file deleted");
+	} catch (IOException e) {
+	    throw new BusinessException("temp file could not be deleted", e);
+	}
 
 	LOG.info("log chaining completed for file {}", filename);
     }

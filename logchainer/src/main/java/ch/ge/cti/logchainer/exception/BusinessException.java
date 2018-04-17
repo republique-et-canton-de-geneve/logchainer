@@ -5,7 +5,6 @@ package ch.ge.cti.logchainer.exception;
  */
 @SuppressWarnings("serial")
 public class BusinessException extends RuntimeException {
-    // private static final long serialVersionUID = 6088765962073071589L;
     private final String locationError;
 
     /**
