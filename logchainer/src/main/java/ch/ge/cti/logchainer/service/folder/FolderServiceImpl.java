@@ -17,7 +17,7 @@ import ch.ge.cti.logchainer.exception.BusinessException;
 
 @Service
 public class FolderServiceImpl implements FolderService {
-    private final static String FILE_SEPARATOR_CHAR = "/";
+    private static final String FILE_SEPARATOR_CHAR = "/";
 
     /**
      * logger

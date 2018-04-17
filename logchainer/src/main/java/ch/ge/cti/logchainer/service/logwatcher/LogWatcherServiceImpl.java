@@ -60,8 +60,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     @Autowired
     private UtilsComponents component;
 
-    private final static int CONVERT_HOUR_TO_SECONDS = 3600;
-    private final static int CONVERT_MINUTE_TO_SECONDS = 60;
+    private static final int CONVERT_HOUR_TO_SECONDS = 3600;
+    private static final int CONVERT_MINUTE_TO_SECONDS = 60;
 
     private ArrayList<Client> clients = new ArrayList<>();
 
