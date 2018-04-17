@@ -4,7 +4,7 @@ echo run accessed
 
 export JAVA_HOME=/d/melusine/M501/Java/jdk1.8.0_60-x64/bin/java
 
-export VM_ARGS="-Dapplication.properties=D:/temp/application.properties"
+export VM_ARGS="-Dapplication.properties=D:/temp/application.properties -DerrorMessages.properties=D:/temp/errorMessages.properties"
 
 export JAR_HOME=/d/_codesource_M501/logchainer-base/logchainer/target/logchainer-0.0.11-SNAPSHOT.jar
 
