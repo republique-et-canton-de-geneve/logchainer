@@ -23,6 +23,7 @@
 			<xs:element name="InputDir" type="xs:string" />
 			<xs:element name="WorkingDir" type="xs:string" />
 			<xs:element name="OutputDir" type="xs:string" />
+			<xs:element name="CorruptedFilesDir" type="xs:string" />
 			<xs:element name="filePattern" type="filePattern"
 					minOccurs="0" maxOccurs="1" />
 			<xs:element name="fileEncoding" type="xs:string" />

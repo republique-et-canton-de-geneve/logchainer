@@ -17,10 +17,10 @@ public class FolderServiceTest {
 	Files.write(Paths.get(testResourcesDirPath + "/testMovingFile1.txt"), noData.getBytes());
 	Files.write(Paths.get(testResourcesDirPath + "/testMovingFile2.txt"), noData.getBytes());
 
-	mover.moveFileInputToTmp("testMovingFile1.txt", testResourcesDirPath,
+	mover.moveFileInDirWithNoSameNameFile("testMovingFile1.txt", testResourcesDirPath,
 		testResourcesDirPath + "/testMovingToFolder");
 
-	mover.moveFileInputToTmp("testMovingFile2.txt", testResourcesDirPath,
+	mover.moveFileInDirWithNoSameNameFile("testMovingFile2.txt", testResourcesDirPath,
 		testResourcesDirPath + "/testMovingToFolder");
 
 	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/testMovingFile1.txt"));

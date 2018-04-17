@@ -9,7 +9,7 @@ public interface FolderService {
      * @param pathTmp
      * @return file's path once moved
      */
-    String moveFileInputToTmp(String pathFile, String pathInput, String pathTmp);
+    String moveFileInDirWithNoSameNameFile(String pathFile, String pathInput, String pathTmp);
 
     /**
      * Moves indicated file from the tmp Directory to the output one.
@@ -19,5 +19,5 @@ public interface FolderService {
      * @param pathOutput
      * @return file's path once moved
      */
-    String moveFileTmpToOutput(String pathFile, String pathTmp, String pathOutput);
+    String copyFileToDirByReplacingExisting(String pathFile, String pathTmp, String pathOutput);
 }

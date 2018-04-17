@@ -3,6 +3,7 @@ package ch.ge.cti.logchainer.service.client;
 import java.util.List;
 
 import ch.ge.cti.logchainer.beans.Client;
+import ch.ge.cti.logchainer.beans.FileWatched;
 
 public interface ClientService {
     /**
@@ -10,8 +11,9 @@ public interface ClientService {
      * and adding it to the client's file list
      * 
      * @param client
+     * @return the corrupted file or null if there are none
      */
-    void registerEvent(Client client);
+    FileWatched registerEvent(Client client);
 
     /**
      * Remove all flux that have been entirely treated from the client's map.

@@ -23,7 +23,7 @@ public class FolderServiceImpl implements FolderService {
     private static final Logger LOG = LoggerFactory.getLogger(FolderServiceImpl.class.getName());
 
     @Override
-    public String moveFileInputToTmp(String pathFile, String pathInput, String pathTmp) {
+    public String moveFileInDirWithNoSameNameFile(String pathFile, String pathInput, String pathTmp) {
 	LOG.debug("file moving method entered");
 
 	// the target destination can't contain a same name file
@@ -45,7 +45,7 @@ public class FolderServiceImpl implements FolderService {
     }
 
     @Override
-    public String moveFileTmpToOutput(String pathFile, String pathTmp, String pathOutput) {
+    public String copyFileToDirByReplacingExisting(String pathFile, String pathTmp, String pathOutput) {
 	LOG.debug("file moving method entered");
 
 	// if the target destination contains a same name file, it will be

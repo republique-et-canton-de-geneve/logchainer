@@ -104,7 +104,11 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		LOG.info("event detected on client {}", client.getConf().getClientId());
 
 		client.setKey(watchKey);
-		clientService.registerEvent(client);
+		FileWatched corruptedFile = clientService.registerEvent(client);
+		if (corruptedFile != null) {
+		    mover.moveFileInDirWithNoSameNameFile(corruptedFile.getFilename(), client.getConf().getInputDir(),
+			    client.getConf().getCorruptedFilesDir());
+		}
 	    }
 
 	    waitingForFileToBeReadyToBeLaunched(client);
@@ -313,7 +317,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		component.getSeparator(client));
 
 	// moving the file to the tmp directory
-	String pFileInTmp = mover.moveFileInputToTmp(filename, client.getConf().getInputDir(),
+	String pFileInTmp = mover.moveFileInDirWithNoSameNameFile(filename, client.getConf().getInputDir(),
 		client.getConf().getWorkingDir());
 
 	// chaining the log of the previous file to the current one (with infos:
@@ -327,7 +331,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	// releasing the file treated into the output directory to be taken in
 	// charge by the user
-	mover.moveFileTmpToOutput(filename, client.getConf().getWorkingDir(), client.getConf().getOutputDir());
+	mover.copyFileToDirByReplacingExisting(filename, client.getConf().getWorkingDir(),
+		client.getConf().getOutputDir());
 
 	if (!filename.isEmpty())
 	    LOG.info("end of the treatment of the file {} put in the input directory", filename);

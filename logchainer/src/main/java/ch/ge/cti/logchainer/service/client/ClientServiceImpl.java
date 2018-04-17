@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
 import ch.ge.cti.logchainer.exception.CorruptedKeyException;
-import ch.ge.cti.logchainer.exception.NameException;
 import ch.ge.cti.logchainer.service.flux.FluxService;
 import ch.ge.cti.logchainer.service.properties.UtilsComponents;
 
@@ -30,7 +29,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void registerEvent(Client client) {
+    public FileWatched registerEvent(Client client) {
 	// iterating on all events in the key
 	for (WatchEvent<?> event : client.getKey().pollEvents()) {
 	    FileWatched fileToRegister = new FileWatched(((WatchEvent<Path>) event).context().toString());
@@ -38,7 +37,7 @@ public class ClientServiceImpl implements ClientService {
 
 	    // checking the validity of the filename
 	    if (!fileToRegister.getFilename().contains(component.getSeparator(client)))
-		throw new NameException(fileToRegister.getFilename());
+		return fileToRegister;
 
 	    // checking if the file has already been registered
 	    for (FileWatched file : client.getFilesWatched()) {
@@ -60,6 +59,7 @@ public class ClientServiceImpl implements ClientService {
 	if (!client.getKey().reset()) {
 	    throw new CorruptedKeyException(client.getConf().getClientId());
 	}
+	return null;
     }
 
     @Override
