@@ -23,12 +23,12 @@ public class FolderServiceImpl implements FolderService {
     private static final Logger LOG = LoggerFactory.getLogger(FolderServiceImpl.class.getName());
 
     @Override
-    public String moveFileInDirWithNoSameNameFile(String pathFile, String pathInput, String pathTmp) {
+    public String moveFileInDirWithNoSameNameFile(String pathFile, String pathProvidingDir, String pathArrivingDir) {
 	LOG.debug("file moving method entered");
 
 	// the target destination can't contain a same name file
-	Path fileInInput = Paths.get(pathInput + "/" + pathFile);
-	Path fileInTmp = Paths.get(pathTmp + "/" + pathFile);
+	Path fileInInput = Paths.get(pathProvidingDir + "/" + pathFile);
+	Path fileInTmp = Paths.get(pathArrivingDir + "/" + pathFile);
 	try {
 	    Files.move(fileInInput, fileInTmp, new CopyOption[] {});
 	} catch (FileNotFoundException e) {
@@ -45,13 +45,13 @@ public class FolderServiceImpl implements FolderService {
     }
 
     @Override
-    public String copyFileToDirByReplacingExisting(String pathFile, String pathTmp, String pathOutput) {
+    public String copyFileToDirByReplacingExisting(String pathFile, String pathProvidingDir, String pathArrivingDir) {
 	LOG.debug("file moving method entered");
 
 	// if the target destination contains a same name file, it will be
 	// replaced
-	Path fileInTmp = Paths.get(pathTmp + "/" + pathFile);
-	Path fileInOutput = Paths.get(pathOutput + "/" + pathFile);
+	Path fileInTmp = Paths.get(pathProvidingDir + "/" + pathFile);
+	Path fileInOutput = Paths.get(pathArrivingDir + "/" + pathFile);
 	try {
 	    Files.copy(fileInTmp, fileInOutput, StandardCopyOption.REPLACE_EXISTING);
 	} catch (IOException e) {
