@@ -133,11 +133,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		    + LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS + LocalDateTime.now().getSecond();
 
 	    // registration of the file
-	    if (!file.isRegistered()) {
+	    if (!file.isRegistered())
 		registerFile(client, file);
-	    } else {
-		LOG.debug("file {} already registered", file.getFilename());
-	    }
 
 	    // checking the waited delay from the arrived time of the file until
 	    // now
@@ -264,15 +261,10 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		    return sortingStamp1.compareTo(sortingStamp2);
 		} else {
 		    // case where the sorting type is numerical (default one)
-		    int stamp1 = Integer.parseInt(sortingStamp1);
-		    int stamp2 = Integer.parseInt(sortingStamp2);
-		    if (stamp1 < stamp2) {
-			return -1;
-		    } else if (stamp1 == stamp2) {
-			return 0;
-		    } else {
-			return 1;
-		    }
+		    Integer stamp1 = Integer.parseInt(sortingStamp1);
+		    Integer stamp2 = Integer.parseInt(sortingStamp2);
+
+		    return stamp1.compareTo(stamp2);
 		}
 	    }
 	});
