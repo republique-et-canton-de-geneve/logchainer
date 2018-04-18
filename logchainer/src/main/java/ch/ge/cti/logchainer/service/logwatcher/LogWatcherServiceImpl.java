@@ -139,7 +139,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    // checking the waited delay from the arrived time of the file until
 	    // now
 	    if (file.getArrivingTime() + LogChainerConstante.DELAY_TRANSFER_FILE < actualTime) {
-		LOG.debug("enough time waited");
+		LOG.debug("enough time waited for file {}", file.getFilename());
 		file.setReadyToBeTreated(true);
 	    }
 	}
