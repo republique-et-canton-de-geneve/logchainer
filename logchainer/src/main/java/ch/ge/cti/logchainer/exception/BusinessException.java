@@ -5,26 +5,26 @@ package ch.ge.cti.logchainer.exception;
  */
 @SuppressWarnings("serial")
 public class BusinessException extends RuntimeException {
-    private final String locationError;
+    private final String argError;
 
     /**
-     * @param locationError
+     * @param argError
      *            file or localization where the error occurred
      */
-    public BusinessException(String locationError) {
+    public BusinessException(String argError) {
 	super();
-	this.locationError = locationError;
+	this.argError = argError;
     }
 
     /**
-     * @param locationError
+     * @param argError
      *            file or localization where the error occurred
      * @param cause
      *            cause of the error
      */
-    public BusinessException(String locationError, Throwable cause) {
+    public BusinessException(String argError, Throwable cause) {
 	super(cause);
-	this.locationError = locationError;
+	this.argError = argError;
     }
 
     /**
@@ -35,8 +35,8 @@ public class BusinessException extends RuntimeException {
 	this("", cause);
     }
 
-    public String getlocationError() {
-	return locationError;
+    public String getArgError() {
+	return argError;
     }
 
 }
