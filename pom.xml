@@ -32,7 +32,7 @@
 	</properties>
 
 	<modules>
-		<module>LOGCHAINER.JAVA.LOT.BATCH</module>
+<!-- 		<module>logchainer-executable</module> -->
 		<module>logchainer</module>
 	</modules>
 
@@ -90,7 +90,10 @@
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>${javacoco-maven-plugin.version}</version>
 				</plugin>
-
+				<plugin>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>3.1.1</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>

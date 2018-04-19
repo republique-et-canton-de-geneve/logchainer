@@ -44,23 +44,6 @@
 			<!-- uniquement Ã partir du plugin assembly 2.2 <useStrictFiltering>true</useStrictFiltering> 
 				<filtered>true</filtered> -->
 		</fileSet>
-		<fileSet>
-			<directory>target</directory>
-			<outputDirectory>/lib</outputDirectory>
-			<includes>
-				<include>*.jar</include>
-			</includes>
-		</fileSet>
-
-		<!-- <fileSet> <directory>src/main/config/out</directory> <outputDirectory>/out</outputDirectory> 
-			<includes> <include>*.*</include> </includes> </fileSet> -->
 	</fileSets>
-
-	<dependencySets>
-		<dependencySet>
-			<unpack>false</unpack>
-			<outputDirectory>/lib</outputDirectory>
-		</dependencySet>
-	</dependencySets>
 </assembly>
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+<!-- 	<parent> -->
+<!-- 		<groupId>ch.ge.cti.logchainer</groupId> -->
+<!-- 		<artifactId>logchainer-base</artifactId> -->
+<!-- 		<version>1.0.6-SNAPSHOT</version> -->
+<!-- 	</parent> -->
+
+	<groupId>ch.ge.cti.logchainer</groupId>
+	<version>1.0.6-SNAPSHOT</version>
+	<artifactId>logchainer-executable</artifactId>
+	<packaging>pom</packaging>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>ch.ge.cti.logchainer</groupId>
+			<artifactId>logchainer</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptor>src/main/assembly/assemblage_lot.xml</descriptor>
+					<finalName>${project.artifactId}-${project.version}</finalName>
+					<outputDirectory>${project.build.directory}/assembly</outputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>mediation-zip</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

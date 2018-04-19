@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <logChainerConf xmlns="http://service.logchainer.ge.ch/">
+<!-- Directories path to adapt to environnement -->
+
 	<listeClientConf>
 		<ClientId>ClientA</ClientId>
 		<InputDir>D:/temp/logchainer/ClientA/input</InputDir>

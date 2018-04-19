@@ -181,3 +181,10 @@ LOGCHAINER.JAVA.LOT.BATCH/target/LOGCHAINER.LOT.BATCH-1.0.5-SNAPSHOT-assemblage/
 LOGCHAINER.JAVA.LOT.BATCH/target/LOGCHAINER.LOT.BATCH-1.0.5-SNAPSHOT-assemblage/LOGCHAINER.LOT.BATCH-1.0.5-SNAPSHOT/conf/application.properties
 LOGCHAINER.JAVA.LOT.BATCH/target/LOGCHAINER.LOT.BATCH-1.0.5-SNAPSHOT-assemblage/LOGCHAINER.LOT.BATCH-1.0.5-SNAPSHOT/bin/run.sh
 LOGCHAINER.JAVA.LOT.BATCH/target/LOGCHAINER.LOT.BATCH-1.0.5-SNAPSHOT-assemblage.zip
+logchainer/dependency-reduced-pom.xml
+logchainer-executable/target/assembly/logchainer-executable-1.0.6-SNAPSHOT-assemblage.zip
+logchainer-executable/target/archive-tmp/run.sh.1738401372.filtered
+logchainer-executable/target/archive-tmp/logback.properties.1309451806.filtered
+logchainer-executable/target/archive-tmp/errorMessages.properties.1692425639.filtered
+logchainer-executable/target/archive-tmp/confDirectories.xml.2004806971.filtered
+logchainer-executable/target/archive-tmp/application.properties.246617524.filtered
