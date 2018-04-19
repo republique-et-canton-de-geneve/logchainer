@@ -1,5 +1,8 @@
 package ch.ge.cti.logchainer.service.flux;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
 
@@ -55,4 +58,21 @@ public interface FluxService {
      * @return stamp
      */
     String getSortingStamp(String filename, String separator);
+
+    /**
+     * Check if the flux can be treated.
+     * 
+     * @param flux
+     * @return
+     */
+    boolean isFluxReadyToBeTreated(Map.Entry<String, ArrayList<FileWatched>> flux);
+
+    /**
+     * Trigger the flux treatment.
+     * 
+     * @param client
+     * @param allDoneFlux
+     * @param flux
+     */
+    void fluxTreatment(Client client, ArrayList<String> allDoneFlux, Map.Entry<String, ArrayList<FileWatched>> flux);
 }

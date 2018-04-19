@@ -30,21 +30,21 @@ public class FolderServiceImpl implements FolderService {
 
 	// the target destination can't contain a same name file
 	Path fileInInput = Paths.get(pathProvidingDir + FILE_SEPARATOR_CHAR + pathFile);
-	Path fileInTmp = Paths.get(pathArrivingDir + FILE_SEPARATOR_CHAR + pathFile);
+	Path fileInOutput = Paths.get(pathArrivingDir + FILE_SEPARATOR_CHAR + pathFile);
 	try {
-	    Files.move(fileInInput, fileInTmp, new CopyOption[] {});
+	    Files.move(fileInInput, fileInOutput, new CopyOption[] {});
 	} catch (FileNotFoundException e) {
 	    throw new BusinessException(fileInInput.toString(), e);
 	} catch (FileAlreadyExistsException e) {
-	    throw new BusinessException(fileInTmp.toString(), e);
+	    throw new BusinessException(fileInOutput.toString(), e);
 	} catch (IOException e) {
 	    throw new BusinessException(e);
 	}
 
 	if (LOG.isInfoEnabled())
-	    LOG.info("file successfully moved to directory : {}", fileInTmp.toString());
+	    LOG.info("file successfully moved to directory : {}", fileInOutput.toString());
 
-	return fileInTmp.toString();
+	return fileInOutput.toString();
     }
 
     @Override
@@ -68,5 +68,4 @@ public class FolderServiceImpl implements FolderService {
 
 	return fileInOutput.toString();
     }
-
 }

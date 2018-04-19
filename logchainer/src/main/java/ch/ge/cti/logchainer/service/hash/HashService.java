@@ -1,6 +1,8 @@
 package ch.ge.cti.logchainer.service.hash;
 
+import java.io.File;
 import java.io.InputStream;
+import java.util.Collection;
 
 public interface HashService {
     /**
@@ -17,4 +19,12 @@ public interface HashService {
      * @return empty byte array (arbitrary choice that can be changed)
      */
     byte[] getNullHash();
+
+    /**
+     * Get the hash of the tmp directory's already existing file.
+     * 
+     * @param previousFiles
+     * @return previous file's hashCode
+     */
+    byte[] getPreviousFileHash(Collection<File> previousFiles);
 }

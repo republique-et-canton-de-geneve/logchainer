@@ -1,7 +1,13 @@
 package ch.ge.cti.logchainer.service.hash;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.Collection;
+import java.util.Optional;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
@@ -36,5 +42,37 @@ public class HashServiceImpl implements HashService {
     public byte[] getNullHash() {
 	LOG.info("null hash method job");
 	return new byte[] {};
+    }
+
+    @Override
+    public byte[] getPreviousFileHash(Collection<File> previousFiles) {
+	byte[] hashCodeOfLog;
+	// hashing the provided file, with null hash if there's no file (=no
+	// previous same flux file)
+	Optional<File> previousFirstFile = previousFiles.stream().findFirst();
+	if (previousFirstFile.isPresent()) {
+	    File previousFile = previousFirstFile.get();
+	    try (InputStream is = new FileInputStream((previousFile))) {
+		LOG.debug("inputStream of the previous file opened");
+		hashCodeOfLog = getLogHashCode(is);
+	    } catch (FileNotFoundException e) {
+		throw new BusinessException(previousFile.getName(), e);
+	    } catch (IOException e) {
+		throw new BusinessException(e);
+	    }
+	    LOG.debug("previous file name is : {}", previousFile.getName());
+
+	    try {
+		Files.delete(previousFile.toPath());
+		LOG.debug("previous file deleted");
+	    } catch (IOException e) {
+		throw new BusinessException("couldn't delete the previous same flux file from working directory", e);
+	    }
+	} else {
+	    hashCodeOfLog = getNullHash();
+	    LOG.debug("null hash used");
+	}
+	LOG.debug("previous file hashCode computed");
+	return hashCodeOfLog;
     }
 }

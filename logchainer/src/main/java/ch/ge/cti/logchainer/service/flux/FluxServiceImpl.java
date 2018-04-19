@@ -1,16 +1,28 @@
 package ch.ge.cti.logchainer.service.flux;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
+import ch.ge.cti.logchainer.service.file.FileService;
+import ch.ge.cti.logchainer.service.logwatcher.LogWatcherService;
+import ch.ge.cti.logchainer.service.properties.UtilsComponents;
 
 @Service
 public class FluxServiceImpl implements FluxService {
+    @Autowired
+    private FileService fileService;
+    @Autowired
+    private UtilsComponents component;
+    @Autowired
+    private LogWatcherService watcherService;
+
     /**
      * logger
      */
@@ -65,5 +77,44 @@ public class FluxServiceImpl implements FluxService {
 
 	LOG.debug("the stamp of the file {} is : {}", filename, nameStampComponents[0]);
 	return nameStampComponents[0];
+    }
+
+    @Override
+    public boolean isFluxReadyToBeTreated(Map.Entry<String, ArrayList<FileWatched>> flux) {
+	boolean fluxReadyToBeTreated = true;
+	// checking if all files in a flux are ready to be treated
+	for (FileWatched file : flux.getValue()) {
+	    // check of the file
+	    if (!file.isReadyToBeTreated())
+		fluxReadyToBeTreated = false;
+	}
+
+	if (fluxReadyToBeTreated)
+	    LOG.debug("flux ready to be treated");
+
+	return fluxReadyToBeTreated;
+    }
+
+    @Override
+    public void fluxTreatment(Client client, ArrayList<String> allDoneFlux,
+	    Map.Entry<String, ArrayList<FileWatched>> flux) {
+	LOG.debug("flux {} starting to be treated", flux.getKey());
+	fileService.sortFiles(component.getSeparator(client), component.getSorter(client), flux.getValue());
+	LOG.debug("flux sorted");
+
+	// cheking if all files' treatment has been completed
+	boolean finished = true;
+	// iterating on all the files of one flux
+	for (FileWatched file : flux.getValue()) {
+	    String filename = file.getFilename();
+	    // checking if the file's treatment is complete
+	    if (!watcherService.treatmentAfterDetectionOfEvent(client, filename, file))
+		finished = false;
+	}
+	// registering the flux as completed (thus ready for deletion)
+	if (finished) {
+	    allDoneFlux.add(flux.getKey());
+	    LOG.info("flux {} entirely treated", flux.getKey());
+	}
     }
 }
