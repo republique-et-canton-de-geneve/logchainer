@@ -23,7 +23,7 @@
 		</file>
 		<file>
 			<source>src/main/assembly/xml/confDirectories.xml</source>
-			<outputDirectory>/conf</outputDirectory>
+			<outputDirectory>/conf/xml</outputDirectory>
 			<filtered>true</filtered>
 		</file>
 		<file>
