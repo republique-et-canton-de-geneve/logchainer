@@ -41,7 +41,7 @@
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 		</dependency>
-		
+
 		<!-- Monitoring via spring -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -52,7 +52,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-graphite-starter</artifactId>
+		</dependency>
+
 		<!-- Tests -->
 		<dependency>
 			<groupId>org.testng</groupId>
