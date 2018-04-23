@@ -22,7 +22,7 @@
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- log file name -->
-			<fileNamePattern>../config/${LOG_HOME}/logchainer-logs-print-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<fileNamePattern>../${LOG_HOME}/logchainer-logs-print-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 			<timeBasedFileNamingAndTriggeringPolicy
 				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
 				<maxFileSize>5MB</maxFileSize>
