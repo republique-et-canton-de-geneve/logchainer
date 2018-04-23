@@ -34,6 +34,9 @@ public class ClientServiceImpl implements ClientService {
 	    FileWatched fileToRegister = new FileWatched(((WatchEvent<Path>) event).context().toString());
 	    boolean toRegister = true;
 
+	    if (LOG.isDebugEnabled())
+		LOG.debug("Treating event from file : {}", fileToRegister.getFilename());
+
 	    // checking the validity of the filename
 	    if (!fileToRegister.getFilename().contains(component.getSeparator(client)))
 		return fileToRegister;

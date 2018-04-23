@@ -19,7 +19,7 @@ version at which point the hashCode is still present but null (we arbitrarly def
 
 This project only takes in charge the log chaining of provided files : if a version of the file isn't submited, no error 
 will be sent and there will be an undetected breach. Thus it is left to user's discretion to correctly establish the history 
-of modifications.
+of modifications. If a file does not have an appropriate name, it will be put in the corrupted files directory and the program won't do anything about it.
 
 ## Content
 
@@ -27,19 +27,20 @@ The project contains a working copy of the log chainer.
 
 # Running
 
-You can run the project from anywhere. However, you will have to write a run.sh or run.bat file to launch it.
+You can run the project from anywhere. However, you will have to create all necessary directories before launching (see wiki page).
 
 ## Components
 
 You will have to define : 
-*the localisation of all imported maven libraries
 *the localisation of the application.properties file (where you define the absolute path of the xml file containing the 
 	absolute path of directories to watch) : "-Dapplication.properties=pathToFile/application.properties"
+*the localisation of the errorMessages.properties file (where you define the messages corresponding to each error) : "-DerrorMessages.properties=../conf/errorMessages.properties"
+*the localisation of the properties_file file (which is the logback properties file) : "-Dproperties_file=../conf/logback.properties"
 
 # Documentation
 
 A wiki page is dedicated to this project, for more information go to : https://prod.etat-ge.ch/wikiadm/pages in the "Catalogue 
-des Services Transverses et des Composants Réutilisables" section and find 
+des Services Transverses et des Composants Réutilisables -- Catalogue des composants -- 4 - Vue Technique" section and find 
 the Log chainer (logchainer) page.
 
 # Contact
