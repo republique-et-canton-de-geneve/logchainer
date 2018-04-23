@@ -1,6 +1,7 @@
 package ch.ge.cti.logchainer.service.flux;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import ch.ge.cti.logchainer.beans.Client;
@@ -74,5 +75,5 @@ public interface FluxService {
      * @param allDoneFlux
      * @param flux
      */
-    void fluxTreatment(Client client, ArrayList<String> allDoneFlux, Map.Entry<String, ArrayList<FileWatched>> flux);
+    void fluxTreatment(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<FileWatched>> flux);
 }

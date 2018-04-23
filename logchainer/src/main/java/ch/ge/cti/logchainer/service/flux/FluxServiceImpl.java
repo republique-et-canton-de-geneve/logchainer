@@ -1,6 +1,7 @@
 package ch.ge.cti.logchainer.service.flux;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -96,7 +97,7 @@ public class FluxServiceImpl implements FluxService {
     }
 
     @Override
-    public void fluxTreatment(Client client, ArrayList<String> allDoneFlux,
+    public void fluxTreatment(Client client, List<String> allDoneFlux,
 	    Map.Entry<String, ArrayList<FileWatched>> flux) {
 	LOG.debug("flux {} starting to be treated", flux.getKey());
 	fileService.sortFiles(component.getSeparator(client), component.getSorter(client), flux.getValue());

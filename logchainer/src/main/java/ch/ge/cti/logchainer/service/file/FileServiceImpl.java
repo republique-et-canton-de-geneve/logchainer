@@ -4,11 +4,11 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
@@ -96,7 +96,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void sortFiles(String separator, String sorter, ArrayList<FileWatched> files) {
+    public void sortFiles(String separator, String sorter, List<FileWatched> files) {
 	LOG.debug("sorting the file list");
 	if (("alphabetical").equals(sorter)) {
 	    LOG.debug("sorting by alphabetical order");
