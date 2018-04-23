@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
-import ch.ge.cti.logchainer.exception.CorruptedKeyException;
 import ch.ge.cti.logchainer.service.flux.FluxService;
 import ch.ge.cti.logchainer.service.properties.UtilsComponents;
 
@@ -55,10 +54,7 @@ public class ClientServiceImpl implements ClientService {
 		LOG.debug("file registered");
 	    }
 	}
-	// reseting the to be able to use it again
-	if (!client.getKey().reset()) {
-	    throw new CorruptedKeyException(client.getConf().getClientId());
-	}
+
 	return null;
     }
 

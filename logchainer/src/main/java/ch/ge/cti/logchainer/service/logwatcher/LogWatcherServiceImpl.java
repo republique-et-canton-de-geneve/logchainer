@@ -21,6 +21,7 @@ import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
 import ch.ge.cti.logchainer.constante.LogChainerConstante;
 import ch.ge.cti.logchainer.exception.BusinessException;
+import ch.ge.cti.logchainer.exception.CorruptedKeyException;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.generate.LogChainerConf;
 import ch.ge.cti.logchainer.service.client.ClientService;
@@ -92,6 +93,10 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		    mover.moveFileInDirWithNoSameNameFile(corruptedFile.getFilename(), client.getConf().getInputDir(),
 			    client.getConf().getCorruptedFilesDir());
 		}
+
+		// reseting the to be able to use it again
+		if (!client.getKey().reset())
+		    throw new CorruptedKeyException(client.getConf().getClientId());
 	    }
 
 	    waitingForFileToBeReadyToBeLaunched(client);

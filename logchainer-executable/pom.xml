@@ -3,11 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-<!-- 	<parent> -->
-<!-- 		<groupId>ch.ge.cti.logchainer</groupId> -->
-<!-- 		<artifactId>logchainer-base</artifactId> -->
-<!-- 		<version>1.0.6-SNAPSHOT</version> -->
-<!-- 	</parent> -->
+	<parent>
+		<groupId>ch.ge.cti.logchainer</groupId>
+		<artifactId>logchainer-base</artifactId>
+		<version>1.0.6-SNAPSHOT</version>
+	</parent>
 
 	<groupId>ch.ge.cti.logchainer</groupId>
 	<version>1.0.6-SNAPSHOT</version>
@@ -26,24 +26,30 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
-					<descriptor>src/main/assembly/assemblage_lot.xml</descriptor>
-					<finalName>${project.artifactId}-${project.version}</finalName>
-					<outputDirectory>${project.build.directory}/assembly</outputDirectory>
+					<ignoreDirFormatExtensions>
+						true
+					</ignoreDirFormatExtensions>
+					<descriptors>
+						<descriptor>
+							${project.basedir}/src/main/assembly/assemblage_lot.xml
+						</descriptor>
+					</descriptors>
 				</configuration>
 				<executions>
 					<execution>
-						<id>mediation-zip</id>
-						<phase>compile</phase>
+						<id>assemblage-lot</id>
+						<phase>package</phase>
 						<goals>
-							<goal>single</goal>
+							<goal>directory-inline</goal>
+							<goal>attached</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
+
 	</build>
 
 </project>
