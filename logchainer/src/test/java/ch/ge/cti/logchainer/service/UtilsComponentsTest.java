@@ -36,17 +36,17 @@ public class UtilsComponentsTest {
 
 	ClientConf clientConfDefault = new ClientConf();
 	FilePattern filePatternDefault = new FilePattern();
-	
+
 	filePatternDefault.setSeparator("");
 	filePatternDefault.setSortingType("");
 
 	clientConfDefault.setFilePattern(filePatternDefault);
 	clientConfDefault.setClientId("ClientDefault");
 	clientConfDefault.setFileEncoding("");
-	
+
 	clientDefault = new Client(clientConfDefault);
     }
-    
+
     @Test
     public void getSorterTest() {
 	// checking that the correct value is returned for a custom component
@@ -57,7 +57,7 @@ public class UtilsComponentsTest {
 	// still get the correct default value
 	assertEquals(component.getSorter(clientDefault), LogChainerConstante.SORT_DEFAULT);
     }
-    
+
     @Test
     public void getSeparatorTest() {
 	// checking that the correct value is returned for a custom component
@@ -68,7 +68,7 @@ public class UtilsComponentsTest {
 	// still get the correct default value
 	assertEquals(component.getSeparator(clientDefault), LogChainerConstante.SEPARATOR_DEFAULT);
     }
-    
+
     @Test
     public void getEncodingTypeTest() {
 	// checking that the correct value is returned for a custom component
