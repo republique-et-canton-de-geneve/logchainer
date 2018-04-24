@@ -1,10 +1,10 @@
 package ch.ge.cti.logchainer.service.folder;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -33,7 +33,7 @@ public class FolderServiceImpl implements FolderService {
 	Path fileInOutput = Paths.get(pathArrivingDir + FILE_SEPARATOR_CHAR + pathFile);
 	try {
 	    Files.move(fileInInput, fileInOutput, new CopyOption[] {});
-	} catch (FileNotFoundException e) {
+	} catch (NoSuchFileException e) {
 	    throw new BusinessException(fileInInput.toString(), e);
 	} catch (FileAlreadyExistsException e) {
 	    throw new BusinessException(fileInOutput.toString(), e);

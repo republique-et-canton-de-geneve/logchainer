@@ -4,7 +4,9 @@ import static org.testng.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.Collection;
 
@@ -17,6 +19,7 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.configuration.TestConfiguration;
+import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.service.folder.FolderService;
 
 @ContextConfiguration(classes = TestConfiguration.class, loader = AnnotationConfigContextLoader.class)
@@ -45,6 +48,21 @@ public class FolderServiceTest extends AbstractTestNGSpringContextTests {
 	assertEquals(
 		existingFilesMoved.contains(new File(testResourcesDirPath + "/testMovingToFolder/testMovingFile2.txt")),
 		true);
+
+	Files.write(Paths.get(testResourcesDirPath + "/testMovingFile1.txt"), noData.getBytes());
+	try {
+	    mover.moveFileInDirWithNoSameNameFile("testMovingFile1.txt", testResourcesDirPath,
+		    testResourcesDirPath + "/testMovingToFolder");
+	} catch (BusinessException e) {
+	    assertEquals(e.getCause().getClass(), FileAlreadyExistsException.class);
+	}
+
+	try {
+	    mover.moveFileInDirWithNoSameNameFile("nonExistingFile", testResourcesDirPath,
+		    testResourcesDirPath + "/testMovingToFolder");
+	} catch (BusinessException e) {
+	    assertEquals(e.getCause().getClass(), NoSuchFileException.class);
+	}
 
 	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/testMovingFile1.txt"));
 	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/testMovingFile2.txt"));

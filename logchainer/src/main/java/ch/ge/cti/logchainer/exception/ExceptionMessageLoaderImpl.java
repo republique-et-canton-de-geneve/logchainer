@@ -3,6 +3,7 @@ package ch.ge.cti.logchainer.exception;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.NoSuchFileException;
 
 import javax.xml.bind.JAXBException;
 
@@ -21,7 +22,7 @@ public class ExceptionMessageLoaderImpl implements ExceptionMessageLoader {
 
     @Value("${FileAlreadyExistsException}")
     private String fileAlreadyExistsException;
-    
+
     @Value("${UnsupportedEncodingException}")
     private String unsupportedEncodingException;
 
@@ -42,7 +43,7 @@ public class ExceptionMessageLoaderImpl implements ExceptionMessageLoader {
 	if (e.getCause() instanceof JAXBException) {
 	    programmToBeInterrupted = true;
 	    return jaxbException;
-	} else if (e.getCause() instanceof FileNotFoundException) {
+	} else if (e.getCause() instanceof FileNotFoundException || e.getCause() instanceof NoSuchFileException) {
 	    programmToBeInterrupted = true;
 	    return fileNotFoundException;
 	} else if (e.getCause() instanceof FileAlreadyExistsException) {
