@@ -10,13 +10,15 @@ import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
-import ch.ge.cti.logchainer.service.folder.FolderServiceImpl;
+import ch.ge.cti.logchainer.service.folder.FolderService;
 
 public class FolderServiceTest {
     private final String testResourcesDirPath = "src/test/resources";
-    private final FolderServiceImpl mover = new FolderServiceImpl();
+    @Autowired
+    private FolderService mover;
 
     @Test(description = "testing the move of files")
     public void testMovingFile() throws Exception {

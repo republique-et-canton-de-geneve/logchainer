@@ -7,14 +7,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
-import ch.ge.cti.logchainer.service.hash.HashServiceImpl;
+import ch.ge.cti.logchainer.service.hash.HashService;
 
 public class HashServiceTest {
     private final String pathTestFile = "src/test/resources/testHashCode";
 
-    private final HashServiceImpl hasher = new HashServiceImpl();
+    @Autowired
+    private HashService hasher;
 
     @Test(description = "hash method test")
     public void testHashCode() throws IOException {
@@ -22,8 +24,15 @@ public class HashServiceTest {
 		91, -19, 117, 1, 50, 118, -89, 57, -10, 11, -8, -49, 15, -18 };
 
 	try (InputStream fileToTest = new FileInputStream(new File(pathTestFile))) {
+	    hasher.getNullHash();
 	    assertEquals(hasher.getLogHashCode(fileToTest), refArray);
 	}
     }
 
+    @Test(description = "null hash method test")
+    public void testNullHash() {
+	byte[] nullHash = new byte[]{};
+	
+	assertEquals(hasher.getNullHash(), nullHash);
+    }
 }

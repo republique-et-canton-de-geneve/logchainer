@@ -2,13 +2,15 @@ package ch.ge.cti.logchainer.service;
 
 import static org.testng.Assert.assertEquals;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.service.flux.FluxService;
-import ch.ge.cti.logchainer.service.flux.FluxServiceImpl;
 
 public class FluxServiceTest {
-    private FluxService fluxService = new FluxServiceImpl();
+    @Autowired
+    private FluxService fluxService;
+    
     private String testFilename = "fluxTest_stampTest.txt";
 
     @Test(description = "testing the method getting the flux name")

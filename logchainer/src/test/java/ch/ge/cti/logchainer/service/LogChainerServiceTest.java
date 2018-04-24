@@ -8,14 +8,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.service.hash.HashServiceImpl;
-import ch.ge.cti.logchainer.service.logchainer.LogChainerServiceImpl;
+import ch.ge.cti.logchainer.service.logchainer.LogChainerService;
 
 public class LogChainerServiceTest {
     private final String testResourcesPath = "src/test/resources";
-    private final LogChainerServiceImpl chainer = new LogChainerServiceImpl();
+    
+    @Autowired
+    private LogChainerService chainer;
 
     @Test(description = "testing the writting in a file")
     public void fileWriterTest() throws IOException {

@@ -2,6 +2,7 @@ package ch.ge.cti.logchainer.service;
 
 import static org.testng.Assert.assertEquals;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -9,7 +10,7 @@ import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.constante.LogChainerConstante;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.generate.FilePattern;
-import ch.ge.cti.logchainer.service.properties.UtilsComponentsImpl;
+import ch.ge.cti.logchainer.service.properties.UtilsComponents;
 
 public class UtilsComponentsTest {
     private static final String customSeparator = "-";
@@ -18,7 +19,9 @@ public class UtilsComponentsTest {
 
     private Client clientCustom;
     private Client clientDefault;
-    private UtilsComponentsImpl component = new UtilsComponentsImpl();
+    
+    @Autowired
+    private UtilsComponents component;
 
     @BeforeTest
     public void prepClients() {
