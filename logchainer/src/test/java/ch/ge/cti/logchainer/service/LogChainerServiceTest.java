@@ -9,12 +9,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
+import ch.ge.cti.logchainer.configuration.TestConfiguration;
 import ch.ge.cti.logchainer.service.hash.HashServiceImpl;
 import ch.ge.cti.logchainer.service.logchainer.LogChainerService;
 
-public class LogChainerServiceTest {
+@ContextConfiguration(classes = TestConfiguration.class, loader = AnnotationConfigContextLoader.class)
+public class LogChainerServiceTest extends AbstractTestNGSpringContextTests {
     private final String testResourcesPath = "src/test/resources";
     
     @Autowired

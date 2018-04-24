@@ -11,11 +11,16 @@ import java.util.Collection;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
+import ch.ge.cti.logchainer.configuration.TestConfiguration;
 import ch.ge.cti.logchainer.service.folder.FolderService;
 
-public class FolderServiceTest {
+@ContextConfiguration(classes = TestConfiguration.class, loader = AnnotationConfigContextLoader.class)
+public class FolderServiceTest extends AbstractTestNGSpringContextTests {
     private final String testResourcesDirPath = "src/test/resources";
     @Autowired
     private FolderService mover;

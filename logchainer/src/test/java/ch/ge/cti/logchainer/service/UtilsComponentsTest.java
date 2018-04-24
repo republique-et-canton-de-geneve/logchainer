@@ -3,16 +3,21 @@ package ch.ge.cti.logchainer.service;
 import static org.testng.Assert.assertEquals;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.beans.Client;
+import ch.ge.cti.logchainer.configuration.TestConfiguration;
 import ch.ge.cti.logchainer.constante.LogChainerConstante;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.generate.FilePattern;
 import ch.ge.cti.logchainer.service.properties.UtilsComponents;
 
-public class UtilsComponentsTest {
+@ContextConfiguration(classes = TestConfiguration.class, loader = AnnotationConfigContextLoader.class)
+public class UtilsComponentsTest extends AbstractTestNGSpringContextTests {
     private static final String customSeparator = "-";
     private static final String customSortingType = "alphabetical";
     private static final String customFileEncoding = "ISO-8859-1";
