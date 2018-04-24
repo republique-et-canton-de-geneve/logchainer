@@ -1,0 +1,54 @@
+<assembly>
+	<id>assemblage</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<includeBaseDirectory>true</includeBaseDirectory>
+
+	<files>
+		<file>
+			<source>src/main/assembly/config/application.properties</source>
+			<outputDirectory>/conf</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
+			<source>src/main/assembly/config/errorMessages.properties</source>
+			<outputDirectory>/conf</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
+			<source>src/main/assembly/config/logback.properties</source>
+			<outputDirectory>/conf</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
+			<source>src/main/assembly/xml/confDirectories.xml</source>
+			<outputDirectory>/conf/xml</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
+			<source>src/main/assembly/bin/run.sh</source>
+			<outputDirectory>/bin</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
+			<source>src/main/assembly/bin/logchainer-1.0.6-SNAPSHOT.jar</source>
+			<outputDirectory>/bin</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+	</files>
+
+	<fileSets>
+		<fileSet>
+			<directory>src/main/assembly</directory>
+			<includes>
+				<include>README*</include>
+				<include>LICENSE*</include>
+			</includes>
+			<outputDirectory>/</outputDirectory>
+			<!-- uniquement Ã partir du plugin assembly 2.2 <useStrictFiltering>true</useStrictFiltering> 
+				<filtered>true</filtered> -->
+		</fileSet>
+	</fileSets>
+</assembly>
+

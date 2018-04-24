@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<logChainerConf xmlns="http://service.logchainer.ge.ch/">
+<!-- Directories path to adapt to environnement -->
+
+	<listeClientConf>
+		<ClientId>ClientA</ClientId>
+		<InputDir>D:/temp/logchainer/ClientA/input</InputDir>
+		<WorkingDir>D:/temp/logchainer/ClientA/tmp</WorkingDir>
+		<OutputDir>D:/temp/logchainer/ClientA/output</OutputDir>
+		<CorruptedFilesDir>D:/temp/logchainer/ClientA/corruptedFiles</CorruptedFilesDir>
+		<filePattern>
+			<separator>_</separator>
+			<sortingType>alphabetically</sortingType>
+		</filePattern>
+		<fileEncoding>UTF-8</fileEncoding>
+	</listeClientConf>
+
+	<listeClientConf>
+		<ClientId>ClientB</ClientId>
+		<InputDir>D:/temp/logchainer/ClientB/input</InputDir>
+		<WorkingDir>D:/temp/logchainer/ClientB/tmp</WorkingDir>
+		<OutputDir>D:/temp/logchainer/ClientB/output</OutputDir>
+		<CorruptedFilesDir>D:/temp/logchainer/ClientB/corruptedFiles</CorruptedFilesDir>
+		<filePattern>
+			<separator>_</separator>
+			<sortingType>alphabetically</sortingType>
+		</filePattern>
+		<fileEncoding>UTF-8</fileEncoding>
+	</listeClientConf>
+</logChainerConf>
