@@ -7,32 +7,32 @@
 
 	<files>
 		<file>
-			<source>src/main/assembly/config/application.properties</source>
+			<source>src/main/config/application.properties</source>
 			<outputDirectory>/conf</outputDirectory>
 			<filtered>true</filtered>
 		</file>
 		<file>
-			<source>src/main/assembly/config/errorMessages.properties</source>
+			<source>src/main/config/errorMessages.properties</source>
 			<outputDirectory>/conf</outputDirectory>
 			<filtered>true</filtered>
 		</file>
 		<file>
-			<source>src/main/assembly/config/logback.properties</source>
+			<source>src/main/config/logback.properties</source>
 			<outputDirectory>/conf</outputDirectory>
 			<filtered>true</filtered>
 		</file>
 		<file>
-			<source>src/main/assembly/xml/confDirectories.xml</source>
+			<source>src/main/xml/confDirectories.xml</source>
 			<outputDirectory>/conf/xml</outputDirectory>
 			<filtered>true</filtered>
 		</file>
 		<file>
-			<source>src/main/assembly/bin/run.sh</source>
+			<source>src/main/bin/run.sh</source>
 			<outputDirectory>/bin</outputDirectory>
 			<filtered>true</filtered>
 		</file>
 		<file>
-			<source>src/main/assembly/bin/logchainer-1.0.6-SNAPSHOT.jar</source>
+			<source>src/main/bin/logchainer-1.0.6-SNAPSHOT.jar</source>
 			<outputDirectory>/bin</outputDirectory>
 			<filtered>true</filtered>
 		</file>

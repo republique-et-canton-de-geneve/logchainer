@@ -9,7 +9,7 @@
 		<version>1.0.6-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>logchainer-executable</artifactId>
+	<artifactId>logchainer-bin</artifactId>
 	<packaging>pom</packaging>
 
 

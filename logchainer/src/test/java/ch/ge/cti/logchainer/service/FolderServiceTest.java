@@ -2,10 +2,14 @@ package ch.ge.cti.logchainer.service;
 
 import static org.testng.Assert.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collection;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.service.folder.FolderServiceImpl;
@@ -20,14 +24,20 @@ public class FolderServiceTest {
 	Files.write(Paths.get(testResourcesDirPath + "/testMovingFile1.txt"), noData.getBytes());
 	Files.write(Paths.get(testResourcesDirPath + "/testMovingFile2.txt"), noData.getBytes());
 
-	String pathAfterBeingMoved1 = mover.moveFileInDirWithNoSameNameFile("testMovingFile1.txt", testResourcesDirPath,
+	mover.moveFileInDirWithNoSameNameFile("testMovingFile1.txt", testResourcesDirPath,
 		testResourcesDirPath + "/testMovingToFolder");
 
-	String pathAfterBeingMoved2 = mover.moveFileInDirWithNoSameNameFile("testMovingFile2.txt", testResourcesDirPath,
+	mover.moveFileInDirWithNoSameNameFile("testMovingFile2.txt", testResourcesDirPath,
 		testResourcesDirPath + "/testMovingToFolder");
 
-	assertEquals(pathAfterBeingMoved1, "src\\test\\resources\\testMovingToFolder\\testMovingFile1.txt");
-	assertEquals(pathAfterBeingMoved2, "src\\test\\resources\\testMovingToFolder\\testMovingFile2.txt");
+	Collection<File> existingFilesMoved = getPreviousFiles(testResourcesDirPath + "/testMovingToFolder");
+
+	assertEquals(
+		existingFilesMoved.contains(new File(testResourcesDirPath + "/testMovingToFolder/testMovingFile1.txt")),
+		true);
+	assertEquals(
+		existingFilesMoved.contains(new File(testResourcesDirPath + "/testMovingToFolder/testMovingFile2.txt")),
+		true);
 
 	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/testMovingFile1.txt"));
 	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/testMovingFile2.txt"));
@@ -39,28 +49,43 @@ public class FolderServiceTest {
 	Files.write(Paths.get(testResourcesDirPath + "/testMovingFile1.txt"), noData.getBytes());
 	Files.write(Paths.get(testResourcesDirPath + "/testMovingFile2.txt"), noData.getBytes());
 
-	String pathAfterBeingMoved1 = mover.copyFileToDirByReplacingExisting("testMovingFile1.txt",
-		testResourcesDirPath, testResourcesDirPath + "/testMovingToFolder");
+	mover.copyFileToDirByReplacingExisting("testMovingFile1.txt", testResourcesDirPath,
+		testResourcesDirPath + "/testMovingToFolder");
 
-	String pathAfterBeingMoved2 = mover.copyFileToDirByReplacingExisting("testMovingFile2.txt",
-		testResourcesDirPath, testResourcesDirPath + "/testMovingToFolder");
-	
-	assertEquals(pathAfterBeingMoved1, "src\\test\\resources\\testMovingToFolder\\testMovingFile1.txt");
-	assertEquals(pathAfterBeingMoved2, "src\\test\\resources\\testMovingToFolder\\testMovingFile2.txt");
+	mover.copyFileToDirByReplacingExisting("testMovingFile2.txt", testResourcesDirPath,
+		testResourcesDirPath + "/testMovingToFolder");
+
+	Collection<File> existingFilesCopied = getPreviousFiles(testResourcesDirPath + "/testMovingToFolder");
+	assertEquals(existingFilesCopied
+		.contains(new File(testResourcesDirPath + "/testMovingToFolder/testMovingFile1.txt")), true);
+	assertEquals(existingFilesCopied
+		.contains(new File(testResourcesDirPath + "/testMovingToFolder/testMovingFile2.txt")), true);
+
+	Collection<File> existingFilesStaying = getPreviousFiles(testResourcesDirPath);
+	assertEquals(existingFilesStaying.contains(new File(testResourcesDirPath + "/testMovingFile1.txt")), true);
+	assertEquals(existingFilesStaying.contains(new File(testResourcesDirPath + "/testMovingFile2.txt")), true);
+
+	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/testMovingFile1.txt"));
+	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/testMovingFile2.txt"));
+
+	Files.delete(Paths.get(testResourcesDirPath + "/testMovingFile1.txt"));
+	Files.delete(Paths.get(testResourcesDirPath + "/testMovingFile2.txt"));
+    }
+
+    @SuppressWarnings("unchecked")
+    private Collection<File> getPreviousFiles(String workingDir) {
+	// filtering the files to only keep the same as given flux one (should
+	// be unique)
+	return FileUtils.listFiles(new File(workingDir), new IOFileFilter() {
+	    @Override
+	    public boolean accept(File dir, String name) {
+		return accept(new File(name));
+	    }
+
+	    @Override
+	    public boolean accept(File file) {
+		return true;
+	    }
+	}, null);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
