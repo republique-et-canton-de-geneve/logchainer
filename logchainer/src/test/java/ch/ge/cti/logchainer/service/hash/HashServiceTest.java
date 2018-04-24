@@ -1,4 +1,4 @@
-package ch.ge.cti.logchainer.service;
+package ch.ge.cti.logchainer.service.hash;
 
 import static org.testng.Assert.assertEquals;
 
@@ -12,20 +12,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
-import ch.ge.cti.logchainer.configuration.TestConfiguration;
 import ch.ge.cti.logchainer.exception.BusinessException;
-import ch.ge.cti.logchainer.service.hash.HashService;
 
-@ContextConfiguration(classes = TestConfiguration.class, loader = AnnotationConfigContextLoader.class)
-public class HashServiceTest extends AbstractTestNGSpringContextTests {
-    @Autowired
-    private HashService hasher;
+public class HashServiceTest {
+    private final HashService hasher = new HashServiceImpl();
 
     @Test(description = "hash method test")
     public void testHashCode() throws IOException {
@@ -46,7 +38,7 @@ public class HashServiceTest extends AbstractTestNGSpringContextTests {
 	assertEquals(hasher.getNullHash(), nullHash);
     }
 
-    @Test(description = "testing the method")
+    @Test(description = "testing the method for getting the hashCode of files from collection (should be 1 file)")
     public void testGetPreviousHash() throws IOException {
 	Collection<File> previousFiles = new ArrayList<>();
 	String data = "testing the hash method";
@@ -59,7 +51,7 @@ public class HashServiceTest extends AbstractTestNGSpringContextTests {
 	try (InputStream stream = new FileInputStream(hashForTest)) {
 	    codeHashForTest = hasher.getLogHashCode(stream);
 	}
-	
+
 	assertEquals(hasher.getPreviousFileHash(previousFiles), codeHashForTest);
 
 	// test when no previous file have been found

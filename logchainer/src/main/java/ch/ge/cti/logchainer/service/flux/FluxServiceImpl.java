@@ -13,16 +13,16 @@ import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
 import ch.ge.cti.logchainer.service.file.FileService;
 import ch.ge.cti.logchainer.service.logwatcher.LogWatcherService;
-import ch.ge.cti.logchainer.service.properties.UtilsComponents;
+import ch.ge.cti.logchainer.service.utils.UtilsComponents;
 
 @Service
 public class FluxServiceImpl implements FluxService {
     @Autowired
-    private FileService fileService;
+    FileService fileService;
     @Autowired
-    private UtilsComponents component;
+    UtilsComponents component;
     @Autowired
-    private LogWatcherService watcherService;
+    LogWatcherService watcherService;
 
     /**
      * logger

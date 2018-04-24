@@ -25,7 +25,7 @@ import ch.ge.cti.logchainer.service.flux.FluxService;
 import ch.ge.cti.logchainer.service.folder.FolderService;
 import ch.ge.cti.logchainer.service.hash.HashService;
 import ch.ge.cti.logchainer.service.logchainer.LogChainerService;
-import ch.ge.cti.logchainer.service.properties.UtilsComponents;
+import ch.ge.cti.logchainer.service.utils.UtilsComponents;
 
 @Service
 public class FileServiceImpl implements FileService {

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
 import ch.ge.cti.logchainer.service.flux.FluxService;
-import ch.ge.cti.logchainer.service.properties.UtilsComponents;
+import ch.ge.cti.logchainer.service.utils.UtilsComponents;
 
 @Service
 public class ClientServiceImpl implements ClientService {

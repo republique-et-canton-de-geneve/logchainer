@@ -1,4 +1,4 @@
-package ch.ge.cti.logchainer.service;
+package ch.ge.cti.logchainer.service.logwatcher;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static org.testng.Assert.assertEquals;
@@ -16,16 +16,10 @@ import java.nio.file.WatchService;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import ch.ge.cti.logchainer.configuration.TestConfiguration;
-
-@ContextConfiguration(classes = TestConfiguration.class, loader = AnnotationConfigContextLoader.class)
-public class LogWatcherServiceTest extends AbstractTestNGSpringContextTests {
+public class LogWatcherServiceTest {
     private WatchService watchService;
     private WatchKey basePathWatchKey;
     private static String testResourcesDirPath = "src/test/resources/dirCreationDetectionTest";

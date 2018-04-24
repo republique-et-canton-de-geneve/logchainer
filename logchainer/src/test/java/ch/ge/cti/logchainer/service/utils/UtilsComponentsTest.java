@@ -1,32 +1,23 @@
-package ch.ge.cti.logchainer.service;
+package ch.ge.cti.logchainer.service.utils;
 
 import static org.testng.Assert.assertEquals;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.beans.Client;
-import ch.ge.cti.logchainer.configuration.TestConfiguration;
 import ch.ge.cti.logchainer.constante.LogChainerConstante;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.generate.FilePattern;
-import ch.ge.cti.logchainer.service.properties.UtilsComponents;
 
-@ContextConfiguration(classes = TestConfiguration.class, loader = AnnotationConfigContextLoader.class)
-public class UtilsComponentsTest extends AbstractTestNGSpringContextTests {
+public class UtilsComponentsTest {
     private static final String customSeparator = "-";
     private static final String customSortingType = "alphabetical";
     private static final String customFileEncoding = "ISO-8859-1";
 
     private Client clientCustom;
     private Client clientDefault;
-    
-    @Autowired
-    private UtilsComponents component;
+    private final UtilsComponents component = new UtilsComponentsImpl();
 
     @BeforeTest
     public void prepClients() {

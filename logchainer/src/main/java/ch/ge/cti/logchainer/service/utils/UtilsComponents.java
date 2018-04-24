@@ -1,4 +1,4 @@
-package ch.ge.cti.logchainer.service.properties;
+package ch.ge.cti.logchainer.service.utils;
 
 import ch.ge.cti.logchainer.beans.Client;
 
