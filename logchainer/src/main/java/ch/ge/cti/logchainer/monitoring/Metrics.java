@@ -30,7 +30,7 @@ public class Metrics {
 
     @Bean
     MeterRegistryCustomizer<GraphiteMeterRegistry> graphiteMetricsNamingConvention() {
-	return registry -> registry.config().namingConvention(MY_CUSTOM_CONVENTION);
+	return registry -> registry.config().namingConvention(null);
     }
 
     //	private final List<String> words = new CopyOnWriteArrayList<>();
