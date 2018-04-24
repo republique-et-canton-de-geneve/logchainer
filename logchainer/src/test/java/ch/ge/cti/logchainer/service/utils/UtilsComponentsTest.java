@@ -20,7 +20,7 @@ public class UtilsComponentsTest {
     private final UtilsComponents component = new UtilsComponentsImpl();
 
     @BeforeTest
-    public void prepClients() {
+    public void setUp() {
 	ClientConf clientConfCustom = new ClientConf();
 	FilePattern filePatternCustom = new FilePattern();
 

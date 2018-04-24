@@ -36,9 +36,9 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private HashService hasher;
     @Autowired
-    private FluxService fluxService;
+    FluxService fluxService;
     @Autowired
-    private UtilsComponents component;
+    UtilsComponents component;
 
     /**
      * logger
