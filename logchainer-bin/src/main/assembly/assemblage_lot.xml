@@ -31,11 +31,6 @@
 			<outputDirectory>/bin</outputDirectory>
 			<filtered>true</filtered>
 		</file>
-		<file>
-			<source>src/main/bin/logchainer-1.0.6-SNAPSHOT.jar</source>
-			<outputDirectory>/bin</outputDirectory>
-			<filtered>true</filtered>
-		</file>
 	</files>
 
 	<fileSets>
@@ -50,5 +45,14 @@
 				<filtered>true</filtered> -->
 		</fileSet>
 	</fileSets>
+	<dependencySets>
+		<dependencySet>
+			<includes>
+				<include>ch.ge.cti.logchainer:logchainer</include>
+			</includes>
+			<unpack>false</unpack>
+			<outputDirectory>/lib</outputDirectory>
+		</dependencySet>
+	</dependencySets>
 </assembly>
 
