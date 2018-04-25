@@ -43,7 +43,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     private static final int CONVERT_HOUR_TO_SECONDS = 3600;
     private static final int CONVERT_MINUTE_TO_SECONDS = 60;
 
-    private ArrayList<Client> clients = new ArrayList<>();
+    ArrayList<Client> clients = new ArrayList<>();
 
     /**
      * logger
