@@ -38,17 +38,17 @@ public class FileServiceTest {
 
     @BeforeTest
     public void setUp() {
-	ClientConf clientConfCustom = new ClientConf();
-	FilePattern filePatternCustom = new FilePattern();
+	ClientConf clientConf = new ClientConf();
+	FilePattern filePattern = new FilePattern();
 
-	filePatternCustom.setSeparator(SEPARATOR_DEFAULT);
-	filePatternCustom.setSortingType(SORT_DEFAULT);
+	filePattern.setSeparator(SEPARATOR_DEFAULT);
+	filePattern.setSortingType(SORT_DEFAULT);
 
-	clientConfCustom.setFilePattern(filePatternCustom);
-	clientConfCustom.setClientId("ClientTest");
-	clientConfCustom.setFileEncoding(ENCODING_TYPE_DEFAULT);
+	clientConf.setFilePattern(filePattern);
+	clientConf.setClientId("ClientTest");
+	clientConf.setFileEncoding(ENCODING_TYPE_DEFAULT);
 
-	client = new Client(clientConfCustom);
+	client = new Client(clientConf);
     }
 
     @Test(description = "testing the registration of a file")

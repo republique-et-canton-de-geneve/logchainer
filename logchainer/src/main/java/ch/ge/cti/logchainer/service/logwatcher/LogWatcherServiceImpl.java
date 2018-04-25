@@ -94,7 +94,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 			    client.getConf().getCorruptedFilesDir());
 		}
 
-		// reseting the to be able to use it again
+		// reseting the key to be able to use it again
 		if (!client.getKey().reset())
 		    throw new CorruptedKeyException(client.getConf().getClientId());
 	    }

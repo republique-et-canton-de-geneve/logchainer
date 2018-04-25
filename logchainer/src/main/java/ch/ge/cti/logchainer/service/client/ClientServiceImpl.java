@@ -17,9 +17,9 @@ import ch.ge.cti.logchainer.service.utils.UtilsComponents;
 @Service
 public class ClientServiceImpl implements ClientService {
     @Autowired
-    private FluxService fluxService;
+    FluxService fluxService;
     @Autowired
-    private UtilsComponents component;
+    UtilsComponents component;
 
     /**
      * logger
