@@ -1,5 +1,10 @@
 package ch.ge.cti.logchainer.service.flux;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -9,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mockito.Mockito;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -31,10 +35,10 @@ public class FluxServiceTest {
 	watchedFiles.add(new FileWatched("file2"));
 	watchedFiles.add(new FileWatched("file3"));
 	watchedFiles.add(new FileWatched("file4"));
-	
+
 	mapFluxFiles = new HashMap<>();
     }
-    
+
     @Test(description = "testing the method getting the flux name")
     public void testGetFluxName() {
 	String fluxname = fluxService.getFluxName(testFilename, "_");
@@ -48,14 +52,14 @@ public class FluxServiceTest {
 
 	assertEquals(stamp, "stampTest");
     }
-    
+
     @Test(description = "testing when the is ready to be treated")
     public void testIsFluxReadyToBeTreated() {
 	watchedFiles.stream().forEach(file -> file.setReadyToBeTreated(true));
 	mapFluxFiles.put("fluxTest1", watchedFiles);
 	mapFluxFiles.entrySet().stream().forEach(flux -> assertTrue(fluxService.isFluxReadyToBeTreated(flux)));
 	mapFluxFiles.clear();
-	
+
 	ArrayList<FileWatched> nonReadyWatchedFiles = new ArrayList<>();
 	nonReadyWatchedFiles.add(new FileWatched("file1"));
 	nonReadyWatchedFiles.add(new FileWatched("file2"));
@@ -66,33 +70,32 @@ public class FluxServiceTest {
 
     @Test(description = "testing the treatment of the flux")
     public void testFluxTreatment() {
-	LogWatcherServiceImpl watcherService = Mockito.mock(LogWatcherServiceImpl.class);
+	LogWatcherServiceImpl watcherService = mock(LogWatcherServiceImpl.class);
 	fluxService.watcherService = watcherService;
 
-	FileServiceImpl fileService = Mockito.mock(FileServiceImpl.class);
+	FileServiceImpl fileService = mock(FileServiceImpl.class);
 	fluxService.fileService = fileService;
 
-	UtilsComponentsImpl component = Mockito.mock(UtilsComponentsImpl.class);
+	UtilsComponentsImpl component = mock(UtilsComponentsImpl.class);
 	fluxService.component = component;
 
-	Client client = Mockito.mock(Client.class);
+	Client client = mock(Client.class);
 
 	List<String> refList = new ArrayList<>();
 	refList.add("fluxTest1");
 	refList.add("fluxTest2");
 	List<String> fluxList = new ArrayList<>();
-	
+
 	mapFluxFiles.put("fluxTest1", watchedFiles);
 	mapFluxFiles.put("fluxTest2", watchedFiles);
 
-	Mockito.when(watcherService.treatmentAfterDetectionOfEvent(Mockito.any(Client.class), Mockito.anyString(),
-		Mockito.any())).thenReturn(true);
-	Mockito.doNothing().when(fileService).sortFiles(Mockito.anyString(), Mockito.anyString(), Mockito.any());
-	Mockito.when(component.getSeparator(client)).thenReturn(null);
-	Mockito.when(component.getSorter(client)).thenReturn(null);
+	when(watcherService.treatmentAfterDetectionOfEvent(any(Client.class), anyString(), any())).thenReturn(true);
+	doNothing().when(fileService).sortFiles(anyString(), anyString(), any());
+	when(component.getSeparator(client)).thenReturn(null);
+	when(component.getSorter(client)).thenReturn(null);
 
 	mapFluxFiles.entrySet().stream().forEach(fluxname -> fluxService.fluxTreatment(client, fluxList, fluxname));
-	
+
 	assertEquals(fluxList.size(), refList.size());
 	fluxList.stream().forEach(flux -> assertTrue(refList.contains(flux)));
     }

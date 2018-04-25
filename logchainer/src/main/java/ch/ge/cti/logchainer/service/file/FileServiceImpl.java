@@ -30,11 +30,11 @@ import ch.ge.cti.logchainer.service.utils.UtilsComponents;
 @Service
 public class FileServiceImpl implements FileService {
     @Autowired
-    private FolderService mover;
+    FolderService mover;
     @Autowired
-    private LogChainerService chainer;
+    LogChainerService chainer;
     @Autowired
-    private HashService hasher;
+    HashService hasher;
     @Autowired
     FluxService fluxService;
     @Autowired
@@ -91,7 +91,7 @@ public class FileServiceImpl implements FileService {
 	mover.copyFileToDirByReplacingExisting(filename, client.getConf().getWorkingDir(),
 		client.getConf().getOutputDir());
 
-	if (!filename.isEmpty())
+	if (LOG.isInfoEnabled())
 	    LOG.info("end of the treatment of the file {} put in the input directory", filename);
     }
 
@@ -125,9 +125,15 @@ public class FileServiceImpl implements FileService {
 	});
     }
 
-    @Override
+    /**
+     * Get the collection of all already existing same flux files in tmp
+     * directory. (Should be only one)
+     * 
+     * @param fluxName
+     * @return collection of these files
+     */
     @SuppressWarnings("unchecked")
-    public Collection<File> getPreviousFiles(String fluxName, String workingDir, String separator) {
+    private Collection<File> getPreviousFiles(String fluxName, String workingDir, String separator) {
 	// filtering the files to only keep the same as given flux one (should
 	// be unique)
 	return FileUtils.listFiles(new File(workingDir), new IOFileFilter() {

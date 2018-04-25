@@ -1,7 +1,5 @@
 package ch.ge.cti.logchainer.service.file;
 
-import java.io.File;
-import java.util.Collection;
 import java.util.List;
 
 import ch.ge.cti.logchainer.beans.Client;
@@ -32,13 +30,4 @@ public interface FileService {
      * @param files
      */
     void sortFiles(String separator, String sorter, List<FileWatched> files);
-
-    /**
-     * Get the collection of all already existing same flux files in tmp
-     * directory. (Should be only one)
-     * 
-     * @param fluxName
-     * @return collection of these files
-     */
-    Collection<File> getPreviousFiles(String fluxName, String workingDir, String separator);
 }
