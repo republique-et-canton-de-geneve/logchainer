@@ -37,7 +37,7 @@ import ch.ge.cti.logchainer.service.file.FileServiceImpl;
 import ch.ge.cti.logchainer.service.folder.FolderServiceImpl;
 
 public class LogWatcherServiceTest {
-    private static final String testResourcesDirPath = "src/test/resources/dirCreationDetectionTest";
+    private static final String testResourcesDirPath = "src/test/resources";
     private static final String testCorruptedFilesDir = "src/test/resources/testCorruptedFilesDir";
     private static final String testKeyBecomingInvalidDir = "src/test/resources/createDeleteDir";
     private static final LogWatcherServiceImpl watcher = new LogWatcherServiceImpl();
@@ -93,7 +93,7 @@ public class LogWatcherServiceTest {
 	watcher.processEvents();
 
 	Collection<File> filesInCorruptedFilesDir = getPreviousFiles(testCorruptedFilesDir);
-//	assertTrue(filesInCorruptedFilesDir.contains(new File(testCorruptedFilesDir + "/" + filename)));
+	assertTrue(filesInCorruptedFilesDir.contains(new File(testCorruptedFilesDir + "/" + filename)));
 
 //	Files.delete(Paths.get(testCorruptedFilesDir + "/" + filename));
 
