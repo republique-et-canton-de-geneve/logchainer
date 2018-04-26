@@ -22,6 +22,8 @@ import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -45,6 +47,11 @@ public class LogWatcherServiceTest {
     private static final Client client = new Client(new ClientConf());
     private static final String filename = "testDelayFile";
     private static final FileWatched testFile = new FileWatched(filename);
+    
+    /**
+     * logger
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(LogWatcherServiceTest.class.getName());
 
     @BeforeTest
     public void setUp() throws Exception {

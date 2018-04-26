@@ -1,4 +1,4 @@
-package ch.ge.cti.logchainer.exception;
+package ch.ge.cti.logchainer.exception.loader;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -9,6 +9,11 @@ import javax.xml.bind.JAXBException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import ch.ge.cti.logchainer.exception.BusinessException;
+import ch.ge.cti.logchainer.exception.CorruptedKeyException;
+import ch.ge.cti.logchainer.exception.NameException;
+import ch.ge.cti.logchainer.exception.WatchServiceError;
 
 @Service
 public class ExceptionMessageLoaderImpl implements ExceptionMessageLoader {

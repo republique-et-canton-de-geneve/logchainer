@@ -1,4 +1,4 @@
-package ch.ge.cti.logchainer.exception;
+package ch.ge.cti.logchainer.exception.handler;
 
 public interface LogChainerExceptionHandlerService {
     /**

@@ -18,7 +18,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import ch.ge.cti.logchainer.exception.BusinessException;
-import ch.ge.cti.logchainer.exception.LogChainerExceptionHandlerServiceImpl;
+import ch.ge.cti.logchainer.exception.handler.LogChainerExceptionHandlerServiceImpl;
 import ch.ge.cti.logchainer.generate.LogChainerConf;
 import ch.ge.cti.logchainer.generate.ObjectFactory;
 import ch.ge.cti.logchainer.service.logwatcher.LogWatcherService;

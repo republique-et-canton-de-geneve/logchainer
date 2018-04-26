@@ -1,4 +1,6 @@
-package ch.ge.cti.logchainer.exception;
+package ch.ge.cti.logchainer.exception.loader;
+
+import ch.ge.cti.logchainer.exception.BusinessException;
 
 public interface ExceptionMessageLoader {
     /**
