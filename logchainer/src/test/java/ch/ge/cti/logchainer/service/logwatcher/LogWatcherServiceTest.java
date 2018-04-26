@@ -56,15 +56,6 @@ public class LogWatcherServiceTest {
 	clientConf.setCorruptedFilesDir(testCorruptedFilesDir);
 
 	clientConfList.getListeClientConf().add(clientConf);
-
-	ClientConf clientConf2 = new ClientConf();
-	new File(testKeyBecomingInvalidDir).mkdir();
-
-	clientConf2.setFilePattern(new FilePattern());
-	clientConf2.setClientId("ClientTestToDisappear");
-	clientConf2.setInputDir(testKeyBecomingInvalidDir);
-
-	clientConfList.getListeClientConf().add(clientConf2);
     }
 
     @Test(description = "testing the initialization of the clients")
@@ -86,16 +77,25 @@ public class LogWatcherServiceTest {
 	watcher.mover = mover;
 
 	// test for a corrupted file
-//	when(clientService.registerEvent(any(Client.class))).thenReturn(new FileWatched(filename));
-//	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenCallRealMethod();
-//
-//	Files.write(Paths.get(testResourcesDirPath + "/" + filename), noData.getBytes());
-//	watcher.processEvents();
-//
-//	Collection<File> filesInCorruptedFilesDir = getPreviousFiles(testCorruptedFilesDir);
-////	assertTrue(filesInCorruptedFilesDir.contains(new File(testCorruptedFilesDir + "/" + filename)));
-//
-//	Files.delete(Paths.get(testCorruptedFilesDir + "/" + filename));
+	when(clientService.registerEvent(any(Client.class))).thenReturn(new FileWatched(filename));
+	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenCallRealMethod();
+
+	Files.write(Paths.get(testResourcesDirPath + "/" + filename), noData.getBytes());
+	watcher.processEvents();
+
+	Collection<File> filesInCorruptedFilesDir = getPreviousFiles(testCorruptedFilesDir);
+	assertTrue(filesInCorruptedFilesDir.contains(new File(testCorruptedFilesDir + "/" + filename)));
+
+	Files.delete(Paths.get(testCorruptedFilesDir + "/" + filename));
+	
+	ClientConf clientConf2 = new ClientConf();
+	new File(testKeyBecomingInvalidDir).mkdir();
+
+	clientConf2.setFilePattern(new FilePattern());
+	clientConf2.setClientId("ClientTestToDisappear");
+	clientConf2.setInputDir(testKeyBecomingInvalidDir);
+
+	clientConfList.getListeClientConf().add(clientConf2);
 
 	// test for a key becoming invalid
 	when(clientService.registerEvent(any(Client.class))).thenReturn(null);
