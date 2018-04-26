@@ -84,15 +84,15 @@ public class LogWatcherServiceTest {
 	
     }
 
-//    @Test(description = "testing the initialization of the clients")
-//    public void testInitializeFileWatcherByClient() {
-//	watcher.initializeFileWatcherByClient(clientConfList);
-//	assertEquals(watcher.clients.size(), 2);
-//	assertEquals(watcher.clients.get(0).getConf(), clientConfList.getListeClientConf().get(0));
-//	assertNotNull(watcher.clients.get(0).getKey());
-//	
-//	
-//    }
+    @Test(description = "testing the initialization of the clients")
+    public void testInitializeFileWatcherByClient() {
+	watcher.initializeFileWatcherByClient(clientConfList);
+	assertEquals(watcher.clients.size(), 2);
+	assertEquals(watcher.clients.get(0).getConf(), clientConfList.getListeClientConf().get(0));
+	assertNotNull(watcher.clients.get(0).getKey());
+	
+	
+    }
 
     @Test(description = "testing the process of an event")
     public void testProcessEvents() throws IOException {
@@ -130,46 +130,46 @@ public class LogWatcherServiceTest {
 	Files.delete(Paths.get(testCorruptedFilesDir + "/" + filename));
 
 	// test for a key becoming invalid
-//	when(clientService.registerEvent(any(Client.class))).thenReturn(null);
-//
-//	Files.write(Paths.get(testKeyBecomingInvalidDir + "/" + filename), noData.getBytes());
-//	Files.delete(Paths.get(testKeyBecomingInvalidDir + "/" + filename));
-//	FileUtils.deleteDirectory(new File(testKeyBecomingInvalidDir));
-//	try {
-//	    watcher.processEvents();
-//	} catch (BusinessException e) {
-//	    assertEquals(e.getClass(), CorruptedKeyException.class);
-//	}
-//
-//	// test of the delay waited before the process of a file
-//	doNothing().when(clientService).deleteAllTreatedFluxFromMap(any(), any());
-//
-//	watcher.clients.clear();
-//	watcher.clients.add(client);
-//	client.getFilesWatched().add(testFile);
-//	client.getFilesWatched().get(0).setRegistered(true);
-//
-//	boolean loop = true;
-//	while (loop) {
-//	    watcher.processEvents();
-//	    if (testFile.isReadyToBeTreated())
-//		loop = false;
-//	}
-//	int actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
-//		+ LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS + LocalDateTime.now().getSecond();
-//	assertTrue(actualTime - testFile.getArrivingTime() > DELAY_TRANSFER_FILE);
+	when(clientService.registerEvent(any(Client.class))).thenReturn(null);
+
+	Files.write(Paths.get(testKeyBecomingInvalidDir + "/" + filename), noData.getBytes());
+	Files.delete(Paths.get(testKeyBecomingInvalidDir + "/" + filename));
+	FileUtils.deleteDirectory(new File(testKeyBecomingInvalidDir));
+	try {
+	    watcher.processEvents();
+	} catch (BusinessException e) {
+	    assertEquals(e.getClass(), CorruptedKeyException.class);
+	}
+
+	// test of the delay waited before the process of a file
+	doNothing().when(clientService).deleteAllTreatedFluxFromMap(any(), any());
+
+	watcher.clients.clear();
+	watcher.clients.add(client);
+	client.getFilesWatched().add(testFile);
+	client.getFilesWatched().get(0).setRegistered(true);
+
+	boolean loop = true;
+	while (loop) {
+	    watcher.processEvents();
+	    if (testFile.isReadyToBeTreated())
+		loop = false;
+	}
+	int actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
+		+ LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS + LocalDateTime.now().getSecond();
+	assertTrue(actualTime - testFile.getArrivingTime() > DELAY_TRANSFER_FILE);
     }
 
-//    @Test(description = "testing the removal of a file after it's process")
-//    public void testTreatmentAfterDetectionOfEvent() {
-//	FileServiceImpl fileService = mock(FileServiceImpl.class);
-//	watcher.fileService = fileService;
-//
-//	doNothing().when(fileService).newFileTreatment(any(Client.class), anyString());
-//
-//	watcher.treatmentAfterDetectionOfEvent(client, filename, testFile);
-//	assertFalse(watcher.clients.get(0).getFilesWatched().contains(testFile));
-//    }
+    @Test(description = "testing the removal of a file after it's process")
+    public void testTreatmentAfterDetectionOfEvent() {
+	FileServiceImpl fileService = mock(FileServiceImpl.class);
+	watcher.fileService = fileService;
+
+	doNothing().when(fileService).newFileTreatment(any(Client.class), anyString());
+
+	watcher.treatmentAfterDetectionOfEvent(client, filename, testFile);
+	assertFalse(watcher.clients.get(0).getFilesWatched().contains(testFile));
+    }
 
     @SuppressWarnings("unchecked")
     private Collection<File> getPreviousFiles(String workingDir) {

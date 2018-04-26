@@ -84,16 +84,12 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    // No use of the take method because we don't want to wait until
 	    // an event is detected under one client
 	    // to move to the next one
-	    LOG.error("-*-*-*-*-*-*-* AVANT if (watchKey ");	    
 	    if (watchKey != null) {
-		LOG.error("-*-*-*-*-*-*-* DANS if (watchKey ");
 		LOG.info("event detected on client {}", client.getConf().getClientId());
 
 		client.setKey(watchKey);
 		FileWatched corruptedFile = clientService.registerEvent(client);
-		LOG.error("-*-*-*-*-*-*-* AVANT if (corruptedFile  ");
 		if (corruptedFile != null) {
-		    LOG.error("-*-*-*-*-*-*-* DANS if (corruptedFile  ");
 		    LOG.info("file {} has invalid name", corruptedFile.getFilename());
 		    mover.moveFileInDirWithNoSameNameFile(corruptedFile.getFilename(), client.getConf().getInputDir(),
 			    client.getConf().getCorruptedFilesDir());
