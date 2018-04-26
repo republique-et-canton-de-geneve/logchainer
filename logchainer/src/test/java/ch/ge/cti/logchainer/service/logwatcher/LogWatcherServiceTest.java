@@ -89,11 +89,11 @@ public class LogWatcherServiceTest {
     public void testProcessEvents() throws IOException {
 	// AVANT Log des lcient
 	for (Client clientBoucle : watcher.clients) {
-	    LOG.info("client : {}  avec chemin d'input : {}", clientBoucle.getConf().getClientId(), clientBoucle.getConf().getInputDir());
+	    LOG.info("-*-*-*-*-*-*-*-*client : {}  avec chemin d'input : {}", clientBoucle.getConf().getClientId(), clientBoucle.getConf().getInputDir());
 	}
 	watcher.initializeFileWatcherByClient(clientConfList);
 	for (Client clientBoucle : watcher.clients) {
-	    LOG.info("client : {}  avec chemin d'input : {}", clientBoucle.getConf().getClientId(), clientBoucle.getConf().getInputDir());
+	    LOG.info("-*-*-*-*-*-*-*-* client : {}  avec chemin d'input : {}", clientBoucle.getConf().getClientId(), clientBoucle.getConf().getInputDir());
 	}
 	// APREsLog des lcient	
 	String filename = "testCorruptedFile";
