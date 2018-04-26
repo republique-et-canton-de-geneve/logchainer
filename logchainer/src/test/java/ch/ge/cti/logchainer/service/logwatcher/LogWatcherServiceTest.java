@@ -37,7 +37,7 @@ import ch.ge.cti.logchainer.service.file.FileServiceImpl;
 import ch.ge.cti.logchainer.service.folder.FolderServiceImpl;
 
 public class LogWatcherServiceTest {
-    private static final String testResourcesDirPath = "src/test/resources";
+    private static final String testResourcesDirPath = "src/test/resources/dirCreationDetectionTest";
     private static final String testCorruptedFilesDir = "src/test/resources/testCorruptedFilesDir";
     private static final String testKeyBecomingInvalidDir = "src/test/resources/createDeleteDir";
     private static final LogWatcherServiceImpl watcher = new LogWatcherServiceImpl();
@@ -86,46 +86,46 @@ public class LogWatcherServiceTest {
 	watcher.mover = mover;
 
 	// test for a corrupted file
-	when(clientService.registerEvent(any(Client.class))).thenReturn(new FileWatched(filename));
-	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenCallRealMethod();
-
-	Files.write(Paths.get(testResourcesDirPath + "/" + filename), noData.getBytes());
-	watcher.processEvents();
-
-	Collection<File> filesInCorruptedFilesDir = getPreviousFiles(testCorruptedFilesDir);
-	assertTrue(filesInCorruptedFilesDir.contains(new File(testCorruptedFilesDir + "/" + filename)));
+//	when(clientService.registerEvent(any(Client.class))).thenReturn(new FileWatched(filename));
+//	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenCallRealMethod();
+//
+//	Files.write(Paths.get(testResourcesDirPath + "/" + filename), noData.getBytes());
+//	watcher.processEvents();
+//
+//	Collection<File> filesInCorruptedFilesDir = getPreviousFiles(testCorruptedFilesDir);
+//	assertTrue(filesInCorruptedFilesDir.contains(new File(testCorruptedFilesDir + "/" + filename)));
 
 //	Files.delete(Paths.get(testCorruptedFilesDir + "/" + filename));
 
 	// test for a key becoming invalid
-//	when(clientService.registerEvent(any(Client.class))).thenReturn(null);
-//
-//	Files.write(Paths.get(testKeyBecomingInvalidDir + "/" + filename), noData.getBytes());
-//	Files.delete(Paths.get(testKeyBecomingInvalidDir + "/" + filename));
-//	FileUtils.deleteDirectory(new File(testKeyBecomingInvalidDir));
-//	try {
-//	    watcher.processEvents();
-//	} catch (BusinessException e) {
-//	    assertEquals(e.getClass(), CorruptedKeyException.class);
-//	}
-//
-//	// test of the delay waited before the process of a file
-//	doNothing().when(clientService).deleteAllTreatedFluxFromMap(any(), any());
-//
-//	watcher.clients.clear();
-//	watcher.clients.add(client);
-//	client.getFilesWatched().add(testFile);
-//	client.getFilesWatched().get(0).setRegistered(true);
-//
-//	boolean loop = true;
-//	while (loop) {
-//	    watcher.processEvents();
-//	    if (testFile.isReadyToBeTreated())
-//		loop = false;
-//	}
-//	int actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
-//		+ LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS + LocalDateTime.now().getSecond();
-//	assertTrue(actualTime - testFile.getArrivingTime() > DELAY_TRANSFER_FILE);
+	when(clientService.registerEvent(any(Client.class))).thenReturn(null);
+
+	Files.write(Paths.get(testKeyBecomingInvalidDir + "/" + filename), noData.getBytes());
+	Files.delete(Paths.get(testKeyBecomingInvalidDir + "/" + filename));
+	FileUtils.deleteDirectory(new File(testKeyBecomingInvalidDir));
+	try {
+	    watcher.processEvents();
+	} catch (BusinessException e) {
+	    assertEquals(e.getClass(), CorruptedKeyException.class);
+	}
+
+	// test of the delay waited before the process of a file
+	doNothing().when(clientService).deleteAllTreatedFluxFromMap(any(), any());
+
+	watcher.clients.clear();
+	watcher.clients.add(client);
+	client.getFilesWatched().add(testFile);
+	client.getFilesWatched().get(0).setRegistered(true);
+
+	boolean loop = true;
+	while (loop) {
+	    watcher.processEvents();
+	    if (testFile.isReadyToBeTreated())
+		loop = false;
+	}
+	int actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
+		+ LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS + LocalDateTime.now().getSecond();
+	assertTrue(actualTime - testFile.getArrivingTime() > DELAY_TRANSFER_FILE);
     }
 
     @Test(description = "testing the removal of a file after it's process")

@@ -90,6 +90,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		client.setKey(watchKey);
 		FileWatched corruptedFile = clientService.registerEvent(client);
 		if (corruptedFile != null) {
+		    LOG.info("file {} has invalid name", corruptedFile.getFilename());
 		    mover.moveFileInDirWithNoSameNameFile(corruptedFile.getFilename(), client.getConf().getInputDir(),
 			    client.getConf().getCorruptedFilesDir());
 		}
