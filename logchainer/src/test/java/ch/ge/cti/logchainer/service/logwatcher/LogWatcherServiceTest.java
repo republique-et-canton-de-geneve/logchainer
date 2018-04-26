@@ -25,8 +25,6 @@ import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -51,11 +49,6 @@ public class LogWatcherServiceTest {
     private final String filename = "testDelayFile";
     private final FileWatched testFile = new FileWatched(filename);
     private Client clientProbleme;
-    
-    /**
-     * logger
-     */
-    private static final Logger LOG = LoggerFactory.getLogger(LogWatcherServiceTest.class.getName());
 
     @BeforeTest
     public void setUp() throws IOException {
@@ -67,6 +60,7 @@ public class LogWatcherServiceTest {
 	clientConf.setCorruptedFilesDir(testCorruptedFilesDir);
 
 	clientConfList.getListeClientConf().add(clientConf);
+	
 	clientProbleme = new Client(clientConf);
 	Path inputDirPath = Paths.get(clientProbleme.getConf().getInputDir());
 	WatchService watcher = clientProbleme.getWatcher();
@@ -90,22 +84,13 @@ public class LogWatcherServiceTest {
 	assertEquals(watcher.clients.size(), 2);
 	assertEquals(watcher.clients.get(0).getConf(), clientConfList.getListeClientConf().get(0));
 	assertNotNull(watcher.clients.get(0).getKey());
-	
-	
     }
 
     @Test(description = "testing the process of an event")
     public void testProcessEvents() throws IOException {
-	// AVANT Log des lcient
-	for (Client clientBoucle : watcher.clients) {
-	    LOG.info("-*-*-*-*-*-*-*-*client : {}  avec chemin d'input : {}", clientBoucle.getConf().getClientId(), clientBoucle.getConf().getInputDir());
-	}
 	watcher.clients.clear();
 	watcher.clients.add(clientProbleme);
-	for (Client clientBoucle : watcher.clients) {
-	    LOG.info("-*-*-*-*-*-*-*-* client : {}  avec chemin d'input : {}", clientBoucle.getConf().getClientId(), clientBoucle.getConf().getInputDir());
-	}
-	// APREsLog des lcient	
+
 	String filename = "testCorruptedFile";
 	String noData = "";
 
@@ -122,10 +107,7 @@ public class LogWatcherServiceTest {
 	watcher.processEvents();
 
 	Collection<File> filesInCorruptedFilesDir = getPreviousFiles(testResourcesDirPath);
-	for (File file : filesInCorruptedFilesDir) {
-	    LOG.info("-*-*-*-*-*-*-*-* file is : {}", file.getAbsolutePath());
-	}
-//	assertTrue(filesInCorruptedFilesDir.contains(new File(testCorruptedFilesDir + "/" + filename)));
+	assertTrue(filesInCorruptedFilesDir.contains(new File(testCorruptedFilesDir + "/" + filename)));
 
 	Files.delete(Paths.get(testCorruptedFilesDir + "/" + filename));
 
