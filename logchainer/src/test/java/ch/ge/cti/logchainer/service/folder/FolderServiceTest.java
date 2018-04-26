@@ -22,31 +22,33 @@ import ch.ge.cti.logchainer.service.folder.FolderServiceImpl;
 public class FolderServiceTest {
     private final String testResourcesDirPath = "src/test/resources";
     private final FolderService mover = new FolderServiceImpl();
+    private static final String filename1 = "testMovingFile1.txt";
+    private static final String filename2 = "testMovingFile2.txt";
 
     @Test(description = "testing the move of files")
     public void testMovingFile() throws Exception {
 	String noData = "";
-	Files.write(Paths.get(testResourcesDirPath + "/testMovingFile1.txt"), noData.getBytes());
-	Files.write(Paths.get(testResourcesDirPath + "/testMovingFile2.txt"), noData.getBytes());
+	Files.write(Paths.get(testResourcesDirPath + "/" + filename1), noData.getBytes());
+	Files.write(Paths.get(testResourcesDirPath + "/" + filename2), noData.getBytes());
 
-	mover.moveFileInDirWithNoSameNameFile("testMovingFile1.txt", testResourcesDirPath,
+	mover.moveFileInDirWithNoSameNameFile(filename1, testResourcesDirPath,
 		testResourcesDirPath + "/testMovingToFolder");
 
-	mover.moveFileInDirWithNoSameNameFile("testMovingFile2.txt", testResourcesDirPath,
+	mover.moveFileInDirWithNoSameNameFile(filename2, testResourcesDirPath,
 		testResourcesDirPath + "/testMovingToFolder");
 
 	Collection<File> existingFilesMoved = getPreviousFiles(testResourcesDirPath + "/testMovingToFolder");
 
 	assertEquals(
-		existingFilesMoved.contains(new File(testResourcesDirPath + "/testMovingToFolder/testMovingFile1.txt")),
+		existingFilesMoved.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename1)),
 		true);
 	assertEquals(
-		existingFilesMoved.contains(new File(testResourcesDirPath + "/testMovingToFolder/testMovingFile2.txt")),
+		existingFilesMoved.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename2)),
 		true);
 
-	Files.write(Paths.get(testResourcesDirPath + "/testMovingFile1.txt"), noData.getBytes());
+	Files.write(Paths.get(testResourcesDirPath + "/" + filename1), noData.getBytes());
 	try {
-	    mover.moveFileInDirWithNoSameNameFile("testMovingFile1.txt", testResourcesDirPath,
+	    mover.moveFileInDirWithNoSameNameFile(filename1, testResourcesDirPath,
 		    testResourcesDirPath + "/testMovingToFolder");
 	} catch (BusinessException e) {
 	    assertEquals(e.getCause().getClass(), FileAlreadyExistsException.class);
@@ -59,38 +61,38 @@ public class FolderServiceTest {
 	    assertEquals(e.getCause().getClass(), NoSuchFileException.class);
 	}
 
-	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/testMovingFile1.txt"));
-	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/testMovingFile2.txt"));
-	Files.delete(Paths.get(testResourcesDirPath + "/testMovingFile1.txt"));
+	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/" + filename1));
+	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/" + filename2));
+	Files.delete(Paths.get(testResourcesDirPath + "/" + filename1));
     }
 
     @Test(description = "testing the copy of files")
     public void testCopyingFile() throws IOException {
 	String noData = "";
-	Files.write(Paths.get(testResourcesDirPath + "/testMovingFile1.txt"), noData.getBytes());
-	Files.write(Paths.get(testResourcesDirPath + "/testMovingFile2.txt"), noData.getBytes());
+	Files.write(Paths.get(testResourcesDirPath + "/" + filename1), noData.getBytes());
+	Files.write(Paths.get(testResourcesDirPath + "/" + filename2), noData.getBytes());
 
-	mover.copyFileToDirByReplacingExisting("testMovingFile1.txt", testResourcesDirPath,
+	mover.copyFileToDirByReplacingExisting(filename1, testResourcesDirPath,
 		testResourcesDirPath + "/testMovingToFolder");
 
-	mover.copyFileToDirByReplacingExisting("testMovingFile2.txt", testResourcesDirPath,
+	mover.copyFileToDirByReplacingExisting(filename2, testResourcesDirPath,
 		testResourcesDirPath + "/testMovingToFolder");
 
 	Collection<File> existingFilesCopied = getPreviousFiles(testResourcesDirPath + "/testMovingToFolder");
 	assertTrue(existingFilesCopied
-		.contains(new File(testResourcesDirPath + "/testMovingToFolder/testMovingFile1.txt")));
+		.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename1)));
 	assertTrue(existingFilesCopied
-		.contains(new File(testResourcesDirPath + "/testMovingToFolder/testMovingFile2.txt")));
+		.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename2)));
 
 	Collection<File> existingFilesStaying = getPreviousFiles(testResourcesDirPath);
-	assertTrue(existingFilesStaying.contains(new File(testResourcesDirPath + "/testMovingFile1.txt")));
-	assertTrue(existingFilesStaying.contains(new File(testResourcesDirPath + "/testMovingFile2.txt")));
+	assertTrue(existingFilesStaying.contains(new File(testResourcesDirPath + "/" + filename1)));
+	assertTrue(existingFilesStaying.contains(new File(testResourcesDirPath + "/" + filename2)));
 
-	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/testMovingFile1.txt"));
-	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/testMovingFile2.txt"));
+	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/" + filename1));
+	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/" + filename2));
 
-	Files.delete(Paths.get(testResourcesDirPath + "/testMovingFile1.txt"));
-	Files.delete(Paths.get(testResourcesDirPath + "/testMovingFile2.txt"));
+	Files.delete(Paths.get(testResourcesDirPath + "/" + filename1));
+	Files.delete(Paths.get(testResourcesDirPath + "/" + filename2));
     }
 
     @SuppressWarnings("unchecked")

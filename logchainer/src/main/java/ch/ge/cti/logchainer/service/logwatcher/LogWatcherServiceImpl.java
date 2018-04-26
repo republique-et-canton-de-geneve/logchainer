@@ -32,16 +32,16 @@ import ch.ge.cti.logchainer.service.folder.FolderService;
 @Service
 public class LogWatcherServiceImpl implements LogWatcherService {
     @Autowired
-    private FolderService mover;
+    FolderService mover;
     @Autowired
-    private ClientService clientService;
+    ClientService clientService;
     @Autowired
     private FluxService fluxService;
     @Autowired
-    private FileService fileService;
+    FileService fileService;
 
-    private static final int CONVERT_HOUR_TO_SECONDS = 3600;
-    private static final int CONVERT_MINUTE_TO_SECONDS = 60;
+    static final int CONVERT_HOUR_TO_SECONDS = 3600;
+    static final int CONVERT_MINUTE_TO_SECONDS = 60;
 
     ArrayList<Client> clients = new ArrayList<>();
 

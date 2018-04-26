@@ -1,0 +1,1 @@
+File created so that the testCorruptedFilesDir directory is included in the project
