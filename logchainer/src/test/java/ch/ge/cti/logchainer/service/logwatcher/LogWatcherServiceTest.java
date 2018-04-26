@@ -72,18 +72,22 @@ public class LogWatcherServiceTest {
 	clientConf2.setInputDir(testKeyBecomingInvalidDir);
 
 	clientConfList.getListeClientConf().add(clientConf2);
+	
     }
 
-    @Test(description = "testing the initialization of the clients")
-    public void testInitializeFileWatcherByClient() {
-	watcher.initializeFileWatcherByClient(clientConfList);
-	assertEquals(watcher.clients.size(), 2);
-	assertEquals(watcher.clients.get(0).getConf(), clientConfList.getListeClientConf().get(0));
-	assertNotNull(watcher.clients.get(0).getKey());
-    }
+//    @Test(description = "testing the initialization of the clients")
+//    public void testInitializeFileWatcherByClient() {
+//	watcher.initializeFileWatcherByClient(clientConfList);
+//	assertEquals(watcher.clients.size(), 2);
+//	assertEquals(watcher.clients.get(0).getConf(), clientConfList.getListeClientConf().get(0));
+//	assertNotNull(watcher.clients.get(0).getKey());
+//	
+//	
+//    }
 
     @Test(description = "testing the process of an event")
     public void testProcessEvents() throws IOException {
+	watcher.initializeFileWatcherByClient(clientConfList);
 	String filename = "testCorruptedFile";
 	String noData = "";
 
