@@ -59,7 +59,7 @@ public class LogWatcherServiceTest {
 
 	clientConf.setFilePattern(new FilePattern());
 	clientConf.setClientId("ClientTest");
-	clientConf.setInputDir(testKeyBecomingInvalidDir);
+	clientConf.setInputDir(testResourcesDirPath);
 	clientConf.setCorruptedFilesDir(testCorruptedFilesDir);
 
 	clientConfList.getListeClientConf().add(clientConf);
@@ -108,10 +108,13 @@ public class LogWatcherServiceTest {
 	when(clientService.registerEvent(any(Client.class))).thenReturn(new FileWatched(filename));
 	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenCallRealMethod();
 
-	Files.write(Paths.get(testKeyBecomingInvalidDir + "/" + filename), noData.getBytes());
+	Files.write(Paths.get(testResourcesDirPath + "/" + filename), noData.getBytes());
 	watcher.processEvents();
 
-	Collection<File> filesInCorruptedFilesDir = getPreviousFiles(testCorruptedFilesDir);
+	Collection<File> filesInCorruptedFilesDir = getPreviousFiles(testResourcesDirPath);
+	for (File file : filesInCorruptedFilesDir) {
+	    LOG.info("-*-*-*-*-*-*-*-* file is : {}", file.getAbsolutePath());
+	}
 //	assertTrue(filesInCorruptedFilesDir.contains(new File(testCorruptedFilesDir + "/" + filename)));
 
 	Files.delete(Paths.get(testCorruptedFilesDir + "/" + filename));
