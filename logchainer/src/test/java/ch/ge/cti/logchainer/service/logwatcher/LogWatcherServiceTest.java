@@ -95,7 +95,7 @@ public class LogWatcherServiceTest {
 	Collection<File> filesInCorruptedFilesDir = getPreviousFiles(testCorruptedFilesDir);
 //	assertTrue(filesInCorruptedFilesDir.contains(new File(testCorruptedFilesDir + "/" + filename)));
 
-	Files.delete(Paths.get(testCorruptedFilesDir + "/" + filename));
+//	Files.delete(Paths.get(testCorruptedFilesDir + "/" + filename));
 
 	// test for a key becoming invalid
 //	when(clientService.registerEvent(any(Client.class))).thenReturn(null);
