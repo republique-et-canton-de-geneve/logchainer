@@ -17,6 +17,6 @@ public class LogChainerExceptionHandlerServiceTest {
 	ExceptionMessageLoaderImpl messageLoader = mock(ExceptionMessageLoaderImpl.class);
 	handler.messageLoader = messageLoader;
 	
-	handler.handleException(new BusinessException(cause));
+//	handler.handleException(new BusinessException(cause));
     }
 }
