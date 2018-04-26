@@ -59,7 +59,7 @@ public class LogWatcherServiceTest {
 
 	clientConf.setFilePattern(new FilePattern());
 	clientConf.setClientId("ClientTest");
-	clientConf.setInputDir(testResourcesDirPath);
+	clientConf.setInputDir("/data/prd/melusine/6599_jenkins_ACT210/workspace/logchainer-base/logchainer/"+testResourcesDirPath);
 	clientConf.setCorruptedFilesDir(testCorruptedFilesDir);
 
 	clientConfList.getListeClientConf().add(clientConf);
@@ -108,7 +108,7 @@ public class LogWatcherServiceTest {
 	when(clientService.registerEvent(any(Client.class))).thenReturn(new FileWatched(filename));
 	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenCallRealMethod();
 
-	Files.write(Paths.get(testResourcesDirPath + "/" + filename), noData.getBytes());
+	Files.write(Paths.get("/data/prd/melusine/6599_jenkins_ACT210/workspace/logchainer-base/logchainer/"+testResourcesDirPath + "/" + filename), noData.getBytes());
 	watcher.processEvents();
 
 	Collection<File> filesInCorruptedFilesDir = getPreviousFiles(testResourcesDirPath);
@@ -117,7 +117,7 @@ public class LogWatcherServiceTest {
 	}
 //	assertTrue(filesInCorruptedFilesDir.contains(new File(testCorruptedFilesDir + "/" + filename)));
 
-	Files.delete(Paths.get(testCorruptedFilesDir + "/" + filename));
+	Files.delete(Paths.get("/data/prd/melusine/6599_jenkins_ACT210/workspace/logchainer-base/logchainer/"+testCorruptedFilesDir + "/" + filename));
 
 	// test for a key becoming invalid
 	when(clientService.registerEvent(any(Client.class))).thenReturn(null);
