@@ -1,12 +1,17 @@
 package ch.ge.cti.logchainer.service.logwatcher;
 
-import static ch.ge.cti.logchainer.constante.LogChainerConstante.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static ch.ge.cti.logchainer.constante.LogChainerConstante.DELAY_TRANSFER_FILE;
 import static ch.ge.cti.logchainer.service.logwatcher.LogWatcherServiceImpl.CONVERT_HOUR_TO_SECONDS;
 import static ch.ge.cti.logchainer.service.logwatcher.LogWatcherServiceImpl.CONVERT_MINUTE_TO_SECONDS;
-
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +22,6 @@ import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.mockito.Mockito;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -84,7 +88,7 @@ public class LogWatcherServiceTest {
 	// test for a corrupted file
 	when(clientService.registerEvent(any(Client.class))).thenReturn(new FileWatched(filename));
 	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenCallRealMethod();
-	
+
 	Files.write(Paths.get(testResourcesDirPath + "/" + filename), noData.getBytes());
 	watcher.processEvents();
 
@@ -95,7 +99,7 @@ public class LogWatcherServiceTest {
 
 	// test for a key becoming invalid
 	when(clientService.registerEvent(any(Client.class))).thenReturn(null);
-	
+
 	Files.write(Paths.get(testKeyBecomingInvalidDir + "/" + filename), noData.getBytes());
 	Files.delete(Paths.get(testKeyBecomingInvalidDir + "/" + filename));
 	FileUtils.deleteDirectory(new File(testKeyBecomingInvalidDir));
@@ -106,31 +110,31 @@ public class LogWatcherServiceTest {
 	}
 
 	// test of the delay waited before the process of a file
-	doNothing().when(clientService).deleteAllTreatedFluxFromMap(any(),any());
-	
+	doNothing().when(clientService).deleteAllTreatedFluxFromMap(any(), any());
+
 	watcher.clients.clear();
 	watcher.clients.add(client);
 	client.getFilesWatched().add(testFile);
 	client.getFilesWatched().get(0).setRegistered(true);
-	
+
 	boolean loop = true;
 	while (loop) {
 	    watcher.processEvents();
-	    if(testFile.isReadyToBeTreated())
+	    if (testFile.isReadyToBeTreated())
 		loop = false;
 	}
 	int actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
-		    + LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS + LocalDateTime.now().getSecond();
+		+ LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS + LocalDateTime.now().getSecond();
 	assertTrue(actualTime - testFile.getArrivingTime() > DELAY_TRANSFER_FILE);
     }
-    
+
     @Test(description = "testing the removal of a file after it's process")
     public void testTreatmentAfterDetectionOfEvent() {
 	FileServiceImpl fileService = mock(FileServiceImpl.class);
 	watcher.fileService = fileService;
-	
+
 	doNothing().when(fileService).newFileTreatment(any(Client.class), anyString());
-	
+
 	watcher.treatmentAfterDetectionOfEvent(client, filename, testFile);
 	assertFalse(watcher.clients.get(0).getFilesWatched().contains(testFile));
     }
