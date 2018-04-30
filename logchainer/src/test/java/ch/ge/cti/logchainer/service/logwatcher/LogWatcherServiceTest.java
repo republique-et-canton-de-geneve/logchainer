@@ -106,7 +106,7 @@ public class LogWatcherServiceTest {
 	Files.write(Paths.get(testResourcesDirPath + "/" + filename), noData.getBytes());
 	watcher.processEvents();
 
-	Collection<File> filesInCorruptedFilesDir = getPreviousFiles(testResourcesDirPath);
+	Collection<File> filesInCorruptedFilesDir = getPreviousFiles(testCorruptedFilesDir);
 	assertTrue(filesInCorruptedFilesDir.contains(new File(testCorruptedFilesDir + "/" + filename)));
 
 	Files.delete(Paths.get(testCorruptedFilesDir + "/" + filename));
@@ -144,6 +144,11 @@ public class LogWatcherServiceTest {
 
     @Test(description = "testing the removal of a file after it's process")
     public void testTreatmentAfterDetectionOfEvent() {
+	watcher.clients.clear();
+	watcher.clients.add(client);
+	client.getFilesWatched().clear();
+	client.getFilesWatched().add(testFile);
+	
 	FileServiceImpl fileService = mock(FileServiceImpl.class);
 	watcher.fileService = fileService;
 
