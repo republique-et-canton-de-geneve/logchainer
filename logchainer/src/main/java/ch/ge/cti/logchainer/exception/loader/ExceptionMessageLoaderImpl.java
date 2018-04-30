@@ -20,28 +20,28 @@ public class ExceptionMessageLoaderImpl implements ExceptionMessageLoader {
     private boolean programmToBeInterrupted;
 
     @Value("${JAXBException}")
-    private String jaxbException;
+    String jaxbException;
 
     @Value("${FileNotFoundException}")
-    private String fileNotFoundException;
+    String fileNotFoundException;
 
     @Value("${FileAlreadyExistsException}")
-    private String fileAlreadyExistsException;
+    String fileAlreadyExistsException;
 
     @Value("${UnsupportedEncodingException}")
-    private String unsupportedEncodingException;
+    String unsupportedEncodingException;
 
     @Value("${NameException}")
-    private String nameException;
+    String nameException;
 
     @Value("${CorruptedKeyException}")
-    private String corruptedKeyException;
+    String corruptedKeyException;
 
     @Value("${WatchServiceError}")
-    private String watchServiceError;
+    String watchServiceError;
 
     @Value("${IOException}")
-    private String ioException;
+    String ioException;
 
     @Override
     public String getExceptionMessage(BusinessException e) {
