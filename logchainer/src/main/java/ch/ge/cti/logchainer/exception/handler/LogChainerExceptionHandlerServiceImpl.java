@@ -22,7 +22,7 @@ public class LogChainerExceptionHandlerServiceImpl implements LogChainerExceptio
 	if (exception instanceof BusinessException) {
 	    BusinessException businessException = (BusinessException) exception;
 	    String message = messageLoader.getExceptionMessage(businessException);
-	    LOG.error(message, businessException.getArgError(), businessException);
+	    LOG.error(message, businessException.getArgError());
 
 	    if (messageLoader.isProgrammToBeInterrupted())
 		throw businessException;

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.exception.CorruptedKeyException;
 import ch.ge.cti.logchainer.exception.NameException;
-import ch.ge.cti.logchainer.exception.WatchServiceError;
+import ch.ge.cti.logchainer.exception.WatchServiceException;
 
 @Service
 public class ExceptionMessageLoaderImpl implements ExceptionMessageLoader {
@@ -63,7 +63,7 @@ public class ExceptionMessageLoaderImpl implements ExceptionMessageLoader {
 	} else if (e instanceof CorruptedKeyException) {
 	    programmToBeInterrupted = false;
 	    return corruptedKeyException;
-	} else if (e instanceof WatchServiceError) {
+	} else if (e instanceof WatchServiceException) {
 	    programmToBeInterrupted = true;
 	    return watchServiceError;
 	} else {

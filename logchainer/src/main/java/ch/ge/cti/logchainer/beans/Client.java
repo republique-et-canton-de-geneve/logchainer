@@ -12,7 +12,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.ge.cti.logchainer.exception.BusinessException;
+import ch.ge.cti.logchainer.exception.WatchServiceException;
 import ch.ge.cti.logchainer.generate.ClientConf;
 
 /**
@@ -42,7 +42,7 @@ public class Client {
 	try {
 	    this.watcher = FileSystems.getDefault().newWatchService();
 	} catch (IOException e) {
-	    throw new BusinessException(this.conf.getClientId(), e);
+	    throw new WatchServiceException(this.conf.getClientId(), e);
 	}
 	this.filesWatched = new ArrayList<>();
 	this.fluxFileMap = new HashMap<>();
