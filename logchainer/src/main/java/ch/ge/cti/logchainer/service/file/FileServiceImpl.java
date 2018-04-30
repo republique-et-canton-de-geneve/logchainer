@@ -161,7 +161,7 @@ public class FileServiceImpl implements FileService {
      * @param previousFiles
      * @return the message
      */
-    private String messageToInsert(byte[] hashCodeOfLog, Collection<File> previousFiles, Client client) {
+    String messageToInsert(byte[] hashCodeOfLog, Collection<File> previousFiles, Client client) {
 	LOG.debug("computing the message to insert");
 	// Chaining date
 	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

@@ -9,13 +9,16 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.testng.annotations.BeforeTest;
@@ -102,17 +105,15 @@ public class FileServiceTest {
 	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenReturn(null);
 
 	when(hasher.getPreviousFileHash(any())).thenReturn(new byte[] {});
-	when(component.getEncodingType(any(Client.class))).thenReturn("Invalid_charset");
+	when(component.getEncodingType(any(Client.class))).thenReturn(ENCODING_TYPE_DEFAULT);
 
-	doNothing().when(chainer).chainingLogFile(anyString(), anyInt(), any(byte[].class));
+	doNothing().when(chainer).chainingLogFile(anyString(), anyInt(), any());
 
 	when(mover.copyFileToDirByReplacingExisting(anyString(), anyString(), anyString())).thenReturn(null);
 
-	try {
-	    fileService.newFileTreatment(client, filename);
-	} catch (BusinessException e) {
-	    assertEquals(e.getCause().getClass(), UnsupportedEncodingException.class);
-	}
+	fileService.newFileTreatment(client, filename);
+
+	verify(mover).copyFileToDirByReplacingExisting(any(), any(), any());
     }
 
     @Test(description = "testing the way of sorting the files using their stamp")
@@ -176,6 +177,38 @@ public class FileServiceTest {
 	for (int i = 0; i < filesAlphabeticalStamp.size(); ++i) {
 	    assertEquals(filesAlphabeticalStamp.get(i).getFilename(),
 		    filesAlphabeticalStampRefList.get(i).getFilename());
+	}
+    }
+
+    @Test(description = "testing the message to be inserted")
+    public void testMessageToInsert() {
+	Collection<File> previousFiles = new ArrayList<>();
+	byte[] noHash = new byte[] {};
+
+	UtilsComponentsImpl component = mock(UtilsComponentsImpl.class);
+	fileService.component = component;
+
+	when(component.getEncodingType(any(Client.class))).thenReturn(ENCODING_TYPE_DEFAULT);
+
+	// testing for a normal message with previous file
+	previousFiles.add(new File("testPreviousFilename"));
+	String messageTestWithPreviousFile = fileService.messageToInsert(noHash, previousFiles, client);
+	assertTrue(messageTestWithPreviousFile.contains("<Date of chaining: "));
+	assertTrue(messageTestWithPreviousFile.contains("> \n"));
+	assertTrue(messageTestWithPreviousFile.contains("<Previous file: testPreviousFilename> \n"));
+	assertTrue(messageTestWithPreviousFile.contains("<SHA-256: "));
+
+	// without previous file
+	previousFiles.clear();
+	String messageTestWithoutPreviousFile = fileService.messageToInsert(noHash, previousFiles, client);
+	assertTrue(messageTestWithoutPreviousFile.contains("<Previous file: none> \n"));
+
+	// invalid charset
+	when(component.getEncodingType(any(Client.class))).thenReturn("Invalid_charset");
+	try {
+	    fileService.messageToInsert(noHash, previousFiles, client);
+	} catch (BusinessException e) {
+	    assertEquals(e.getCause().getClass(), UnsupportedEncodingException.class);
 	}
     }
 }
