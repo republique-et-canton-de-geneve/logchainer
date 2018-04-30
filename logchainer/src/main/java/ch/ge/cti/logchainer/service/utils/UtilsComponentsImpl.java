@@ -3,7 +3,7 @@ package ch.ge.cti.logchainer.service.utils;
 import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.beans.Client;
-import ch.ge.cti.logchainer.constante.LogChainerConstante;
+import ch.ge.cti.logchainer.constant.LogChainerConstant;
 
 @Service
 public class UtilsComponentsImpl implements UtilsComponents {
@@ -12,7 +12,7 @@ public class UtilsComponentsImpl implements UtilsComponents {
 	if (!client.getConf().getFilePattern().getSortingType().isEmpty()) {
 	    return client.getConf().getFilePattern().getSortingType();
 	} else {
-	    return LogChainerConstante.SORT_DEFAULT;
+	    return LogChainerConstant.SORT_DEFAULT;
 	}
     }
 
@@ -21,7 +21,7 @@ public class UtilsComponentsImpl implements UtilsComponents {
 	if (!client.getConf().getFilePattern().getSeparator().isEmpty()) {
 	    return client.getConf().getFilePattern().getSeparator();
 	} else {
-	    return LogChainerConstante.SEPARATOR_DEFAULT;
+	    return LogChainerConstant.SEPARATOR_DEFAULT;
 	}
     }
 
@@ -30,7 +30,7 @@ public class UtilsComponentsImpl implements UtilsComponents {
 	if (!client.getConf().getFileEncoding().isEmpty()) {
 	    return client.getConf().getFileEncoding();
 	} else {
-	    return LogChainerConstante.ENCODING_TYPE_DEFAULT;
+	    return LogChainerConstant.ENCODING_TYPE_DEFAULT;
 	}
     }
 }

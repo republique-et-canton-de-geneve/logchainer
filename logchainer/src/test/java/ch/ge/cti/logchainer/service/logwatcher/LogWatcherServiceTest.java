@@ -1,6 +1,6 @@
 package ch.ge.cti.logchainer.service.logwatcher;
 
-import static ch.ge.cti.logchainer.constante.LogChainerConstante.DELAY_TRANSFER_FILE;
+import static ch.ge.cti.logchainer.constant.LogChainerConstant.DELAY_TRANSFER_FILE;
 import static ch.ge.cti.logchainer.service.logwatcher.LogWatcherServiceImpl.CONVERT_HOUR_TO_SECONDS;
 import static ch.ge.cti.logchainer.service.logwatcher.LogWatcherServiceImpl.CONVERT_MINUTE_TO_SECONDS;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;

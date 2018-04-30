@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
-import ch.ge.cti.logchainer.constante.LogChainerConstante;
+import ch.ge.cti.logchainer.constant.LogChainerConstant;
 import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.exception.CorruptedKeyException;
 import ch.ge.cti.logchainer.generate.ClientConf;
@@ -123,7 +123,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	    // checking the waited delay from the arrived time of the file until
 	    // now
-	    if (file.getArrivingTime() + LogChainerConstante.DELAY_TRANSFER_FILE < actualTime) {
+	    if (file.getArrivingTime() + LogChainerConstant.DELAY_TRANSFER_FILE < actualTime) {
 		LOG.debug("enough time waited for file {}", file.getFilename());
 		file.setReadyToBeTreated(true);
 	    }

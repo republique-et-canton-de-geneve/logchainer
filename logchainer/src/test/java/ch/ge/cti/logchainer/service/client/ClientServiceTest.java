@@ -1,8 +1,8 @@
 package ch.ge.cti.logchainer.service.client;
 
-import static ch.ge.cti.logchainer.constante.LogChainerConstante.ENCODING_TYPE_DEFAULT;
-import static ch.ge.cti.logchainer.constante.LogChainerConstante.SEPARATOR_DEFAULT;
-import static ch.ge.cti.logchainer.constante.LogChainerConstante.SORT_DEFAULT;
+import static ch.ge.cti.logchainer.constant.LogChainerConstant.ENCODING_TYPE_DEFAULT;
+import static ch.ge.cti.logchainer.constant.LogChainerConstant.SEPARATOR_DEFAULT;
+import static ch.ge.cti.logchainer.constant.LogChainerConstant.SORT_DEFAULT;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;

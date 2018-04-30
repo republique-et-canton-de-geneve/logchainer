@@ -1,8 +1,8 @@
 package ch.ge.cti.logchainer.service.file;
 
-import static ch.ge.cti.logchainer.constante.LogChainerConstante.ENCODING_TYPE_DEFAULT;
-import static ch.ge.cti.logchainer.constante.LogChainerConstante.SEPARATOR_DEFAULT;
-import static ch.ge.cti.logchainer.constante.LogChainerConstante.SORT_DEFAULT;
+import static ch.ge.cti.logchainer.constant.LogChainerConstant.ENCODING_TYPE_DEFAULT;
+import static ch.ge.cti.logchainer.constant.LogChainerConstant.SEPARATOR_DEFAULT;
+import static ch.ge.cti.logchainer.constant.LogChainerConstant.SORT_DEFAULT;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;

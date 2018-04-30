@@ -6,7 +6,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.beans.Client;
-import ch.ge.cti.logchainer.constante.LogChainerConstante;
+import ch.ge.cti.logchainer.constant.LogChainerConstant;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.generate.FilePattern;
 
@@ -54,7 +54,7 @@ public class UtilsComponentsTest {
 
 	// checking that if we don't have any value for a component part, we
 	// still get the correct default value
-	assertEquals(component.getSorter(clientDefault), LogChainerConstante.SORT_DEFAULT);
+	assertEquals(component.getSorter(clientDefault), LogChainerConstant.SORT_DEFAULT);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class UtilsComponentsTest {
 
 	// checking that if we don't have any value for a component part, we
 	// still get the correct default value
-	assertEquals(component.getSeparator(clientDefault), LogChainerConstante.SEPARATOR_DEFAULT);
+	assertEquals(component.getSeparator(clientDefault), LogChainerConstant.SEPARATOR_DEFAULT);
     }
 
     @Test
@@ -76,6 +76,6 @@ public class UtilsComponentsTest {
 
 	// checking that if we don't have any value for a component part, we
 	// still get the correct default value
-	assertEquals(component.getEncodingType(clientDefault), LogChainerConstante.ENCODING_TYPE_DEFAULT);
+	assertEquals(component.getEncodingType(clientDefault), LogChainerConstant.ENCODING_TYPE_DEFAULT);
     }
 }
