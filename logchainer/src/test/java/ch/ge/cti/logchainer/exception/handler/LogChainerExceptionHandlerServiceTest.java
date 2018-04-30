@@ -1,10 +1,14 @@
 package ch.ge.cti.logchainer.exception.handler;
 
+import static ch.qos.logback.classic.Level.OFF;
+import static ch.qos.logback.classic.Level.WARN;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.exception.BusinessException;
@@ -12,9 +16,19 @@ import ch.ge.cti.logchainer.exception.CorruptedKeyException;
 import ch.ge.cti.logchainer.exception.NameException;
 import ch.ge.cti.logchainer.exception.WatchServiceException;
 import ch.ge.cti.logchainer.exception.loader.ExceptionMessageLoaderImpl;
+import ch.qos.logback.classic.Logger;
 
 public class LogChainerExceptionHandlerServiceTest {
     private final LogChainerExceptionHandlerServiceImpl handler = new LogChainerExceptionHandlerServiceImpl();
+    private Logger LOG;
+
+    @BeforeTest
+    public void setUp() {
+	// Temporary mute of the logs not to get any logs of error while testing
+	// the exceptions method
+	LOG = (Logger) LogChainerExceptionHandlerServiceImpl.LOG;
+	LOG.setLevel(OFF);
+    }
 
     @Test(description = "testing the way of processing an exception")
     public void testHandleException() {
@@ -64,5 +78,11 @@ public class LogChainerExceptionHandlerServiceTest {
 	} catch (RuntimeException e) {
 	    assertEquals(e.getClass(), RuntimeException.class);
 	}
+    }
+
+    @AfterTest
+    public void tearDown() {
+	// reseting log Level to original one
+	LOG.setLevel(WARN);
     }
 }

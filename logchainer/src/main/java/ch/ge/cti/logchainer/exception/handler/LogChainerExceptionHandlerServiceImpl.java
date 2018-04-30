@@ -15,7 +15,7 @@ public class LogChainerExceptionHandlerServiceImpl implements LogChainerExceptio
     /**
      * logger
      */
-    private static final Logger LOG = LoggerFactory.getLogger(LogChainerExceptionHandlerServiceImpl.class.getName());
+    static Logger LOG = LoggerFactory.getLogger(LogChainerExceptionHandlerServiceImpl.class.getName());
 
     @Override
     public void handleException(RuntimeException exception) {
