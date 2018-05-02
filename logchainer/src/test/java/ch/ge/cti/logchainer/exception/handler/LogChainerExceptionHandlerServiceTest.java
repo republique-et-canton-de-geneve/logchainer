@@ -26,7 +26,7 @@ public class LogChainerExceptionHandlerServiceTest {
     public void setUp() {
 	// Temporary mute of the logs not to get any logs of error while testing
 	// the exceptions method
-	LOG = (Logger) LogChainerExceptionHandlerServiceImpl.LOG;
+	LOG = (Logger) LogChainerExceptionHandlerServiceImpl.log;
 	LOG.setLevel(OFF);
     }
 

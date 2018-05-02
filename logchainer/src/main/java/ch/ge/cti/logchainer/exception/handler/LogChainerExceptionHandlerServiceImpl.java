@@ -15,19 +15,19 @@ public class LogChainerExceptionHandlerServiceImpl implements LogChainerExceptio
     /**
      * logger
      */
-    static Logger LOG = LoggerFactory.getLogger(LogChainerExceptionHandlerServiceImpl.class.getName());
+    static Logger log = LoggerFactory.getLogger(LogChainerExceptionHandlerServiceImpl.class.getName());
 
     @Override
     public void handleException(RuntimeException exception) {
 	if (exception instanceof BusinessException) {
 	    BusinessException businessException = (BusinessException) exception;
 	    String message = messageLoader.getExceptionMessage(businessException);
-	    LOG.error(message, businessException.getArgError());
+	    log.error(message, businessException.getArgError());
 
 	    if (messageLoader.isProgrammToBeInterrupted())
 		throw businessException;
 	} else {
-	    LOG.error("Unhandled runtime exception occurred", exception);
+	    log.error("Unhandled runtime exception occurred", exception);
 	    throw exception;
 	}
     }
