@@ -99,7 +99,6 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		if (!client.getKey().reset())
 		    throw new CorruptedKeyException(client.getConf().getClientId());
 	    }
-
 	    waitingForFileToBeReadyToBeLaunched(client);
 	}
     }
