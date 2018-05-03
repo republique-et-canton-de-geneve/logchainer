@@ -1,5 +1,6 @@
 package ch.ge.cti.logchainer.service.logwatcher;
 
+import static ch.ge.cti.logchainer.constant.LogChainerConstant.DELAY_TRANSFER_FILE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
-import ch.ge.cti.logchainer.constant.LogChainerConstant;
 import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.exception.CorruptedKeyException;
 import ch.ge.cti.logchainer.generate.ClientConf;
@@ -89,9 +89,20 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 		client.setKey(watchKey);
 		FileWatched corruptedFile = clientService.registerEvent(client);
-		
+
 		if (corruptedFile != null) {
 		    LOG.info("file {} has invalid name", corruptedFile.getFilename());
+		    
+		    // Waiting for transfer completion of the corrupted file
+		    int actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
+			    + LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS
+			    + LocalDateTime.now().getSecond();
+		    while (corruptedFile.getArrivingTime() + DELAY_TRANSFER_FILE > actualTime) {
+			actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
+				+ LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS
+				+ LocalDateTime.now().getSecond();
+		    }
+		    
 		    mover.moveFileInDirWithNoSameNameFile(corruptedFile.getFilename(), client.getConf().getInputDir(),
 			    client.getConf().getCorruptedFilesDir());
 		}
@@ -123,7 +134,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	    // checking the waited delay from the arrived time of the file until
 	    // now
-	    if (file.getArrivingTime() + LogChainerConstant.DELAY_TRANSFER_FILE < actualTime) {
+	    if (file.getArrivingTime() + DELAY_TRANSFER_FILE < actualTime) {
 		LOG.debug("enough time waited for file {}", file.getFilename());
 		file.setReadyToBeTreated(true);
 	    }
