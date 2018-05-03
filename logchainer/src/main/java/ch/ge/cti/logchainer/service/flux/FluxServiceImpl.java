@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
 import ch.ge.cti.logchainer.service.file.FileService;
+import ch.ge.cti.logchainer.service.folder.FolderService;
 import ch.ge.cti.logchainer.service.logwatcher.LogWatcherService;
 import ch.ge.cti.logchainer.service.utils.UtilsComponents;
 
@@ -23,6 +24,8 @@ public class FluxServiceImpl implements FluxService {
     UtilsComponents component;
     @Autowired
     LogWatcherService watcherService;
+    @Autowired
+    FolderService mover;
 
     /**
      * logger
@@ -32,13 +35,7 @@ public class FluxServiceImpl implements FluxService {
     @Override
     public void addFlux(String fluxname, Client client) {
 	LOG.debug("adding flux {} to client {}", fluxname, client.getConf().getClientId());
-	client.getFluxFileMap().put(fluxname, new ArrayList<FileWatched>());
-    }
-
-    @Override
-    public boolean isNewFlux(String fluxname, Client client) {
-	LOG.debug("flux {} is detected as a new flux", fluxname);
-	return !client.getFluxFileMap().containsKey(fluxname);
+	client.getFluxFileMap().putIfAbsent(fluxname, new ArrayList<FileWatched>());
     }
 
     @Override
@@ -94,11 +91,10 @@ public class FluxServiceImpl implements FluxService {
 	    LOG.debug("flux ready to be treated");
 
 	return fluxReadyToBeTreated;
-    }
+    } 
 
     @Override
-    public void fluxTreatment(Client client, List<String> allDoneFlux,
-	    Map.Entry<String, ArrayList<FileWatched>> flux) {
+    public void fluxTreatment(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<FileWatched>> flux) {
 	LOG.debug("flux {} starting to be treated", flux.getKey());
 	fileService.sortFiles(component.getSeparator(client), component.getSorter(client), flux.getValue());
 	LOG.debug("flux sorted");
@@ -111,6 +107,25 @@ public class FluxServiceImpl implements FluxService {
 	    // checking if the file's treatment is complete
 	    if (!watcherService.treatmentAfterDetectionOfEvent(client, filename, file))
 		finished = false;
+	}
+	// registering the flux as completed (thus ready for deletion)
+	if (finished) {
+	    allDoneFlux.add(flux.getKey());
+	    LOG.info("flux {} entirely treated", flux.getKey());
+	}
+    }
+
+    @Override
+    public void corruptedFluxProcess(Client client, List<String> allDoneFlux,
+	    Map.Entry<String, ArrayList<FileWatched>> flux) {
+	// cheking if all files' treatment has been completed
+	boolean finished = true;
+	// iterating on all the files of one flux
+	for (FileWatched file : flux.getValue()) {
+	    String filename = file.getFilename();
+	    // checking if the file's treatment is complete
+	    mover.moveFileInDirWithNoSameNameFile(filename, client.getConf().getInputDir(),
+		    client.getConf().getCorruptedFilesDir());
 	}
 	// registering the flux as completed (thus ready for deletion)
 	if (finished) {

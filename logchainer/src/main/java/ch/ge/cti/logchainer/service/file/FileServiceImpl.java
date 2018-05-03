@@ -52,10 +52,8 @@ public class FileServiceImpl implements FileService {
 	String fluxname = fluxService.getFluxName(file.getFilename(), component.getSeparator(client));
 
 	// registering the flux if it doesn't already exist
-	if (fluxService.isNewFlux(fluxname, client)) {
-	    fluxService.addFlux(fluxname, client);
-	    LOG.debug("new flux {} added to the map", fluxname);
-	}
+	fluxService.addFlux(fluxname, client);
+	LOG.debug("new flux {} added to the map", fluxname);
 
 	// registering the file as a relation to it's flux
 	fluxService.addFileToFlux(fluxname, file, client);

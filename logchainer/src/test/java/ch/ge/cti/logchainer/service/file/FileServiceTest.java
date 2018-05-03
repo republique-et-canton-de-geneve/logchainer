@@ -66,7 +66,6 @@ public class FileServiceTest {
 	fileService.component = component;
 
 	when(fluxService.getFluxName(anyString(), anyString())).thenReturn(fluxname);
-	when(fluxService.isNewFlux(fluxname, client)).thenCallRealMethod();
 	doCallRealMethod().when(fluxService).addFlux(fluxname, client);
 	doCallRealMethod().when(fluxService).addFileToFlux(fluxname, file, client);
 	when(component.getSeparator(client)).thenReturn(SEPARATOR_DEFAULT);
@@ -75,7 +74,6 @@ public class FileServiceTest {
 	assertTrue(client.getFluxFileMap().keySet().contains(fluxname));
 	assertTrue(client.getFluxFileMap().get(fluxname).contains(file));
 
-	when(fluxService.isNewFlux(fluxname, client)).thenReturn(false);
 	doNothing().when(fluxService).addFileToFlux(anyString(), any(FileWatched.class), any(Client.class));
 
 	client.getFluxFileMap().clear();

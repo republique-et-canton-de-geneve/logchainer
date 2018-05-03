@@ -17,15 +17,6 @@ public interface FluxService {
     void addFlux(String fluxname, Client client);
 
     /**
-     * Check if given flux is already registered.
-     * 
-     * @param fluxname
-     * @param client
-     * @return
-     */
-    boolean isNewFlux(String fluxname, Client client);
-
-    /**
      * Remove flux from the flux list of the client.
      * 
      * @param fluxname
@@ -76,4 +67,13 @@ public interface FluxService {
      * @param flux
      */
     void fluxTreatment(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<FileWatched>> flux);
+
+    /**
+     * Trigger a corrupted flux treatment.
+     * 
+     * @param client
+     * @param allDoneFlux
+     * @param flux
+     */
+    void corruptedFluxProcess(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<FileWatched>> flux);
 }
