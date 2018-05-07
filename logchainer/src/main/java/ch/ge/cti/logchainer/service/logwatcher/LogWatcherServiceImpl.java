@@ -43,7 +43,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     static final int CONVERT_HOUR_TO_SECONDS = 3600;
     static final int CONVERT_MINUTE_TO_SECONDS = 60;
 
-    private final String corruptedFluxName = "corrupted";
+    private static final String CORRUPTED_FLUXNAME = "corrupted";
 
     ArrayList<Client> clients = new ArrayList<>();
 
@@ -94,8 +94,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 		if (corruptedFile != null) {
 		    LOG.info("file {} has invalid name", corruptedFile.getFilename());
-		    client.getFluxFileMap().putIfAbsent(corruptedFluxName, new ArrayList<>());
-		    client.getFluxFileMap().get(corruptedFluxName).add(corruptedFile);
+		    client.getFluxFileMap().putIfAbsent(CORRUPTED_FLUXNAME, new ArrayList<>());
+		    client.getFluxFileMap().get(CORRUPTED_FLUXNAME).add(corruptedFile);
 		    client.getFilesWatched().add(corruptedFile);
 		    corruptedFile.setRegistered(true);
 		}
@@ -141,7 +141,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    if (fluxService.isFluxReadyToBeTreated(flux)) {
 		// flux treatment
 		LOG.info("flux {} process starting", flux.getKey());
-		if (flux.getKey().equals(corruptedFluxName)) {
+		if (flux.getKey().equals(CORRUPTED_FLUXNAME)) {
 		    fluxService.corruptedFluxProcess(client, allDoneFlux, flux);
 		    LOG.info("treatment of flux {} completed", flux.getKey());
 		} else {
