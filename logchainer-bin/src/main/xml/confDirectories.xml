@@ -4,10 +4,10 @@
 
 	<listeClientConf>
 		<ClientId>ClientA</ClientId>
-		<InputDir>D:/temp/logchainer/ClientA/input</InputDir>
-		<WorkingDir>D:/temp/logchainer/ClientA/tmp</WorkingDir>
-		<OutputDir>D:/temp/logchainer/ClientA/output</OutputDir>
-		<CorruptedFilesDir>D:/temp/logchainer/ClientA/corruptedFiles</CorruptedFilesDir>
+		<InputDir>/opt/batch/logchainer/ClientA/input</InputDir>
+		<WorkingDir>/opt/batch/logchainer/ClientA/tmp</WorkingDir>
+		<OutputDir>/opt/batch/logchainer/ClientA/output</OutputDir>
+		<CorruptedFilesDir>/opt/batch/logchainer/ClientA/corruptedFiles</CorruptedFilesDir>
 		<filePattern>
 			<separator>_</separator>
 			<sortingType>alphabetically</sortingType>
@@ -17,10 +17,10 @@
 
 	<listeClientConf>
 		<ClientId>ClientB</ClientId>
-		<InputDir>D:/temp/logchainer/ClientB/input</InputDir>
-		<WorkingDir>D:/temp/logchainer/ClientB/tmp</WorkingDir>
-		<OutputDir>D:/temp/logchainer/ClientB/output</OutputDir>
-		<CorruptedFilesDir>D:/temp/logchainer/ClientB/corruptedFiles</CorruptedFilesDir>
+		<InputDir>/opt/batch/logchainer/ClientB/input</InputDir>
+		<WorkingDir>/opt/batch/logchainer/ClientB/tmp</WorkingDir>
+		<OutputDir>/opt/batch/logchainer/ClientB/output</OutputDir>
+		<CorruptedFilesDir>/opt/batch/logchainer/ClientB/corruptedFiles</CorruptedFilesDir>
 		<filePattern>
 			<separator>_</separator>
 			<sortingType>alphabetically</sortingType>
