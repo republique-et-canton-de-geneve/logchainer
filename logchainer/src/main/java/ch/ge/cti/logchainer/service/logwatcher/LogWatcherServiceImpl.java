@@ -36,7 +36,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     @Autowired
     ClientService clientService;
     @Autowired
-    private FluxService fluxService;
+    FluxService fluxService;
     @Autowired
     FileService fileService;
 

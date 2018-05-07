@@ -91,7 +91,7 @@ public class FluxServiceImpl implements FluxService {
 	    LOG.debug("flux ready to be treated");
 
 	return fluxReadyToBeTreated;
-    } 
+    }
 
     @Override
     public void fluxTreatment(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<FileWatched>> flux) {

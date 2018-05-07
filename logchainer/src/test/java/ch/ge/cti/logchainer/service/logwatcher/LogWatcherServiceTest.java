@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -21,10 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchService;
 import java.time.LocalDateTime;
-import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -37,6 +36,7 @@ import ch.ge.cti.logchainer.generate.FilePattern;
 import ch.ge.cti.logchainer.generate.LogChainerConf;
 import ch.ge.cti.logchainer.service.client.ClientServiceImpl;
 import ch.ge.cti.logchainer.service.file.FileServiceImpl;
+import ch.ge.cti.logchainer.service.flux.FluxServiceImpl;
 import ch.ge.cti.logchainer.service.folder.FolderServiceImpl;
 
 public class LogWatcherServiceTest {
@@ -60,7 +60,7 @@ public class LogWatcherServiceTest {
 	clientConf.setCorruptedFilesDir(testCorruptedFilesDir);
 
 	clientConfList.getListeClientConf().add(clientConf);
-	
+
 	clientProbleme = new Client(clientConf);
 	Path inputDirPath = Paths.get(clientProbleme.getConf().getInputDir());
 	WatchService watcher = clientProbleme.getWatcher();
@@ -75,7 +75,7 @@ public class LogWatcherServiceTest {
 	clientConf2.setInputDir(testKeyBecomingInvalidDir);
 
 	clientConfList.getListeClientConf().add(clientConf2);
-	
+
     }
 
     @Test(description = "testing the initialization of the clients")
@@ -98,18 +98,21 @@ public class LogWatcherServiceTest {
 	watcher.clientService = clientService;
 	FolderServiceImpl mover = mock(FolderServiceImpl.class);
 	watcher.mover = mover;
+	FluxServiceImpl fluxService = mock(FluxServiceImpl.class);
+	watcher.fluxService = fluxService;
 
 	// test for a corrupted file
 	when(clientService.registerEvent(any(Client.class))).thenReturn(new FileWatched(filename));
 	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenCallRealMethod();
+	when(fluxService.isFluxReadyToBeTreated(any())).thenReturn(true);
+	doNothing().when(fluxService).corruptedFluxProcess(any(Client.class), any(), any());
 
 	Files.write(Paths.get(testResourcesDirPath + "/" + filename), noData.getBytes());
 	watcher.processEvents();
 
-	Collection<File> filesInCorruptedFilesDir = getPreviousFiles(testCorruptedFilesDir);
-	assertTrue(filesInCorruptedFilesDir.contains(new File(testCorruptedFilesDir + "/" + filename)));
+	Files.delete(Paths.get(testResourcesDirPath + "/" + filename));
 
-	Files.delete(Paths.get(testCorruptedFilesDir + "/" + filename));
+	verify(fluxService).corruptedFluxProcess(any(), any(), any());
 
 	// test for a key becoming invalid
 	when(clientService.registerEvent(any(Client.class))).thenReturn(null);
@@ -148,7 +151,7 @@ public class LogWatcherServiceTest {
 	watcher.clients.add(client);
 	client.getFilesWatched().clear();
 	client.getFilesWatched().add(testFile);
-	
+
 	FileServiceImpl fileService = mock(FileServiceImpl.class);
 	watcher.fileService = fileService;
 
@@ -156,22 +159,5 @@ public class LogWatcherServiceTest {
 
 	watcher.treatmentAfterDetectionOfEvent(client, filename, testFile);
 	assertFalse(watcher.clients.get(0).getFilesWatched().contains(testFile));
-    }
-
-    @SuppressWarnings("unchecked")
-    private Collection<File> getPreviousFiles(String workingDir) {
-	// filtering the files to only keep the same as given flux one (should
-	// be unique)
-	return FileUtils.listFiles(new File(workingDir), new IOFileFilter() {
-	    @Override
-	    public boolean accept(File dir, String name) {
-		return accept(new File(name));
-	    }
-
-	    @Override
-	    public boolean accept(File file) {
-		return true;
-	    }
-	}, null);
     }
 }
