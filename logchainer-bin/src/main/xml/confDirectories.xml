@@ -10,7 +10,7 @@
 		<CorruptedFilesDir>/opt/batch/logchainer/ClientA/corruptedFiles</CorruptedFilesDir>
 		<filePattern>
 			<separator>_</separator>
-			<sortingType>alphabetically</sortingType>
+			<sortingType>alphabetical</sortingType>
 		</filePattern>
 		<fileEncoding>UTF-8</fileEncoding>
 	</listeClientConf>
@@ -23,7 +23,7 @@
 		<CorruptedFilesDir>/opt/batch/logchainer/ClientB/corruptedFiles</CorruptedFilesDir>
 		<filePattern>
 			<separator>_</separator>
-			<sortingType>alphabetically</sortingType>
+			<sortingType>numerical</sortingType>
 		</filePattern>
 		<fileEncoding>UTF-8</fileEncoding>
 	</listeClientConf>
