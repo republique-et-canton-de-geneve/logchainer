@@ -94,19 +94,10 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 		if (corruptedFile != null) {
 		    LOG.info("file {} has invalid name", corruptedFile.getFilename());
-
-		    // Waiting for transfer completion of the corrupted file
-		    int actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
-			    + LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS
-			    + LocalDateTime.now().getSecond();
-		    while (corruptedFile.getArrivingTime() + DELAY_TRANSFER_FILE > actualTime) {
-			actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
-				+ LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS
-				+ LocalDateTime.now().getSecond();
-		    }
 		    client.getFluxFileMap().putIfAbsent(corruptedFluxName, new ArrayList<>());
 		    client.getFluxFileMap().get(corruptedFluxName).add(corruptedFile);
-
+		    client.getFilesWatched().add(corruptedFile);
+		    corruptedFile.setRegistered(true);
 		}
 
 		// reseting the key to be able to use it again
@@ -149,8 +140,9 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    // checking if the file can be treated
 	    if (fluxService.isFluxReadyToBeTreated(flux)) {
 		// flux treatment
+		LOG.info("flux {} process starting", flux.getKey());
 		if (flux.getKey().equals(corruptedFluxName)) {
-		    fluxService.fluxTreatment(client, allDoneFlux, flux);
+		    fluxService.corruptedFluxProcess(client, allDoneFlux, flux);
 		    LOG.info("treatment of flux {} completed", flux.getKey());
 		} else {
 		    fluxService.fluxTreatment(client, allDoneFlux, flux);

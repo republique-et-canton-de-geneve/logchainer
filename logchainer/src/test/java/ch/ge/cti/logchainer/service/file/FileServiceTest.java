@@ -12,7 +12,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.io.File;
@@ -66,19 +65,19 @@ public class FileServiceTest {
 	fileService.component = component;
 
 	when(fluxService.getFluxName(anyString(), anyString())).thenReturn(fluxname);
-	doCallRealMethod().when(fluxService).addFlux(fluxname, client);
-	doCallRealMethod().when(fluxService).addFileToFlux(fluxname, file, client);
+	doCallRealMethod().when(fluxService).addFlux(anyString(), any(Client.class));
+	doCallRealMethod().when(fluxService).addFileToFlux(anyString(), any(), any(Client.class));
 	when(component.getSeparator(client)).thenReturn(SEPARATOR_DEFAULT);
 
 	fileService.registerFile(client, file);
 	assertTrue(client.getFluxFileMap().keySet().contains(fluxname));
 	assertTrue(client.getFluxFileMap().get(fluxname).contains(file));
 
-	doNothing().when(fluxService).addFileToFlux(anyString(), any(FileWatched.class), any(Client.class));
-
-	client.getFluxFileMap().clear();
 	fileService.registerFile(client, fileWithSameFlux);
-	assertFalse(client.getFluxFileMap().keySet().contains(fluxname));
+	assertEquals(client.getFluxFileMap().keySet().size(), 1);
+	assertEquals(client.getFluxFileMap().get(fluxname).size(), 2);
+
+	client.getFluxFileMap().get(fluxname).stream().forEach(fileTest -> assertTrue(fileTest.isRegistered()));
     }
 
     @Test(description = "we only have a small test because the newFileTreatment method mainly calls other methods which are tested elsewhere")
