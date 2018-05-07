@@ -19,7 +19,9 @@ import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
+import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.service.file.FileServiceImpl;
+import ch.ge.cti.logchainer.service.folder.FolderServiceImpl;
 import ch.ge.cti.logchainer.service.logwatcher.LogWatcherServiceImpl;
 import ch.ge.cti.logchainer.service.utils.UtilsComponentsImpl;
 
@@ -72,10 +74,8 @@ public class FluxServiceTest {
     public void testFluxTreatment() {
 	LogWatcherServiceImpl watcherService = mock(LogWatcherServiceImpl.class);
 	fluxService.watcherService = watcherService;
-
 	FileServiceImpl fileService = mock(FileServiceImpl.class);
 	fluxService.fileService = fileService;
-
 	UtilsComponentsImpl component = mock(UtilsComponentsImpl.class);
 	fluxService.component = component;
 
@@ -95,6 +95,40 @@ public class FluxServiceTest {
 	when(component.getSorter(client)).thenReturn(null);
 
 	mapFluxFiles.entrySet().stream().forEach(fluxname -> fluxService.fluxTreatment(client, fluxList, fluxname));
+
+	assertEquals(fluxList.size(), refList.size());
+	fluxList.stream().forEach(flux -> assertTrue(refList.contains(flux)));
+    }
+
+    @Test(description = "testing the process of a corrupted file")
+    public void testCorruptedFluxProcess() {
+	LogWatcherServiceImpl watcherService = mock(LogWatcherServiceImpl.class);
+	fluxService.watcherService = watcherService;
+	FileServiceImpl fileService = mock(FileServiceImpl.class);
+	fluxService.fileService = fileService;
+	UtilsComponentsImpl component = mock(UtilsComponentsImpl.class);
+	fluxService.component = component;
+	FolderServiceImpl mover = mock(FolderServiceImpl.class);
+	fluxService.mover = mover;
+
+	ClientConf clientConf = new ClientConf();
+	clientConf.setInputDir(null);
+	clientConf.setCorruptedFilesDir(null);
+
+	Client client = new Client(clientConf);
+
+	List<String> refList = new ArrayList<>();
+	refList.add("fluxTest1");
+	refList.add("fluxTest2");
+	List<String> fluxList = new ArrayList<>();
+
+	mapFluxFiles.put("fluxTest1", watchedFiles);
+	mapFluxFiles.put("fluxTest2", watchedFiles);
+
+	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenReturn(null);
+
+	mapFluxFiles.entrySet().stream()
+		.forEach(fluxname -> fluxService.corruptedFluxProcess(client, fluxList, fluxname));
 
 	assertEquals(fluxList.size(), refList.size());
 	fluxList.stream().forEach(flux -> assertTrue(refList.contains(flux)));

@@ -118,8 +118,6 @@ public class FluxServiceImpl implements FluxService {
     @Override
     public void corruptedFluxProcess(Client client, List<String> allDoneFlux,
 	    Map.Entry<String, ArrayList<FileWatched>> flux) {
-	// cheking if all files' treatment has been completed
-	boolean finished = true;
 	// iterating on all the files of one flux
 	for (FileWatched file : flux.getValue()) {
 	    String filename = file.getFilename();
@@ -128,9 +126,8 @@ public class FluxServiceImpl implements FluxService {
 		    client.getConf().getCorruptedFilesDir());
 	}
 	// registering the flux as completed (thus ready for deletion)
-	if (finished) {
-	    allDoneFlux.add(flux.getKey());
+	allDoneFlux.add(flux.getKey());
+	if (LOG.isInfoEnabled())
 	    LOG.info("flux {} entirely treated", flux.getKey());
-	}
     }
 }
