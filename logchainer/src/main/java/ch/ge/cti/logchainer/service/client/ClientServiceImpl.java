@@ -68,6 +68,7 @@ public class ClientServiceImpl implements ClientService {
     public void deleteAllTreatedFluxFromMap(List<String> allDoneFlux, Client client) {
 	// removing the flux one by one
 	for (String fluxname : allDoneFlux) {
+	    client.getFilesWatched().removeAll(client.getFluxFileMap().get(fluxname));
 	    if (fluxService.removeFlux(fluxname, client)) {
 		LOG.debug("flux {} has been removed from the map", fluxname);
 	    } else {

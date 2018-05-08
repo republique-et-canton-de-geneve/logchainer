@@ -122,8 +122,6 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @param client
      */
     private void waitingForFileToBeReadyToBeLaunched(Client client) {
-	ArrayList<FileWatched> filesReady = new ArrayList<>();
-	
 	// looking at each detected files per client
 	for (FileWatched file : client.getFilesWatched()) {
 	    // present time
@@ -139,7 +137,6 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    if (file.getArrivingTime() + DELAY_TRANSFER_FILE < actualTime) {
 		LOG.debug("enough time waited for file {}", file.getFilename());
 		file.setReadyToBeTreated(true);
-		filesReady.add(file);
 	    }
 	}
 
@@ -163,7 +160,6 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	// once all files in a flux have been treated, deleting the flux in the
 	// map
 	clientService.deleteAllTreatedFluxFromMap(allDoneFlux, client);
-	filesReady.stream().forEach(fileToDelete -> client.getFilesWatched().remove(fileToDelete));
     }
 
     @Override
