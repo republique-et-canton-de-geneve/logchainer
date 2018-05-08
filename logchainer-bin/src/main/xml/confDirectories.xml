@@ -4,23 +4,10 @@
 
 	<listeClientConf>
 		<ClientId>ClientA</ClientId>
-		<InputDir>/opt/batch/logchainer/ClientA/input</InputDir>
-		<WorkingDir>/opt/batch/logchainer/ClientA/tmp</WorkingDir>
-		<OutputDir>/opt/batch/logchainer/ClientA/output</OutputDir>
-		<CorruptedFilesDir>/opt/batch/logchainer/ClientA/corruptedFiles</CorruptedFilesDir>
-		<filePattern>
-			<separator>_</separator>
-			<sortingType>alphabetical</sortingType>
-		</filePattern>
-		<fileEncoding>UTF-8</fileEncoding>
-	</listeClientConf>
-
-	<listeClientConf>
-		<ClientId>ClientB</ClientId>
-		<InputDir>/opt/batch/logchainer/ClientB/input</InputDir>
-		<WorkingDir>/opt/batch/logchainer/ClientB/tmp</WorkingDir>
-		<OutputDir>/opt/batch/logchainer/ClientB/output</OutputDir>
-		<CorruptedFilesDir>/opt/batch/logchainer/ClientB/corruptedFiles</CorruptedFilesDir>
+		<InputDir>../clientExample/input</InputDir>
+		<WorkingDir>../clientExample/workingDir</WorkingDir>
+		<OutputDir>../clientExample/output</OutputDir>
+		<CorruptedFilesDir>../clientExample/corruptedFiles</CorruptedFilesDir>
 		<filePattern>
 			<separator>_</separator>
 			<sortingType>numerical</sortingType>

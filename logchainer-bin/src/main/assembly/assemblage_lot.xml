@@ -31,6 +31,26 @@
 			<outputDirectory>/bin</outputDirectory>
 			<filtered>true</filtered>
 		</file>
+		<file>
+			<source>src/main/readmeForFolderExample/readme</source>
+			<outputDirectory>/clientExample/input</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
+			<source>src/main/readmeForFolderExample/readme</source>
+			<outputDirectory>/clientExample/output</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
+			<source>src/main/readmeForFolderExample/readme</source>
+			<outputDirectory>/clientExample/workingDir</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
+			<source>src/main/readmeForFolderExample/readme</source>
+			<outputDirectory>/clientExample/corruptedFiles</outputDirectory>
+			<filtered>true</filtered>
+		</file>
 	</files>
 
 	<fileSets>

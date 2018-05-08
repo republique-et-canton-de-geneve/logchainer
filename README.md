@@ -39,7 +39,7 @@ The project contains a working copy of the log chainer. The Zip version contains
 1. Download zip file
 2. Unzip the folder locally 
 3. Give the launcher using the command : ``chmod +x ./bin/run.sh``
-4. Regarding the external configuration, cf §Configuration
+4. External configurations examples are already included in the zip so nothing has to be created in order to launch the project(to custom external configurations, cf §Configuration)
 5. From the folder bin, launch the project using : ``./run.sh``
 
 # Configuration
