@@ -8,5 +8,5 @@ export VM_ARGS="${VM_ARGS} -Dproperties_file=../conf/logback.properties"
 
 export JAR_HOME=../lib/logchainer-1.0.6-SNAPSHOT.jar
 
-# $JAVA_HOME $VM_ARGS -jar $JAR_HOME  #ch.ge.cti.logchainer.LogChainer &
+# $JAVA_HOME $VM_ARGS -jar $JAR_HOME &
 $JAVA_HOME/bin/java $VM_ARGS -jar $JAR_HOME 

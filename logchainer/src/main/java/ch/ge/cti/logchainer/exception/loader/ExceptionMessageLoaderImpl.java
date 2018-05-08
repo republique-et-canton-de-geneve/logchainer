@@ -61,7 +61,7 @@ public class ExceptionMessageLoaderImpl implements ExceptionMessageLoader {
 	    programmToBeInterrupted = false;
 	    return nameException;
 	} else if (e instanceof CorruptedKeyException) {
-	    programmToBeInterrupted = false;
+	    programmToBeInterrupted = true;
 	    return corruptedKeyException;
 	} else if (e instanceof WatchServiceException) {
 	    programmToBeInterrupted = true;
