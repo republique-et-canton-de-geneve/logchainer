@@ -43,7 +43,7 @@ public class ExceptionMessageLoaderTest {
 
 	assertEquals(messageLoader.getExceptionMessage(new CorruptedKeyException("testing")),
 		corruptedKeyExceptionMessage);
-	assertFalse(messageLoader.isProgrammToBeInterrupted());
+	assertTrue(messageLoader.isProgrammToBeInterrupted());
 
 	assertEquals(
 		messageLoader.getExceptionMessage(new BusinessException(new FileAlreadyExistsException("testing"))),
