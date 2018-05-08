@@ -13,7 +13,7 @@ public interface ClientService {
      * @param client
      * @return the corrupted file or null if there are none
      */
-    FileWatched registerEvent(Client client);
+    List<FileWatched> registerEvent(Client client);
 
     /**
      * Remove all flux that have been entirely treated from the client's map.

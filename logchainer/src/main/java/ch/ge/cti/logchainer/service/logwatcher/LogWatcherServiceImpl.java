@@ -11,7 +11,9 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,14 +92,19 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		LOG.info("event detected on client {}", client.getConf().getClientId());
 
 		client.setKey(watchKey);
-		FileWatched corruptedFile = clientService.registerEvent(client);
+		List<FileWatched> corruptedFiles = clientService.registerEvent(client);
 
-		if (corruptedFile != null) {
-		    LOG.info("file {} has invalid name", corruptedFile.getFilename());
-		    client.getFluxFileMap().putIfAbsent(CORRUPTED_FLUXNAME, new ArrayList<>());
-		    client.getFluxFileMap().get(CORRUPTED_FLUXNAME).add(corruptedFile);
-		    client.getFilesWatched().add(corruptedFile);
-		    corruptedFile.setRegistered(true);
+		if (corruptedFiles != null) {
+		    corruptedFiles.stream().forEach(new Consumer<FileWatched>() {
+			@Override
+			public void accept(FileWatched corruptedFile) {
+			    LOG.info("file {} has invalid name", corruptedFile.getFilename());
+			    client.getFluxFileMap().putIfAbsent(CORRUPTED_FLUXNAME, new ArrayList<>());
+			    client.getFluxFileMap().get(CORRUPTED_FLUXNAME).add(corruptedFile);
+			    client.getFilesWatched().add(corruptedFile);
+			    corruptedFile.setRegistered(true); 
+			}
+		    });
 		}
 
 		// reseting the key to be able to use it again
@@ -115,6 +122,9 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @param client
      */
     private void waitingForFileToBeReadyToBeLaunched(Client client) {
+	ArrayList<Integer> filesReadyNb = new ArrayList<>();
+	Integer counter = 0;
+	
 	// looking at each detected files per client
 	for (FileWatched file : client.getFilesWatched()) {
 	    // present time
@@ -130,7 +140,9 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    if (file.getArrivingTime() + DELAY_TRANSFER_FILE < actualTime) {
 		LOG.debug("enough time waited for file {}", file.getFilename());
 		file.setReadyToBeTreated(true);
+		filesReadyNb.add(counter);
 	    }
+	    ++counter;
 	}
 
 	// registering all the treated files into a list
@@ -153,6 +165,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	// once all files in a flux have been treated, deleting the flux in the
 	// map
 	clientService.deleteAllTreatedFluxFromMap(allDoneFlux, client);
+	filesReadyNb.stream().forEach(fileNb -> client.getFilesWatched().remove(fileNb));
     }
 
     @Override

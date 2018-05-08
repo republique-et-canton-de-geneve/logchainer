@@ -77,7 +77,7 @@ public class ClientServiceTest {
 
 	    if (watchKey != null) {
 		client.setKey(watchKey);
-		assertEquals(clientService.registerEvent(client).getFilename(), refFilename);
+		assertEquals(clientService.registerEvent(client).get(0).getFilename(), refFilename);
 
 		// reseting the to be able to use it again
 		if (!client.getKey().reset())

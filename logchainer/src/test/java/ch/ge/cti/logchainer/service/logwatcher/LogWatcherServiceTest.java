@@ -22,6 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchService;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.testng.annotations.BeforeTest;
@@ -102,7 +104,9 @@ public class LogWatcherServiceTest {
 	watcher.fluxService = fluxService;
 
 	// test for a corrupted file
-	when(clientService.registerEvent(any(Client.class))).thenReturn(new FileWatched(filename));
+	List<FileWatched> mockCorrFilesListToReturn = new ArrayList<>();
+	mockCorrFilesListToReturn.add(new FileWatched(filename));
+	when(clientService.registerEvent(any(Client.class))).thenReturn(mockCorrFilesListToReturn);
 	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenCallRealMethod();
 	when(fluxService.isFluxReadyToBeTreated(any())).thenReturn(true);
 	doNothing().when(fluxService).corruptedFluxProcess(any(Client.class), any(), any());

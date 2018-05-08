@@ -2,6 +2,7 @@ package ch.ge.cti.logchainer.service.client;
 
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -28,7 +29,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public FileWatched registerEvent(Client client) {
+    public List<FileWatched> registerEvent(Client client) {
+	List<FileWatched> corruptedFiles = new ArrayList<>();
+	
 	// iterating on all events in the key
 	for (WatchEvent<?> event : client.getKey().pollEvents()) {
 	    FileWatched fileToRegister = new FileWatched(((WatchEvent<Path>) event).context().toString());
@@ -39,7 +42,7 @@ public class ClientServiceImpl implements ClientService {
 
 	    // checking the validity of the filename
 	    if (!fileToRegister.getFilename().contains(component.getSeparator(client)))
-		return fileToRegister;
+		corruptedFiles.add(fileToRegister);
 
 	    // checking if the file has already been registered
 	    for (FileWatched file : client.getFilesWatched()) {
@@ -58,7 +61,7 @@ public class ClientServiceImpl implements ClientService {
 	    }
 	}
 
-	return null;
+	return corruptedFiles.isEmpty() ? null : corruptedFiles;
     }
 
     @Override
