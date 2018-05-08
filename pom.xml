@@ -152,7 +152,7 @@
 				<artifactId>commons-io</artifactId>
 				<version>1.3.2</version>
 			</dependency>
-			
+
 			<!-- correcting spring versions -->
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -163,18 +163,24 @@
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
 				<version>5.0.5.RELEASE</version>
-			</dependency>			
+			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
 				<version>5.0.5.RELEASE</version>
-			</dependency>		
-			
-<!-- 			<dependency> -->
-<!-- 				<groupId>io.micrometer</groupId> -->
-<!-- 				<artifactId>micrometer-graphite-starter</artifactId> -->
-<!-- 				<version>0.11.0.RELEASE</version> -->
-<!-- 			</dependency> -->
+			</dependency>
+
+			<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-graphite-starter</artifactId>
+			<version>0.12.0.RELEASE</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.xd</groupId>
+				<artifactId>spring-xd-analytics</artifactId>
+				<version>1.3.1.RELEASE</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 </project>

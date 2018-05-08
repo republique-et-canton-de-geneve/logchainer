@@ -79,12 +79,18 @@ public class LogChainer implements CommandLineRunner {
 
 	// infinity loop to actualize endlessly the search for new files
 	LOG.debug("start of the infinity loop");
-	while (true) {
+	boolean fin = false;
+	while (!fin) {
 	    try {
 		watcher.processEvents();
 	    } catch (RuntimeException e) {
 		exceptionHandler.handleException(e);
 	    }
+	}
+	
+	if (fin) {
+	    
+	    
 	}
     }
 
