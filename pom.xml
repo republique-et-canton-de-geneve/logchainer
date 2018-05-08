@@ -9,7 +9,7 @@
 
 	<groupId>ch.ge.cti.logchainer</groupId>
 	<artifactId>logchainer-base</artifactId>
-	<version>1.0.7-SNAPSHOT</version>
+	<version>1.0.7</version>
 	<packaging>pom</packaging>
 
 	<name>logchainer-base</name>
@@ -19,7 +19,7 @@
 		<connection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base.git</connection>
 		<developerConnection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base.git</developerConnection>
 		<url>https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/logChaining/logchainer-base.git</url>
-		<tag>logchainer-base-1.0.3</tag>
+		<tag>logchainer-base-1.0.7</tag>
 	</scm>
 
 	<properties>
