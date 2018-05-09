@@ -1,5 +1,7 @@
 package ch.ge.cti.logchainer.service.logwatcher;
 
+import java.util.ArrayList;
+
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.FileWatched;
 import ch.ge.cti.logchainer.generate.LogChainerConf;
@@ -25,4 +27,11 @@ public interface LogWatcherService {
      * @param clientNb
      */
     boolean treatmentAfterDetectionOfEvent(Client client, String filename, FileWatched file);
+    
+    /**
+     * Getter for the client list which can't modify the list used for the process.
+     * 
+     * @return the client list
+     */
+    ArrayList<Client> getClients();
 }
