@@ -207,7 +207,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * 
      * @return the client list
      */
-    public static ArrayList<Client> getClients() {
+    public static List<Client> getClients() {
 	ArrayList<Client> clientsCopyToReturn = new ArrayList<>();
 	clients.stream().forEach(client -> clientsCopyToReturn.add(client));
 
