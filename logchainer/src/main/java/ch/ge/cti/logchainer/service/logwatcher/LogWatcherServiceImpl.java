@@ -47,7 +47,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
     private static final String CORRUPTED_FLUXNAME = "corrupted";
 
-    ArrayList<Client> clients = new ArrayList<>();
+    static ArrayList<Client> clients = new ArrayList<>();
 
     /**
      * logger
@@ -201,12 +201,16 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    return false;
 	}
     }
-    
-    @Override
-    public ArrayList<Client> getClients() {
+
+    /**
+     * Getter for the client list which can't modify the list used for the process.
+     * 
+     * @return the client list
+     */
+    public static ArrayList<Client> getClients() {
 	ArrayList<Client> clientsCopyToReturn = new ArrayList<>();
 	clients.stream().forEach(client -> clientsCopyToReturn.add(client));
-	
+
 	return clientsCopyToReturn;
     }
 }
