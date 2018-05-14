@@ -2,14 +2,10 @@ package ch.ge.cti.logchainer.monitoring;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 @RestController
 class Controller {
@@ -33,7 +29,7 @@ class Controller {
 	metric = new Metrics();
 	composite = new CompositeMeterRegistry();
 
-	metric.registerAllCorruptedFiles(client);
+	metric.registerCorruptedFiles(client);
 
 	return composite;
     }
