@@ -64,7 +64,7 @@ public class Metrics {
 	});
 
 	clientWithTags.keySet()
-		.forEach(clientName -> Counter.builder(clientName).baseUnit("file size")
+		.forEach(clientName -> Counter.builder(clientName).baseUnit("bytes (file size)")
 			.tags(clientWithTags.get(clientName))
 			.description(String.valueOf(clientWithCounter.get(clientName).count())
 				+ " files were put in the corrupted files directory for this client")
