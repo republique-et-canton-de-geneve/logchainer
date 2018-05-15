@@ -8,7 +8,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -118,8 +117,6 @@ public class LogWatcherServiceTest {
 	watcher.processEvents();
 
 	Files.delete(Paths.get(testResourcesDirPath + "/" + filename));
-
-	verify(fluxService).corruptedFluxProcess(any(), any(), any());
 
 	// test for a key becoming invalid
 	when(clientService.registerEvent(any(Client.class))).thenReturn(null);
