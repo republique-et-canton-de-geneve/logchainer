@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.beans.Client;
@@ -38,7 +38,7 @@ public class FileServiceTest {
     private Client client;
     private final FileServiceImpl fileService = new FileServiceImpl();
 
-    @BeforeTest
+    @BeforeClass
     public void setUp() {
 	ClientConf clientConf = new ClientConf();
 	FilePattern filePattern = new FilePattern();

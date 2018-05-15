@@ -22,7 +22,7 @@ import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.beans.Client;
@@ -38,7 +38,7 @@ public class ClientServiceTest {
     private final int COUNTER_ITERATION_NB_BEFORE_FILE_CREATION = 50;
     private final String testResourcesDirPath = "src/test/resources/dirCreationDetectionTest";
 
-    @BeforeTest
+    @BeforeClass
     public void setUp() throws IOException {
 	ClientConf clientConf = new ClientConf();
 	FilePattern filePattern = new FilePattern();

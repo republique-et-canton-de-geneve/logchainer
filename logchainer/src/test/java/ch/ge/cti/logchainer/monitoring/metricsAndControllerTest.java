@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.generate.ClientConf;
@@ -38,7 +38,7 @@ public class metricsAndControllerTest {
     private Path filepath1;
     private Path filepath2;
 
-    @BeforeTest
+    @BeforeClass
     public void setUp() throws IOException {
 	ClientConf clientConf = new ClientConf();
 

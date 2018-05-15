@@ -2,7 +2,7 @@ package ch.ge.cti.logchainer.service.utils;
 
 import static org.testng.Assert.assertEquals;
 
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.beans.Client;
@@ -19,7 +19,7 @@ public class UtilsComponentsTest {
     private Client clientDefault;
     private final UtilsComponents component = new UtilsComponentsImpl();
 
-    @BeforeTest
+    @BeforeClass
     public void setUp() {
 	ClientConf clientConfCustom = new ClientConf();
 	FilePattern filePatternCustom = new FilePattern();

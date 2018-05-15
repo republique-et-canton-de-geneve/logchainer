@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.beans.Client;
@@ -31,7 +31,7 @@ public class FluxServiceTest {
     private ArrayList<FileWatched> watchedFiles = new ArrayList<>();
     private Map<String, ArrayList<FileWatched>> mapFluxFiles;
 
-    @BeforeTest
+    @BeforeClass
     public void setUp() {
 	watchedFiles.add(new FileWatched("file1"));
 	watchedFiles.add(new FileWatched("file2"));
