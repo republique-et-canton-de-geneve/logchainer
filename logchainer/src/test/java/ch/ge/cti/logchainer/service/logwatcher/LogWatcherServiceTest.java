@@ -83,15 +83,15 @@ public class LogWatcherServiceTest {
     @Test(description = "testing the initialization of the clients")
     public void testInitializeFileWatcherByClient() {
 	watcher.initializeFileWatcherByClient(clientConfList);
-	assertEquals(watcher.clients.size(), 2);
-	assertEquals(watcher.clients.get(0).getConf(), clientConfList.getListeClientConf().get(0));
-	assertNotNull(watcher.clients.get(0).getKey());
+	assertEquals(LogWatcherServiceImpl.clients.size(), 2);
+	assertEquals(LogWatcherServiceImpl.clients.get(0).getConf(), clientConfList.getListeClientConf().get(0));
+	assertNotNull(LogWatcherServiceImpl.clients.get(0).getKey());
     }
 
     @Test(description = "testing the process of an event")
     public void testProcessEvents() throws IOException {
-	watcher.clients.clear();
-	watcher.clients.add(clientProbleme);
+	LogWatcherServiceImpl.clients.clear();
+	LogWatcherServiceImpl.clients.add(clientProbleme);
 
 	String filename = "testCorruptedFile";
 	String noData = "";
@@ -133,8 +133,8 @@ public class LogWatcherServiceTest {
 	// test of the delay waited before the process of a file
 	doNothing().when(clientService).deleteAllTreatedFluxFromMap(any(), any());
 
-	watcher.clients.clear();
-	watcher.clients.add(client);
+	LogWatcherServiceImpl.clients.clear();
+	LogWatcherServiceImpl.clients.add(client);
 	client.getFilesWatched().add(testFile);
 	client.getFilesWatched().get(0).setRegistered(true);
 
@@ -151,8 +151,8 @@ public class LogWatcherServiceTest {
 
     @Test(description = "testing the removal of a file after it's process")
     public void testTreatmentAfterDetectionOfEvent() {
-	watcher.clients.clear();
-	watcher.clients.add(client);
+	LogWatcherServiceImpl.clients.clear();
+	LogWatcherServiceImpl.clients.add(client);
 	client.getFilesWatched().clear();
 	client.getFilesWatched().add(testFile);
 
@@ -162,6 +162,6 @@ public class LogWatcherServiceTest {
 	doNothing().when(fileService).newFileTreatment(any(Client.class), anyString());
 
 	watcher.treatmentAfterDetectionOfEvent(client, filename, testFile);
-	assertFalse(watcher.clients.get(0).getFilesWatched().contains(testFile));
+	assertFalse(LogWatcherServiceImpl.clients.get(0).getFilesWatched().contains(testFile));
     }
 }
