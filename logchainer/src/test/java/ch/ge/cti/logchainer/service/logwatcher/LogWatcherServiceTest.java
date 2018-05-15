@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -54,6 +55,8 @@ public class LogWatcherServiceTest {
 
     @BeforeTest
     public void setUp() throws IOException {
+	LogWatcherServiceImpl.clients.clear();
+
 	ClientConf clientConf = new ClientConf();
 
 	clientConf.setFilePattern(new FilePattern());
@@ -163,5 +166,10 @@ public class LogWatcherServiceTest {
 
 	watcher.treatmentAfterDetectionOfEvent(client, filename, testFile);
 	assertFalse(LogWatcherServiceImpl.clients.get(0).getFilesWatched().contains(testFile));
+    }
+
+    @AfterTest
+    public void reset() {
+	LogWatcherServiceImpl.clients.clear();
     }
 }
