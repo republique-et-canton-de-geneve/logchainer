@@ -1,5 +1,15 @@
-/.settings/
-/target/
-/.project
-logchainer/.springBeans
-logchainer/dependency-reduced-pom.xml
+# Project
+logs/
+
+# Maven
+target/
+
+# IntelliJ
+.idea/
+*.iml
+
+# Eclipse
+.project
+.classpath
+.settings/
+.springBeans
