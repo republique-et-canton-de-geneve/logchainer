@@ -57,9 +57,9 @@ The launcher must contain :
 - the path to the Java application or the JAVA_HOME system property has to have been set previously.
 - the path to the project JAR.
 - the paths to the 3 properties files :
-	**the project properties (-Dapplication.properties='path')
-	**the error messages properties (-DerrorMessages.properties='path')
-	**the logback properties (-Dlogback.properties='path')
+	- the project properties (-Dapplication.properties='path')
+	- the error messages properties (-DerrorMessages.properties='path')
+	- the logback properties (-Dlogback.properties='path')
 
 ## Properties
 
@@ -85,8 +85,8 @@ The components are defined for each client on which the logchainer will be plugg
 - CorruptedFilesDir : (path as a String but it has to be created previously to the launch by the user) files with an invalid name will be transfered in this directory without process.
 - Separator : (String) character marking the separation between the flux name and the sorting stamp. (Default is "_").
 - SortingType : (String) type of sorting requested, 2 types possible : 
-	**"alphabetical" , for the alphabetical order.
-	**"numerical" , for the numerical order (Default).
+	- "alphabetical" , for the alphabetical order.
+	- "numerical" , for the numerical order (Default).
 - FileEncoding : (String) encoding of the files in a client. The string given should comply with a Java Charset to be valid. (Default is "UTF-8").
 
 # Working
@@ -125,21 +125,21 @@ These are the listed exceptions, other exceptions can still occure but won't be 
 - NameException : (class ClientService - method registerEvent) pattern of the name is incorrect. (NI)
 - FileAlreadyExistsException : (class FolderService - method moveFileInDirWithNoSameNameFile) a same name file already exists in the directory.
 - FileNotFoundException/NoSuchFileException : 
-	**(class FolderService - method moveFileInDirWithNoSameNameFile) file couldn't be found in the input directory (possibly was detected but taken away before process).
-	**(class LogChainerService - method chainingLogFile) (2 occurences) files were not found in the working directory.
-	**(class LogWatcherService - method getPreviousFileHash) previous file wasn't found in the working directory when opening it as a stream.
+	- (class FolderService - method moveFileInDirWithNoSameNameFile) file couldn't be found in the input directory (possibly was detected but taken away before process).
+	- (class LogChainerService - method chainingLogFile) (2 occurences) files were not found in the working directory.
+	- (class LogWatcherService - method getPreviousFileHash) previous file wasn't found in the working directory when opening it as a stream.
 - IOException : 
-	**(class FolderService) 
-		***(method moveFileInDirWithNoSameNameFile) when an IOException is thrown by the Files.move method.
-		***(method copyFileToDirByReplacingExisting) when an IOException is thrown by the Files.copy method.
-	**(class HashService - method getLogHash) exception when reading the given stream.
-	**(class LogChainerService)
-		***(method chainingLogFile) exception when reading the stream opened on the file to process.
-		***(method accessToTmpFile) exception when reading the stream opened on the temp file.
-		***(method insertionOfMessage) exception while manipulating the streams.
-	- - (class LogWatcherService)
-		- - - (method initializeFileWatcherByClient) exception while initializing the watchKey.
-		***(method getPreviousFileHash) exception when reading the stream from the previous file in the working directory.
+	- (class FolderService) 
+		- (method moveFileInDirWithNoSameNameFile) when an IOException is thrown by the Files.move method.
+		- (method copyFileToDirByReplacingExisting) when an IOException is thrown by the Files.copy method.
+	- (class HashService - method getLogHash) exception when reading the given stream.
+	- (class LogChainerService)
+		- (method chainingLogFile) exception when reading the stream opened on the file to process.
+		- (method accessToTmpFile) exception when reading the stream opened on the temp file.
+		- (method insertionOfMessage) exception while manipulating the streams.
+	- (class LogWatcherService)
+		- (method initializeFileWatcherByClient) exception while initializing the watchKey.
+		- (method getPreviousFileHash) exception when reading the stream from the previous file in the working directory.
 - UnsupportedEncodingException : (class LogWatcherService - method newFileTreatment) encoding type isn't a valid Charset.
 - JAXBException : (class LogChainer - method loadConfiguration) exception while loading the configurations from the xml file.
 - CorruptedKeyException : (class LogWatcherService - method processEvents) directory isn't accessible anymore or key has gotten corrupted.
