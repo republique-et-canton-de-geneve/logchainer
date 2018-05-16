@@ -30,6 +30,7 @@ public class LogChainer implements CommandLineRunner {
 
     @Autowired
     private LogWatcherService watcher;
+    
     @Autowired
     private LogChainerExceptionHandlerServiceImpl exceptionHandler;
 
