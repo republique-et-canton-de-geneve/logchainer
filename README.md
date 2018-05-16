@@ -143,7 +143,7 @@ These are the listed exceptions, other exceptions can still occure but won't be 
 *UnsupportedEncodingException : (class LogWatcherService - method newFileTreatment) encoding type isn't a valid Charset.
 *JAXBException : (class LogChainer - method loadConfiguration) exception while loading the configurations from the xml file.
 *CorruptedKeyException : (class LogWatcherService - method processEvents) directory isn't accessible anymore or key has gotten corrupted.
-*WatchServiceError : (class Client - constructor) exception while creating the watchService.
+- WatchServiceError : (class Client - constructor) exception while creating the watchService.
 
 ## Monitoring
 
