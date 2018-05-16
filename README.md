@@ -20,6 +20,7 @@ version at which point the hashCode is still present but null (we arbitrarly def
 - [Working](#working)
 	- [Process](#process)
 	- [Exceptions](#exceptions)
+	- [Monitoring](#monitoring)
 - [Contact](#contact)
 
 # Overview 
@@ -117,7 +118,7 @@ NB :
 2. If the file was the last of it's flux, the flux is deleted from the client's flux list.
 3. We go to the next iteration over the flux and over the clients, same as the beginning.
 
-# Exceptions
+## Exceptions
 
 These are the listed exceptions, other exceptions can still occure but won't be handled. The following abreviation will be used : if the exception leads to a program interruption (I) if not (NI).
 
@@ -143,6 +144,14 @@ These are the listed exceptions, other exceptions can still occure but won't be 
 *JAXBException : (class LogChainer - method loadConfiguration) exception while loading the configurations from the xml file.
 *CorruptedKeyException : (class LogWatcherService - method processEvents) directory isn't accessible anymore or key has gotten corrupted.
 *WatchServiceError : (class Client - constructor) exception while creating the watchService.
+
+## Monitoring
+
+The monitoring of the application can be done at the address : ``localhost:8080`` .
+You can monitor the following elements in addition to the default ones :
+*The status of the programm's health which will only tell you if the application is still running (UP) or not (DOWN), to access this information add ``/actuator/health`` to the monitoring address.
+*The informations of all detected corrupted files, which give you the total number of corrupted files that have been transfered by the programm and a recap for all clients corresponding to the number of corrupted files, their name and their size. Add ``/actuator/global/`` to the monitoring address.
+*The informations of the detected corrupted files for a particular client. This will give you the number of corrupted files for the sepcified client and a recap of all these files with their name and size. Add ``/actuator/{clientName}`` to the monitoring address.
 
 # Contact
 
