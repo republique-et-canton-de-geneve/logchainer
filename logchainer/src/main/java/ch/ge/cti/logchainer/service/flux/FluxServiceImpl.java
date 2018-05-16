@@ -18,6 +18,8 @@ import ch.ge.cti.logchainer.service.utils.UtilsComponents;
 
 @Service
 public class FluxServiceImpl implements FluxService {
+    private final String stampPositionIsBefore = "before";
+
     @Autowired
     FileService fileService;
     @Autowired
@@ -61,7 +63,7 @@ public class FluxServiceImpl implements FluxService {
 
 	int start;
 	int end;
-	if (stampPosition.equals("before")) {
+	if (stampPosition.equals(stampPositionIsBefore)) {
 	    start = 1;
 	    end = nameComponents.length;
 	} else {
@@ -75,7 +77,8 @@ public class FluxServiceImpl implements FluxService {
 	if (LOG.isDebugEnabled())
 	    LOG.debug("the flux of the file {} is : {}", filename, fluxNameTmp.toString());
 
-	return stampPosition.equals("before") ? fluxNameTmp.toString().split("\\.")[0] : fluxNameTmp.toString();
+	return stampPosition.equals(stampPositionIsBefore) ? fluxNameTmp.toString().split("\\.")[0]
+		: fluxNameTmp.toString();
     }
 
     @Override
@@ -84,7 +87,7 @@ public class FluxServiceImpl implements FluxService {
 	String[] nameComponents = filename.split(separator);
 	String[] nameStampComponents;
 
-	if (stampPosition.equals("before")) {
+	if (stampPosition.equals(stampPositionIsBefore)) {
 	    LOG.debug("the stamp of the file {} is : {}", filename, nameComponents[0]);
 	    return nameComponents[0];
 	} else {
