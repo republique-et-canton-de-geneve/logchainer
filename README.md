@@ -137,8 +137,8 @@ These are the listed exceptions, other exceptions can still occure but won't be 
 		***(method chainingLogFile) exception when reading the stream opened on the file to process.
 		***(method accessToTmpFile) exception when reading the stream opened on the temp file.
 		***(method insertionOfMessage) exception while manipulating the streams.
-	-- (class LogWatcherService)
-		--- (method initializeFileWatcherByClient) exception while initializing the watchKey.
+	- - (class LogWatcherService)
+		- - - (method initializeFileWatcherByClient) exception while initializing the watchKey.
 		***(method getPreviousFileHash) exception when reading the stream from the previous file in the working directory.
 - UnsupportedEncodingException : (class LogWatcherService - method newFileTreatment) encoding type isn't a valid Charset.
 - JAXBException : (class LogChainer - method loadConfiguration) exception while loading the configurations from the xml file.
