@@ -49,7 +49,8 @@ public class FileServiceImpl implements FileService {
     public void registerFile(Client client, FileWatched file) {
 	LOG.debug("registering file {}", file.getFilename());
 	// getting the name of the file's flux
-	String fluxname = fluxService.getFluxName(file.getFilename(), component.getSeparator(client));
+	String fluxname = fluxService.getFluxName(file.getFilename(), component.getSeparator(client),
+		component.getStampPosition(client));
 
 	// registering the flux if it doesn't already exist
 	fluxService.addFlux(fluxname, client);
@@ -68,8 +69,8 @@ public class FileServiceImpl implements FileService {
 
 	// accessing same flux file in the tmp directory
 	Collection<File> previousFiles = getPreviousFiles(
-		fluxService.getFluxName(filename, component.getSeparator(client)), client.getConf().getWorkingDir(),
-		component.getSeparator(client));
+		fluxService.getFluxName(filename, component.getSeparator(client), component.getStampPosition(client)),
+		client.getConf().getWorkingDir(), component.getSeparator(client), component.getStampPosition(client));
 
 	// moving the file to the tmp directory
 	String pFileInTmp = mover.moveFileInDirWithNoSameNameFile(filename, client.getConf().getInputDir(),
@@ -94,7 +95,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void sortFiles(String separator, String sorter, List<FileWatched> files) {
+    public void sortFiles(String separator, String sorter, String stampPosition, List<FileWatched> files) {
 	LOG.debug("sorting the file list");
 	if (("alphabetical").equals(sorter)) {
 	    LOG.debug("sorting by alphabetical order");
@@ -106,8 +107,8 @@ public class FileServiceImpl implements FileService {
 	    @Override
 	    public int compare(FileWatched file1, FileWatched file2) {
 		// getting both file's stamp which are used to sort them
-		String sortingStamp1 = fluxService.getSortingStamp(file1.getFilename(), separator);
-		String sortingStamp2 = fluxService.getSortingStamp(file2.getFilename(), separator);
+		String sortingStamp1 = fluxService.getSortingStamp(file1.getFilename(), separator, stampPosition);
+		String sortingStamp2 = fluxService.getSortingStamp(file2.getFilename(), separator, stampPosition);
 
 		// case where the sorting type is alphabetical
 		if (("alphabetical").equals(sorter)) {
@@ -131,7 +132,8 @@ public class FileServiceImpl implements FileService {
      * @return collection of these files
      */
     @SuppressWarnings("unchecked")
-    private Collection<File> getPreviousFiles(String fluxName, String workingDir, String separator) {
+    private Collection<File> getPreviousFiles(String fluxName, String workingDir, String separator,
+	    String stampPosition) {
 	// filtering the files to only keep the same as given flux one (should
 	// be unique)
 	return FileUtils.listFiles(new File(workingDir), new IOFileFilter() {
@@ -142,12 +144,13 @@ public class FileServiceImpl implements FileService {
 
 	    @Override
 	    public boolean accept(File file) {
-		if (fluxName.equals(fluxService.getFluxName(file.getName(), separator))) {
+		if (fluxName.equals(fluxService.getFluxName(file.getName(), separator, stampPosition))) {
 		    LOG.debug("same flux name noticed for {}", file.getName());
 		} else {
 		    LOG.debug("no same flux name detected");
 		}
-		return (fluxName.equals(fluxService.getFluxName(file.getName(), separator)) ? true : false);
+		return (fluxName.equals(fluxService.getFluxName(file.getName(), separator, stampPosition)) ? true
+			: false);
 	    }
 	}, null);
     }

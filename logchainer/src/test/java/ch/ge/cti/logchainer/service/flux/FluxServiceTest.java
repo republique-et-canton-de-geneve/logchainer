@@ -1,5 +1,7 @@
 package ch.ge.cti.logchainer.service.flux;
 
+import static ch.ge.cti.logchainer.constant.LogChainerConstant.SEPARATOR_DEFAULT;
+import static ch.ge.cti.logchainer.constant.LogChainerConstant.STAMP_POSITION_DEFAULT;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -28,6 +30,9 @@ import ch.ge.cti.logchainer.service.utils.UtilsComponentsImpl;
 public class FluxServiceTest {
     private final FluxServiceImpl fluxService = new FluxServiceImpl();
     private final String testFilename = "fluxTest_stampTest.txt";
+    private final String testFilenameChangeSeparator = "fluxTest-stampTest.txt";
+    private final String testFilenameChangeStampPosition = "stampTest_fluxTest.txt";
+    private final String testFilenameChangeSeparatorAndStampPosition = "stampTest-fluxTest.txt";
     private ArrayList<FileWatched> watchedFiles = new ArrayList<>();
     private Map<String, ArrayList<FileWatched>> mapFluxFiles;
 
@@ -43,16 +48,38 @@ public class FluxServiceTest {
 
     @Test(description = "testing the method getting the flux name")
     public void testGetFluxName() {
-	String fluxname = fluxService.getFluxName(testFilename, "_");
-
+	String fluxname = fluxService.getFluxName(testFilename, SEPARATOR_DEFAULT, STAMP_POSITION_DEFAULT);
 	assertEquals(fluxname, "fluxTest");
+
+	String fluxnameChangeSeparator = fluxService.getFluxName(testFilenameChangeSeparator, "-",
+		STAMP_POSITION_DEFAULT);
+	assertEquals(fluxnameChangeSeparator, "fluxTest");
+
+	String fluxnameChangeStampPosition = fluxService.getFluxName(testFilenameChangeStampPosition, SEPARATOR_DEFAULT,
+		"before");
+	assertEquals(fluxnameChangeStampPosition, "fluxTest");
+
+	String fluxnameChangeSeparatorAndStampPosition = fluxService
+		.getFluxName(testFilenameChangeSeparatorAndStampPosition, "-", "before");
+	assertEquals(fluxnameChangeSeparatorAndStampPosition, "fluxTest");
     }
 
     @Test(description = "testing the method getting the stamp used to sort files")
     public void testGetSortingStamp() {
-	String stamp = fluxService.getSortingStamp(testFilename, "_");
-
+	String stamp = fluxService.getSortingStamp(testFilename, SEPARATOR_DEFAULT, STAMP_POSITION_DEFAULT);
 	assertEquals(stamp, "stampTest");
+
+	String stampChangeSeparator = fluxService.getSortingStamp(testFilenameChangeSeparator, "-",
+		STAMP_POSITION_DEFAULT);
+	assertEquals(stampChangeSeparator, "stampTest");
+
+	String stampChangeStampPosition = fluxService.getSortingStamp(testFilenameChangeStampPosition,
+		SEPARATOR_DEFAULT, "before");
+	assertEquals(stampChangeStampPosition, "stampTest");
+
+	String stampChangeSeparatorAndStampPosition = fluxService
+		.getSortingStamp(testFilenameChangeSeparatorAndStampPosition, "-", "before");
+	assertEquals(stampChangeSeparatorAndStampPosition, "stampTest");
     }
 
     @Test(description = "testing when the is ready to be treated")
@@ -90,7 +117,7 @@ public class FluxServiceTest {
 	mapFluxFiles.put("fluxTest2", watchedFiles);
 
 	when(watcherService.treatmentAfterDetectionOfEvent(any(Client.class), anyString(), any())).thenReturn(true);
-	doNothing().when(fileService).sortFiles(anyString(), anyString(), any());
+	doNothing().when(fileService).sortFiles(anyString(), anyString(), anyString(), any());
 	when(component.getSeparator(client)).thenReturn(null);
 	when(component.getSorter(client)).thenReturn(null);
 

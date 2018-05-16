@@ -29,4 +29,13 @@ public interface UtilsComponents {
      * @return the encoding type
      */
     String getEncodingType(Client client);
+    
+    /**
+     * Get the configured stamp position String or the default one if none is
+     * defined by the user. Default is "after".
+     * 
+     * @param client
+     * @return the stamp position
+     */
+    String getStampPosition(Client client);
 }

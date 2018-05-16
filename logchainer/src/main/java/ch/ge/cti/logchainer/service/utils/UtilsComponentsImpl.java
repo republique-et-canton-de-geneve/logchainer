@@ -33,4 +33,13 @@ public class UtilsComponentsImpl implements UtilsComponents {
 	    return LogChainerConstant.ENCODING_TYPE_DEFAULT;
 	}
     }
+
+    @Override
+    public String getStampPosition(Client client) {
+	if (!client.getConf().getFilePattern().getStampPosition().isEmpty()) {
+	    return client.getConf().getFilePattern().getStampPosition();
+	} else {
+	    return LogChainerConstant.STAMP_POSITION_DEFAULT;
+	}
+    }
 }

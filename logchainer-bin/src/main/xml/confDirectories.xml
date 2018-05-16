@@ -11,6 +11,7 @@
 		<filePattern>
 			<separator>_</separator>
 			<sortingType>numerical</sortingType>
+			<stampPosition>after</stampPosition>
 		</filePattern>
 		<fileEncoding>UTF-8</fileEncoding>
 	</listeClientConf>

@@ -37,6 +37,7 @@
 		<xs:sequence>
 			<xs:element name="separator" type="xs:string" />
 			<xs:element name="sortingType" type="xs:string" />
+			<xs:element name="stampPosition" type="xs:string"/>
 		</xs:sequence>
 	</xs:complexType>
 </xs:schema>

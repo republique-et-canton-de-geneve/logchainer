@@ -40,7 +40,7 @@ public interface FluxService {
      * @param filename
      * @return fluxname
      */
-    String getFluxName(String filename, String separator);
+    String getFluxName(String filename, String separator, String stampPosition);
 
     /**
      * Get the stamp used to sort files.
@@ -49,7 +49,7 @@ public interface FluxService {
      * @param separator
      * @return stamp
      */
-    String getSortingStamp(String filename, String separator);
+    String getSortingStamp(String filename, String separator, String stampPosition);
 
     /**
      * Check if the flux can be treated.

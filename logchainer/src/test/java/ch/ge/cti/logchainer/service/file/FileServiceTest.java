@@ -3,6 +3,7 @@ package ch.ge.cti.logchainer.service.file;
 import static ch.ge.cti.logchainer.constant.LogChainerConstant.ENCODING_TYPE_DEFAULT;
 import static ch.ge.cti.logchainer.constant.LogChainerConstant.SEPARATOR_DEFAULT;
 import static ch.ge.cti.logchainer.constant.LogChainerConstant.SORT_DEFAULT;
+import static ch.ge.cti.logchainer.constant.LogChainerConstant.STAMP_POSITION_DEFAULT;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -64,10 +65,11 @@ public class FileServiceTest {
 	UtilsComponentsImpl component = mock(UtilsComponentsImpl.class);
 	fileService.component = component;
 
-	when(fluxService.getFluxName(anyString(), anyString())).thenReturn(fluxname);
+	when(fluxService.getFluxName(anyString(), anyString(), anyString())).thenReturn(fluxname);
 	doCallRealMethod().when(fluxService).addFlux(anyString(), any(Client.class));
 	doCallRealMethod().when(fluxService).addFileToFlux(anyString(), any(), any(Client.class));
 	when(component.getSeparator(client)).thenReturn(SEPARATOR_DEFAULT);
+	when(component.getStampPosition(client)).thenReturn(STAMP_POSITION_DEFAULT);
 
 	fileService.registerFile(client, file);
 	assertTrue(client.getFluxFileMap().keySet().contains(fluxname));
@@ -96,13 +98,14 @@ public class FileServiceTest {
 	LogChainerServiceImpl chainer = mock(LogChainerServiceImpl.class);
 	fileService.chainer = chainer;
 
-	when(fluxService.getFluxName(anyString(), anyString())).thenReturn("noFlux");
+	when(fluxService.getFluxName(anyString(), anyString(), anyString())).thenReturn("noFlux");
 	when(component.getSeparator(any(Client.class))).thenReturn("noSeparator");
 
 	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenReturn(null);
 
 	when(hasher.getPreviousFileHash(any())).thenReturn(new byte[] {});
 	when(component.getEncodingType(any(Client.class))).thenReturn(ENCODING_TYPE_DEFAULT);
+	when(component.getStampPosition(any(Client.class))).thenReturn(STAMP_POSITION_DEFAULT);
 
 	doNothing().when(chainer).chainingLogFile(anyString(), anyInt(), any());
 
@@ -117,7 +120,7 @@ public class FileServiceTest {
     public void testSortFiles() {
 	FluxServiceImpl fluxService = mock(FluxServiceImpl.class);
 	fileService.fluxService = fluxService;
-	when(fluxService.getSortingStamp(anyString(), anyString())).thenCallRealMethod();
+	when(fluxService.getSortingStamp(anyString(), anyString(), anyString())).thenCallRealMethod();
 
 	List<FileWatched> filesNumericalStampRefList = new ArrayList<>();
 	filesNumericalStampRefList.add(new FileWatched("fluxTest1_001.txt"));
@@ -141,7 +144,7 @@ public class FileServiceTest {
 	filesNumericalStamp.add(new FileWatched("fluxTest1_003.txt"));
 	filesNumericalStamp.add(new FileWatched("fluxTest1_101.txt"));
 
-	fileService.sortFiles(SEPARATOR_DEFAULT, SORT_DEFAULT, filesNumericalStamp);
+	fileService.sortFiles(SEPARATOR_DEFAULT, SORT_DEFAULT, STAMP_POSITION_DEFAULT, filesNumericalStamp);
 	assertEquals(filesNumericalStamp.size(), filesNumericalStampRefList.size());
 	for (int i = 0; i < filesNumericalStamp.size(); ++i) {
 	    assertEquals(filesNumericalStamp.get(i).getFilename(), filesNumericalStampRefList.get(i).getFilename());
@@ -169,7 +172,7 @@ public class FileServiceTest {
 	filesAlphabeticalStamp.add(new FileWatched("fluxTest1_acv.txt"));
 	filesAlphabeticalStamp.add(new FileWatched("fluxTest1_aaa.txt"));
 
-	fileService.sortFiles(SEPARATOR_DEFAULT, "alphabetical", filesAlphabeticalStamp);
+	fileService.sortFiles(SEPARATOR_DEFAULT, "alphabetical", STAMP_POSITION_DEFAULT, filesAlphabeticalStamp);
 	assertEquals(filesAlphabeticalStamp.size(), filesAlphabeticalStampRefList.size());
 	for (int i = 0; i < filesAlphabeticalStamp.size(); ++i) {
 	    assertEquals(filesAlphabeticalStamp.get(i).getFilename(),

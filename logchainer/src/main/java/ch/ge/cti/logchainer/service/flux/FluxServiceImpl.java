@@ -51,30 +51,47 @@ public class FluxServiceImpl implements FluxService {
     }
 
     @Override
-    public String getFluxName(String filename, String separator) {
+    public String getFluxName(String filename, String separator, String stampPosition) {
 	LOG.debug("getting flux name method entered");
 	StringBuilder fluxNameTmp = new StringBuilder();
 
 	// finding the flux name of the file, knowing each flux is situated at
 	// the beginning of the filename (before the separator)
 	String[] nameComponents = filename.split(separator);
-	for (int i = 0; i < nameComponents.length - 1; ++i) {
+
+	int start;
+	int end;
+	if (stampPosition.equals("before")) {
+	    start = 1;
+	    end = nameComponents.length;
+	} else {
+	    start = 0;
+	    end = nameComponents.length - 1;
+	}
+
+	for (int i = start; i < end; ++i) {
 	    fluxNameTmp.append(nameComponents[i]);
 	}
 	if (LOG.isDebugEnabled())
 	    LOG.debug("the flux of the file {} is : {}", filename, fluxNameTmp.toString());
 
-	return fluxNameTmp.toString();
+	return stampPosition.equals("before") ? fluxNameTmp.toString().split("\\.")[0] : fluxNameTmp.toString();
     }
 
     @Override
-    public String getSortingStamp(String filename, String separator) {
+    public String getSortingStamp(String filename, String separator, String stampPosition) {
 	LOG.debug("getting stamp method entered");
 	String[] nameComponents = filename.split(separator);
-	String[] nameStampComponents = nameComponents[nameComponents.length - 1].split("\\.");
+	String[] nameStampComponents;
 
-	LOG.debug("the stamp of the file {} is : {}", filename, nameStampComponents[0]);
-	return nameStampComponents[0];
+	if (stampPosition.equals("before")) {
+	    LOG.debug("the stamp of the file {} is : {}", filename, nameComponents[0]);
+	    return nameComponents[0];
+	} else {
+	    nameStampComponents = nameComponents[nameComponents.length - 1].split("\\.");
+	    LOG.debug("the stamp of the file {} is : {}", filename, nameStampComponents[0]);
+	    return nameStampComponents[0];
+	}
     }
 
     @Override
@@ -96,7 +113,8 @@ public class FluxServiceImpl implements FluxService {
     @Override
     public void fluxTreatment(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<FileWatched>> flux) {
 	LOG.debug("flux {} starting to be treated", flux.getKey());
-	fileService.sortFiles(component.getSeparator(client), component.getSorter(client), flux.getValue());
+	fileService.sortFiles(component.getSeparator(client), component.getSorter(client),
+		component.getStampPosition(client), flux.getValue());
 	LOG.debug("flux sorted");
 
 	// cheking if all files' treatment has been completed

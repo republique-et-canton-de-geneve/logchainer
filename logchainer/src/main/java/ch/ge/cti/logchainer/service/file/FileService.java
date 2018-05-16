@@ -29,5 +29,5 @@ public interface FileService {
      * @param sorter
      * @param files
      */
-    void sortFiles(String separator, String sorter, List<FileWatched> files);
+    void sortFiles(String separator, String sorter, String stampPosition, List<FileWatched> files);
 }
