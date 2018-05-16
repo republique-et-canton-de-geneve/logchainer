@@ -87,6 +87,9 @@ The components are defined for each client on which the logchainer will be plugg
 - SortingType : (String) type of sorting requested, 2 types possible : 
 	- "alphabetical" , for the alphabetical order.
 	- "numerical" , for the numerical order (Default).
+- StampPosition : (String) postion of the sorting stamp in the filename, relatively to the flux. 2 positions possible :
+	- "before" , when the sorting stamp is before the flux name in the file name.
+	- "after" , when the sorting stamp is after the flux name in the file name (Default).
 - FileEncoding : (String) encoding of the files in a client. The string given should comply with a Java Charset to be valid. (Default is "UTF-8").
 
 # Working
