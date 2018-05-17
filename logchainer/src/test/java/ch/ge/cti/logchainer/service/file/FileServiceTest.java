@@ -72,14 +72,17 @@ public class FileServiceTest {
 	when(fileHelper.getStampPosition(client)).thenReturn(STAMP_POSITION_DEFAULT);
 
 	fileService.registerFile(client, file);
-	assertTrue(client.getWatchedFilesByFlux().keySet().contains(fluxname));
-	assertTrue(client.getWatchedFilesByFlux().get(fluxname).contains(file));
+	assertTrue(client.getWatchedFilesByFlux().keySet().contains(fluxname), "flux not registered");
+	assertTrue(client.getWatchedFilesByFlux().get(fluxname).contains(file),
+		"file not included in the list related to the flux");
 
 	fileService.registerFile(client, fileWithSameFlux);
-	assertEquals(client.getWatchedFilesByFlux().keySet().size(), 1);
-	assertEquals(client.getWatchedFilesByFlux().get(fluxname).size(), 2);
+	assertEquals(client.getWatchedFilesByFlux().keySet().size(), 1, "incorrect amont of flux registered");
+	assertEquals(client.getWatchedFilesByFlux().get(fluxname).size(), 2,
+		"incorrect amont of files registered in a flux");
 
-	client.getWatchedFilesByFlux().get(fluxname).stream().forEach(fileTest -> assertTrue(fileTest.isRegistered()));
+	client.getWatchedFilesByFlux().get(fluxname).stream()
+		.forEach(fileTest -> assertTrue(fileTest.isRegistered(), "file wasn't set as registered"));
     }
 
     @Test(description = "we only have a small test because the newFileProcess method mainly calls other methods which are tested elsewhere")
@@ -145,9 +148,11 @@ public class FileServiceTest {
 	filesNumericalStamp.add(new WatchedFile("fluxTest1_101.txt"));
 
 	fileService.sortFiles(SEPARATOR_DEFAULT, SORT_DEFAULT, STAMP_POSITION_DEFAULT, filesNumericalStamp);
-	assertEquals(filesNumericalStamp.size(), filesNumericalStampRefList.size());
+	assertEquals(filesNumericalStamp.size(), filesNumericalStampRefList.size(),
+		"incorrect amount of files returned by the sorting method for a numerical stamp");
 	for (int i = 0; i < filesNumericalStamp.size(); ++i) {
-	    assertEquals(filesNumericalStamp.get(i).getFilename(), filesNumericalStampRefList.get(i).getFilename());
+	    assertEquals(filesNumericalStamp.get(i).getFilename(), filesNumericalStampRefList.get(i).getFilename(),
+		    "incorrect order for the numerical stamp");
 	}
 
 	List<WatchedFile> filesAlphabeticalStampRefList = new ArrayList<>();
@@ -173,10 +178,11 @@ public class FileServiceTest {
 	filesAlphabeticalStamp.add(new WatchedFile("fluxTest1_aaa.txt"));
 
 	fileService.sortFiles(SEPARATOR_DEFAULT, "alphabetical", STAMP_POSITION_DEFAULT, filesAlphabeticalStamp);
-	assertEquals(filesAlphabeticalStamp.size(), filesAlphabeticalStampRefList.size());
+	assertEquals(filesAlphabeticalStamp.size(), filesAlphabeticalStampRefList.size(),
+		"incorrect amount of files returned by the sorting method for a alphabetical stamp");
 	for (int i = 0; i < filesAlphabeticalStamp.size(); ++i) {
 	    assertEquals(filesAlphabeticalStamp.get(i).getFilename(),
-		    filesAlphabeticalStampRefList.get(i).getFilename());
+		    filesAlphabeticalStampRefList.get(i).getFilename(), "incorrect order for the alphabetical stamp");
 	}
     }
 
@@ -193,22 +199,27 @@ public class FileServiceTest {
 	// testing for a normal message with previous file
 	previousFiles.add(new File("testPreviousFilename"));
 	String messageTestWithPreviousFile = fileService.messageToInsert(noHash, previousFiles, client);
-	assertTrue(messageTestWithPreviousFile.contains("<Date of chaining: "));
-	assertTrue(messageTestWithPreviousFile.contains("> \n"));
-	assertTrue(messageTestWithPreviousFile.contains("<Previous file: testPreviousFilename> \n"));
-	assertTrue(messageTestWithPreviousFile.contains("<SHA-256: "));
+	assertTrue(messageTestWithPreviousFile.contains("<Date of chaining: "),
+		"message to insert doesn't contain '<Date of chaining: '");
+	assertTrue(messageTestWithPreviousFile.contains("> \n"), "message to insert doesn't contain '> \n'");
+	assertTrue(messageTestWithPreviousFile.contains("<Previous file: testPreviousFilename> \n"),
+		"message to insert doesn't contain '<Previous file: testPreviousFilename> \n'");
+	assertTrue(messageTestWithPreviousFile.contains("<SHA-256: "),
+		"message to insert doesn't contain '<SHA-256: '");
 
 	// without previous file
 	previousFiles.clear();
 	String messageTestWithoutPreviousFile = fileService.messageToInsert(noHash, previousFiles, client);
-	assertTrue(messageTestWithoutPreviousFile.contains("<Previous file: none> \n"));
+	assertTrue(messageTestWithoutPreviousFile.contains("<Previous file: none> \n"),
+		"message to insert doesn't contain '<Previous file: none> \n'");
 
 	// invalid charset
 	when(fileHelper.getEncodingType(any(Client.class))).thenReturn("Invalid_charset");
 	try {
 	    fileService.messageToInsert(noHash, previousFiles, client);
 	} catch (BusinessException e) {
-	    assertEquals(e.getCause().getClass(), UnsupportedEncodingException.class);
+	    assertEquals(e.getCause().getClass(), UnsupportedEncodingException.class,
+		    "UnsupportedEncodingException wasn't detected");
 	}
     }
 }

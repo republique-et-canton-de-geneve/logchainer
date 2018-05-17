@@ -37,24 +37,25 @@ public class FolderServiceTest {
 
 	Collection<File> existingFilesMoved = getPreviousFiles(testResourcesDirPath + "/testMovingToFolder");
 
-	assertEquals(existingFilesMoved.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename1)),
-		true);
-	assertEquals(existingFilesMoved.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename2)),
-		true);
+	assertTrue(existingFilesMoved.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename1)),
+		"file 1 wasn't properly moved");
+	assertTrue(existingFilesMoved.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename2)),
+		"file 2 wasn't properly moved");
 
 	Files.write(Paths.get(testResourcesDirPath + "/" + filename1), noData.getBytes());
 	try {
 	    mover.moveFileInDirWithNoSameNameFile(filename1, testResourcesDirPath,
 		    testResourcesDirPath + "/testMovingToFolder");
 	} catch (BusinessException e) {
-	    assertEquals(e.getCause().getClass(), FileAlreadyExistsException.class);
+	    assertEquals(e.getCause().getClass(), FileAlreadyExistsException.class,
+		    "FileAlreadyExistsException wasn't detected");
 	}
 
 	try {
 	    mover.moveFileInDirWithNoSameNameFile("nonExistingFile", testResourcesDirPath,
 		    testResourcesDirPath + "/testMovingToFolder");
 	} catch (BusinessException e) {
-	    assertEquals(e.getCause().getClass(), NoSuchFileException.class);
+	    assertEquals(e.getCause().getClass(), NoSuchFileException.class, "NoSuchFileException wasn't detected");
 	}
 
 	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/" + filename1));
@@ -75,12 +76,16 @@ public class FolderServiceTest {
 		testResourcesDirPath + "/testMovingToFolder");
 
 	Collection<File> existingFilesCopied = getPreviousFiles(testResourcesDirPath + "/testMovingToFolder");
-	assertTrue(existingFilesCopied.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename1)));
-	assertTrue(existingFilesCopied.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename2)));
+	assertTrue(existingFilesCopied.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename1)),
+		"file 1 wsn't properly copied");
+	assertTrue(existingFilesCopied.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename2)),
+		"file 2 wasn't properly copied");
 
 	Collection<File> existingFilesStaying = getPreviousFiles(testResourcesDirPath);
-	assertTrue(existingFilesStaying.contains(new File(testResourcesDirPath + "/" + filename1)));
-	assertTrue(existingFilesStaying.contains(new File(testResourcesDirPath + "/" + filename2)));
+	assertTrue(existingFilesStaying.contains(new File(testResourcesDirPath + "/" + filename1)),
+		"file 1 has been removed from original place");
+	assertTrue(existingFilesStaying.contains(new File(testResourcesDirPath + "/" + filename2)),
+		"file 2 has been removed from original place");
 
 	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/" + filename1));
 	Files.delete(Paths.get(testResourcesDirPath + "/testMovingToFolder/" + filename2));

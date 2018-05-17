@@ -57,43 +57,44 @@ public class FileHelperTest {
     public void the_sorter_should_comply_with_a_format() {
 	// check that the correct value is returned for a custom fileHelper
 	// part
-	assertEquals(fileHelper.getSorter(clientCustom), customSortingType);
+	assertEquals(fileHelper.getSorter(clientCustom), customSortingType, "wrong custom sorter");
 
 	// check that if we don't have any value for a fileHelper part, we
 	// still get the correct default value
-	assertEquals(fileHelper.getSorter(clientDefault), SORT_DEFAULT);
+	assertEquals(fileHelper.getSorter(clientDefault), SORT_DEFAULT, "wrong default sorter");
     }
 
     @Test
     public void the_separator_should_comply_with_a_format() {
 	// check that the correct value is returned for a custom fileHelper
 	// part
-	assertEquals(fileHelper.getSeparator(clientCustom), customSeparator);
+	assertEquals(fileHelper.getSeparator(clientCustom), customSeparator, "wrong custom separator");
 
 	// check that if we don't have any value for a fileHelper part, we
 	// still get the correct default value
-	assertEquals(fileHelper.getSeparator(clientDefault), SEPARATOR_DEFAULT);
+	assertEquals(fileHelper.getSeparator(clientDefault), SEPARATOR_DEFAULT, "wrong default separator");
     }
 
     @Test
     public void the_stamp_position_should_comply_with_a_format() {
 	// check that the correct value is returned for a custom fileHelper
 	// part
-	assertEquals(fileHelper.getStampPosition(clientCustom), customStampPosition);
+	assertEquals(fileHelper.getStampPosition(clientCustom), customStampPosition, "wrong custom stamp position");
 
 	// check that if we don't have any value for a fileHelper part, we
 	// still get the correct default value
-	assertEquals(fileHelper.getStampPosition(clientDefault), STAMP_POSITION_DEFAULT);
+	assertEquals(fileHelper.getStampPosition(clientDefault), STAMP_POSITION_DEFAULT,
+		"wrong default stamp position");
     }
 
     @Test
     public void the_encoding_type_should_comply_with_a_format() {
 	// check that the correct value is returned for a custom fileHelper
 	// part
-	assertEquals(fileHelper.getEncodingType(clientCustom), customFileEncoding);
+	assertEquals(fileHelper.getEncodingType(clientCustom), customFileEncoding, "wrong custom encoding type");
 
 	// check that if we don't have any value for a fileHelper part, we
 	// still get the correct default value
-	assertEquals(fileHelper.getEncodingType(clientDefault), ENCODING_TYPE_DEFAULT);
+	assertEquals(fileHelper.getEncodingType(clientDefault), ENCODING_TYPE_DEFAULT, "wrong default encoding type");
     }
 }

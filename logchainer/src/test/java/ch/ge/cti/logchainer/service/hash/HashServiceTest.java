@@ -27,7 +27,7 @@ public class HashServiceTest {
 
 	try (InputStream fileToTest = new FileInputStream(new File(pathTestFile))) {
 	    hasher.getNullHash();
-	    assertEquals(hasher.getLogHashCode(fileToTest), refArray);
+	    assertEquals(hasher.getLogHashCode(fileToTest), refArray, "wrong hash code");
 	}
     }
 
@@ -35,7 +35,7 @@ public class HashServiceTest {
     public void a_null_hashcode_should_comply_with_convention() {
 	byte[] nullHash = new byte[] {};
 
-	assertEquals(hasher.getNullHash(), nullHash);
+	assertEquals(hasher.getNullHash(), nullHash, " wrong null hash code");
     }
 
     @Test(description = "testing the method for getting the hashCode of files from collection (should be 1 file)")
@@ -47,23 +47,24 @@ public class HashServiceTest {
 
 	// test when a valid previous file has been found
 	previousFiles.add(hashForTest);
-	byte[] codeHashForTest;
+	byte[] hashCodeForTest;
 	try (InputStream stream = new FileInputStream(hashForTest)) {
-	    codeHashForTest = hasher.getLogHashCode(stream);
+	    hashCodeForTest = hasher.getLogHashCode(stream);
 	}
 
-	assertEquals(hasher.getPreviousFileHash(previousFiles), codeHashForTest);
+	assertEquals(hasher.getPreviousFileHash(previousFiles), hashCodeForTest, "wrong hash code for previous file");
 
 	// test when no previous file have been found
 	previousFiles.clear();
-	assertEquals(hasher.getPreviousFileHash(previousFiles), hasher.getNullHash());
+	assertEquals(hasher.getPreviousFileHash(previousFiles), hasher.getNullHash(),
+		"wrong null hash code when no previous file");
 
 	// test when an invalid previous file has been provided
 	previousFiles.add(new File("nonExistingFile"));
 	try {
 	    hasher.getPreviousFileHash(previousFiles);
 	} catch (BusinessException e) {
-	    assertEquals(e.getCause().getClass(), FileNotFoundException.class);
+	    assertEquals(e.getCause().getClass(), FileNotFoundException.class, "FileNotFoundException wasn't detected");
 	}
     }
 }

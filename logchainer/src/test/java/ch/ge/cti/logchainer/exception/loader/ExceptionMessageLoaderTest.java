@@ -42,40 +42,47 @@ public class ExceptionMessageLoaderTest {
 	messageLoader.watchServiceError = watchServiceErrorMessage;
 
 	assertEquals(messageLoader.getExceptionMessage(new CorruptedKeyException("testing")),
-		corruptedKeyExceptionMessage);
-	assertTrue(messageLoader.isProgrammToBeInterrupted());
+		corruptedKeyExceptionMessage,
+		"exception message wasn't correctly transmitted for CorruptedKeyException");
+	assertTrue(messageLoader.isProgrammToBeInterrupted(), "interruption isn't detected for CorruptedKeyException");
 
 	assertEquals(
 		messageLoader.getExceptionMessage(new BusinessException(new FileAlreadyExistsException("testing"))),
-		fileAlreadyExistsExceptionMessage);
-	assertTrue(messageLoader.isProgrammToBeInterrupted());
+		fileAlreadyExistsExceptionMessage,
+		"exception message wasn't correctly transmitted for FileAlreadyExistsException");
+	assertTrue(messageLoader.isProgrammToBeInterrupted(),
+		"interruption isn't detected for FileAlreadyExistsException");
 
 	assertEquals(messageLoader.getExceptionMessage(new BusinessException(new FileNotFoundException("testing"))),
-		fileNotFoundExceptionMessage);
-	assertTrue(messageLoader.isProgrammToBeInterrupted());
+		fileNotFoundExceptionMessage,
+		"exception message wasn't correctly transmitted for FileNotFoundException");
+	assertTrue(messageLoader.isProgrammToBeInterrupted(), "interruption isn't detected for FileNotFoundException");
 
 	assertEquals(messageLoader.getExceptionMessage(new BusinessException(new NoSuchFileException("testing"))),
-		fileNotFoundExceptionMessage);
-	assertTrue(messageLoader.isProgrammToBeInterrupted());
+		fileNotFoundExceptionMessage, "exception message wasn't correctly transmitted for NoSuchFileException");
+	assertTrue(messageLoader.isProgrammToBeInterrupted(), "interruption isn't detected for NoSuchFileException");
 
 	assertEquals(messageLoader.getExceptionMessage(new BusinessException(new IOException("testing"))),
-		ioExceptionMessage);
-	assertTrue(messageLoader.isProgrammToBeInterrupted());
+		ioExceptionMessage, "exception message wasn't correctly transmitted for IOException");
+	assertTrue(messageLoader.isProgrammToBeInterrupted(), "interruption isn't detected for IOException");
 
 	assertEquals(messageLoader.getExceptionMessage(new BusinessException(new JAXBException("testing"))),
-		jaxbExceptionMessage);
-	assertTrue(messageLoader.isProgrammToBeInterrupted());
+		jaxbExceptionMessage, "exception message wasn't correctly transmitted for JAXBException");
+	assertTrue(messageLoader.isProgrammToBeInterrupted(), "interruption isn't detected for JAXBException");
 
-	assertEquals(messageLoader.getExceptionMessage(new NameException("testing")), nameExceptionMessage);
-	assertFalse(messageLoader.isProgrammToBeInterrupted());
+	assertEquals(messageLoader.getExceptionMessage(new NameException("testing")), nameExceptionMessage,
+		"exception message wasn't correctly transmitted for NameException");
+	assertFalse(messageLoader.isProgrammToBeInterrupted(), "interruption is detected for NameException");
 
 	assertEquals(
 		messageLoader.getExceptionMessage(new BusinessException(new UnsupportedEncodingException("testing"))),
-		unsupportedEncodingExceptionMessage);
-	assertTrue(messageLoader.isProgrammToBeInterrupted());
+		unsupportedEncodingExceptionMessage,
+		"exception message wasn't correctly transmitted for UnsupportedEncodingException");
+	assertTrue(messageLoader.isProgrammToBeInterrupted(),
+		"interruption isn't detected for UnsupportedEncodingException");
 
 	assertEquals(messageLoader.getExceptionMessage(new WatchServiceException("testing", new IOException())),
-		watchServiceErrorMessage);
-	assertTrue(messageLoader.isProgrammToBeInterrupted());
+		watchServiceErrorMessage, "exception message wasn't correctly transmitted for WatchServiceException");
+	assertTrue(messageLoader.isProgrammToBeInterrupted(), "interruption isn't detected for WatchServiceException");
     }
 }

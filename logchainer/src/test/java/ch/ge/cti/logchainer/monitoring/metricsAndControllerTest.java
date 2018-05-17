@@ -94,22 +94,22 @@ public class metricsAndControllerTest {
 	CompositeMeterRegistry obtainedRegistery = controller.globalInfos();
 	SimpleMeterRegistry registeriesFromComposite = (SimpleMeterRegistry) obtainedRegistery.getRegistries()
 		.toArray()[0];
-	assertEquals(registeriesFromComposite.getMeters().size(), 3);
+	assertEquals(registeriesFromComposite.getMeters().size(), 3, "incorrect number of meters registered");
 	registeriesFromComposite.getMeters().stream().forEach(new Consumer<Meter>() {
 	    @Override
 	    public void accept(Meter meter) {
-		assertTrue(refNames.contains(meter.getId().getName()));
-		assertTrue(refBaseUnit.contains(meter.getId().getBaseUnit()));
+		assertTrue(refNames.contains(meter.getId().getName()), "incorrect name");
+		assertTrue(refBaseUnit.contains(meter.getId().getBaseUnit()), "incorrect base unit");
 		meter.getId().getTags().stream().forEach(new Consumer<Tag>() {
 		    @Override
 		    public void accept(Tag tag) {
 			if (!tag.getKey().equals("readme.txt")) {
-			    assertTrue(refTagsKey.contains(tag.getKey()));
-			    assertTrue(refTagsValue.contains(tag.getValue()));
+			    assertTrue(refTagsKey.contains(tag.getKey()), "incorrect tag name (key)");
+			    assertTrue(refTagsValue.contains(tag.getValue()), "incorrect tag value");
 			}
 		    }
 		});
-		assertTrue(refDescription.contains(meter.getId().getDescription()));
+		assertTrue(refDescription.contains(meter.getId().getDescription()), "incorrect description");
 	    }
 	});
     }
@@ -142,22 +142,22 @@ public class metricsAndControllerTest {
 	refBaseUnit.add("number of files");
 
 	CompositeMeterRegistry obtainedRegistery = controller.clientInfos(clientNameA);
-	assertEquals(obtainedRegistery.getMeters().size(), 4);
+	assertEquals(obtainedRegistery.getMeters().size(), 4, "incorrect number of meters registered");
 	obtainedRegistery.getMeters().stream().forEach(new Consumer<Meter>() {
 	    @Override
 	    public void accept(Meter meter) {
-		assertTrue(refNames.contains(meter.getId().getName()));
-		assertTrue(refBaseUnit.contains(meter.getId().getBaseUnit()));
+		assertTrue(refNames.contains(meter.getId().getName()), "incorrect name");
+		assertTrue(refBaseUnit.contains(meter.getId().getBaseUnit()), "incorrect base unit");
 		meter.getId().getTags().stream().forEach(new Consumer<Tag>() {
 		    @Override
 		    public void accept(Tag tag) {
 			if (!tag.getKey().equals("readme.txt")) {
-			    assertTrue(refTagsKey.contains(tag.getKey()));
-			    assertTrue(refTagsValue.contains(tag.getValue()));
+			    assertTrue(refTagsKey.contains(tag.getKey()), "incorrect tag name (key)");
+			    assertTrue(refTagsValue.contains(tag.getValue()), "incorrect tag value");
 			}
 		    }
 		});
-		assertTrue(refDescription.contains(meter.getId().getDescription()));
+		assertTrue(refDescription.contains(meter.getId().getDescription()), "incorrect description");
 	    }
 	});
 

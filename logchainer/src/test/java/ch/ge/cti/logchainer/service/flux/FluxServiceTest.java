@@ -49,44 +49,50 @@ public class FluxServiceTest {
     @Test(description = "testing the method getting the flux name")
     public void fluxname_should_comply_with_a_format() {
 	String fluxname = fluxService.getFluxName(testFilename, SEPARATOR_DEFAULT, STAMP_POSITION_DEFAULT);
-	assertEquals(fluxname, "fluxTest");
+	assertEquals(fluxname, "fluxTest", "wrong flux name for default separator and default stamp position");
 
 	String fluxnameChangeSeparator = fluxService.getFluxName(testFilenameChangeSeparator, "-",
 		STAMP_POSITION_DEFAULT);
-	assertEquals(fluxnameChangeSeparator, "fluxTest");
+	assertEquals(fluxnameChangeSeparator, "fluxTest",
+		"wrong flux name for custom separator and default stamp position");
 
 	String fluxnameChangeStampPosition = fluxService.getFluxName(testFilenameChangeStampPosition, SEPARATOR_DEFAULT,
 		"before");
-	assertEquals(fluxnameChangeStampPosition, "fluxTest");
+	assertEquals(fluxnameChangeStampPosition, "fluxTest",
+		"wrong flux name for default separator and custom stamp position");
 
 	String fluxnameChangeSeparatorAndStampPosition = fluxService
 		.getFluxName(testFilenameChangeSeparatorAndStampPosition, "-", "before");
-	assertEquals(fluxnameChangeSeparatorAndStampPosition, "fluxTest");
+	assertEquals(fluxnameChangeSeparatorAndStampPosition, "fluxTest",
+		"wrong flux name for custom separator and custom stamp position");
     }
 
     @Test(description = "testing the method getting the stamp used to sort files")
     public void sortimg_stamp_should_comply_with_a_format() {
 	String stamp = fluxService.getSortingStamp(testFilename, SEPARATOR_DEFAULT, STAMP_POSITION_DEFAULT);
-	assertEquals(stamp, "stampTest");
+	assertEquals(stamp, "stampTest", "wrong stamp for default separator and default stamp position");
 
 	String stampChangeSeparator = fluxService.getSortingStamp(testFilenameChangeSeparator, "-",
 		STAMP_POSITION_DEFAULT);
-	assertEquals(stampChangeSeparator, "stampTest");
+	assertEquals(stampChangeSeparator, "stampTest", "wrong stamp for custom separator and default stamp position");
 
 	String stampChangeStampPosition = fluxService.getSortingStamp(testFilenameChangeStampPosition,
 		SEPARATOR_DEFAULT, "before");
-	assertEquals(stampChangeStampPosition, "stampTest");
+	assertEquals(stampChangeStampPosition, "stampTest",
+		"wrong stamp for default separator and custom stamp position");
 
 	String stampChangeSeparatorAndStampPosition = fluxService
 		.getSortingStamp(testFilenameChangeSeparatorAndStampPosition, "-", "before");
-	assertEquals(stampChangeSeparatorAndStampPosition, "stampTest");
+	assertEquals(stampChangeSeparatorAndStampPosition, "stampTest",
+		"wrong stamp for custom separator and custom stamp position");
     }
 
     @Test(description = "testing when the is ready to be processed")
     public void a_flux_ready_to_be_processed_should_fill_conditions() {
 	watchedFiles.stream().forEach(file -> file.setReadyToBeProcessed(true));
 	mapFluxFiles.put("fluxTest1", watchedFiles);
-	mapFluxFiles.entrySet().stream().forEach(flux -> assertTrue(fluxService.isFluxReadyToBeProcessed(flux)));
+	mapFluxFiles.entrySet().stream().forEach(flux -> assertTrue(fluxService.isFluxReadyToBeProcessed(flux),
+		"flux wasn't set as ready to be processed"));
 	mapFluxFiles.clear();
 
 	ArrayList<WatchedFile> nonReadyWatchedFiles = new ArrayList<>();
@@ -94,7 +100,8 @@ public class FluxServiceTest {
 	nonReadyWatchedFiles.add(new WatchedFile("file2"));
 	nonReadyWatchedFiles.get(1).setReadyToBeProcessed(true);
 	mapFluxFiles.put("fluxTest2", nonReadyWatchedFiles);
-	mapFluxFiles.entrySet().stream().forEach(flux -> assertFalse(fluxService.isFluxReadyToBeProcessed(flux)));
+	mapFluxFiles.entrySet().stream().forEach(flux -> assertFalse(fluxService.isFluxReadyToBeProcessed(flux),
+		"flux was set as ready to be processed"));
     }
 
     @Test(description = "testing the processed of the flux")
@@ -123,8 +130,9 @@ public class FluxServiceTest {
 
 	mapFluxFiles.entrySet().stream().forEach(fluxname -> fluxService.fluxProcess(client, fluxList, fluxname));
 
-	assertEquals(fluxList.size(), refList.size());
-	fluxList.stream().forEach(flux -> assertTrue(refList.contains(flux)));
+	assertEquals(fluxList.size(), refList.size(), "incorrect amount of flux was listed");
+	fluxList.stream()
+		.forEach(flux -> assertTrue(refList.contains(flux), "flux wasn't added to the processed flux list"));
     }
 
     @Test(description = "testing the process of a corrupted file")
@@ -157,7 +165,8 @@ public class FluxServiceTest {
 	mapFluxFiles.entrySet().stream()
 		.forEach(fluxname -> fluxService.corruptedFluxProcess(client, fluxList, fluxname));
 
-	assertEquals(fluxList.size(), refList.size());
-	fluxList.stream().forEach(flux -> assertTrue(refList.contains(flux)));
+	assertEquals(fluxList.size(), refList.size(), "incorrect amount of corrupted flux listed");
+	fluxList.stream().forEach(
+		flux -> assertTrue(refList.contains(flux), "corrupted flux wasn't added to the processed flux list"));
     }
 }

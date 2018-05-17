@@ -85,9 +85,10 @@ public class LogWatcherServiceTest {
     @Test(description = "testing the initialization of the clients")
     public void initializing_a_client_should_comply_with_a_process() {
 	watcher.initializeFileWatcherByClient(clientConfList);
-	assertEquals(LogWatcherServiceImpl.clients.size(), 2);
-	assertEquals(LogWatcherServiceImpl.clients.get(0).getConf(), clientConfList.getListeClientConf().get(0));
-	assertNotNull(LogWatcherServiceImpl.clients.get(0).getKey());
+	assertEquals(LogWatcherServiceImpl.clients.size(), 2, "incorrect number of clients initialized");
+	assertEquals(LogWatcherServiceImpl.clients.get(0).getConf(), clientConfList.getListeClientConf().get(0),
+		"wrong clientConf initialized");
+	assertNotNull(LogWatcherServiceImpl.clients.get(0).getKey(), "wrong key initialized");
     }
 
     @Test(description = "testing the process of an event")
@@ -127,7 +128,7 @@ public class LogWatcherServiceTest {
 	try {
 	    watcher.processEvents();
 	} catch (BusinessException e) {
-	    assertEquals(e.getClass(), CorruptedKeyException.class);
+	    assertEquals(e.getClass(), CorruptedKeyException.class, "CorruptedKeyException wasn't detected");
 	}
 
 	// test of the delay waited before the process of a file
@@ -146,7 +147,7 @@ public class LogWatcherServiceTest {
 	}
 	int actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
 		+ LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS + LocalDateTime.now().getSecond();
-	assertTrue(actualTime - testFile.getArrivingTime() > DELAY_TRANSFER_FILE);
+	assertTrue(actualTime - testFile.getArrivingTime() > DELAY_TRANSFER_FILE, "delay wasn't respected");
     }
 
     @Test(description = "testing the removal of a file after it's process")
@@ -162,7 +163,8 @@ public class LogWatcherServiceTest {
 	doNothing().when(fileService).newFileProcess(any(Client.class), anyString());
 
 	watcher.processAfterDetectionOfEvent(client, filename, testFile);
-	assertFalse(LogWatcherServiceImpl.clients.get(0).getWatchedFiles().contains(testFile));
+	assertFalse(LogWatcherServiceImpl.clients.get(0).getWatchedFiles().contains(testFile),
+		"file not deleted from client's file list");
     }
 
     @AfterClass

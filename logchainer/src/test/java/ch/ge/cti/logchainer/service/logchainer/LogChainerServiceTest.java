@@ -27,7 +27,7 @@ public class LogChainerServiceTest {
 
 	chainer.chainingLogFile(filename.toString(), 0, textToWrite.getBytes());
 	try (FileInputStream is = new FileInputStream(filename.toFile())) {
-	    assertEquals(hasher.getLogHashCode(is), result);
+	    assertEquals(hasher.getLogHashCode(is), result, "incorrect insertion of the message");
 	}
 
 	Files.delete(Paths.get(testResourcesPath + "/testWriteInFile.txt"));

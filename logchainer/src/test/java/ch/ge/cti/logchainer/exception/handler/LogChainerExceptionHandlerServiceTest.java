@@ -48,35 +48,35 @@ public class LogChainerExceptionHandlerServiceTest {
 	try {
 	    handler.handleException(businessException);
 	} catch (BusinessException e) {
-	    assertEquals(e.getClass(), BusinessException.class);
+	    assertEquals(e.getClass(), BusinessException.class, "businessException wasn't detected");
 	}
 
 	// test the CorruptedKeyException interruption
 	try {
 	    handler.handleException(corruptedKeyException);
 	} catch (CorruptedKeyException e) {
-	    assertEquals(e.getClass(), CorruptedKeyException.class);
+	    assertEquals(e.getClass(), CorruptedKeyException.class, "CorruptedKeyException wasn't detected");
 	}
 
 	// test the NameException interruption
 	try {
 	    handler.handleException(nameException);
 	} catch (NameException e) {
-	    assertEquals(e.getClass(), NameException.class);
+	    assertEquals(e.getClass(), NameException.class, "NameException wasn't detected");
 	}
 
 	// test the WatchServiceException interruption
 	try {
 	    handler.handleException(watchServiceException);
 	} catch (WatchServiceException e) {
-	    assertEquals(e.getClass(), WatchServiceException.class);
+	    assertEquals(e.getClass(), WatchServiceException.class, "WatchServiceException wasn't detected");
 	}
 
 	// test the RuntimeException interruption
 	try {
 	    handler.handleException(runTimeException);
 	} catch (RuntimeException e) {
-	    assertEquals(e.getClass(), RuntimeException.class);
+	    assertEquals(e.getClass(), RuntimeException.class, "RuntimeException wasn't detected");
 	}
     }
 
