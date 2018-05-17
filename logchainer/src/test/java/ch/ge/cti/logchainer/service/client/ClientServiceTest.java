@@ -53,7 +53,7 @@ public class ClientServiceTest {
 
 	client = new Client(clientConf);
 
-	// setting the key of the client
+	// set the key of the client
 	Path inputDirPath = Paths.get(client.getConf().getInputDir());
 	WatchService watcher = client.getWatcher();
 
@@ -61,13 +61,13 @@ public class ClientServiceTest {
     }
 
     @Test(description = "testing the registration of an event")
-    public void testRegisterEvent() throws IOException {
+    public void registering_an_event_should_comply_with_a_process() throws IOException {
 	FileHelper fileHelper = mock(FileHelper.class);
 	clientService.fileHelper = fileHelper;
 
 	when(fileHelper.getSeparator(any(Client.class))).thenReturn(SEPARATOR_DEFAULT);
 
-	// testing the case where the filename isn't valid
+	// test the case where the filename isn't valid
 	boolean loop = true;
 	int counter = 0;
 	String refFilename = "testMovingFile1.txt";
@@ -79,7 +79,7 @@ public class ClientServiceTest {
 		client.setKey(watchKey);
 		assertEquals(clientService.registerEvent(client).get(0).getFilename(), refFilename);
 
-		// reseting the to be able to use it again
+		// reset the to be able to use it again
 		if (!client.getKey().reset())
 		    throw new IOException("Key could not be reseted");
 
@@ -93,7 +93,7 @@ public class ClientServiceTest {
 	}
 	Files.delete(Paths.get(testResourcesDirPath + "/testMovingFile1.txt"));
 
-	// testing the case where there is the arrival of a new file
+	// test the case where there is the arrival of a new file
 	boolean loop2 = true;
 	int counter2 = 0;
 	String filename = "fluxTest_stampTest.txt";
@@ -113,7 +113,7 @@ public class ClientServiceTest {
 		}
 		assertTrue(fileInFilesWatchedList);
 
-		// reseting the key to be able to use it again
+		// reset the key to be able to use it again
 		if (!client.getKey().reset())
 		    throw new IOException("Key could not be reseted");
 
@@ -127,7 +127,7 @@ public class ClientServiceTest {
 	}
 	Files.delete(Paths.get(testResourcesDirPath + "/fluxTest_stampTest.txt"));
 
-	// testing the case where the file is already registered
+	// test the case where the file is already registered
 	boolean loop3 = true;
 	int counter3 = 0;
 
@@ -145,7 +145,7 @@ public class ClientServiceTest {
 		}
 		assertTrue(fileInFilesWatchedList);
 
-		// reseting the to be able to use it again
+		// reset the to be able to use it again
 		if (!client.getKey().reset())
 		    throw new IOException("Key could not be reseted");
 
@@ -161,7 +161,7 @@ public class ClientServiceTest {
     }
 
     @Test(description = "testing the deletion of the flux from the flux list of the client")
-    public void testDeleteAllTreatedFluxFromMap() {
+    public void deleting_the_flux_from_a_map_should_give_an_established_variable() {
 	String fluxname = "fluxTest";
 	client.getWatchedFilesByFlux().put(fluxname, (ArrayList<WatchedFile>) client.getWatchedFiles());
 	List<String> doneFlux = new ArrayList<>();

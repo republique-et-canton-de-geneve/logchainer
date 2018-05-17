@@ -31,7 +31,7 @@ public class ExceptionMessageLoaderTest {
     private final String watchServiceErrorMessage = "watchServiceError";
 
     @Test(description = "testing the obtention of error messages")
-    public void testGetExceptionMessage() {
+    public void the_exception_message_should_comply_with_a_pattern() {
 	messageLoader.corruptedKeyException = corruptedKeyExceptionMessage;
 	messageLoader.fileAlreadyExistsException = fileAlreadyExistsExceptionMessage;
 	messageLoader.fileNotFoundException = fileNotFoundExceptionMessage;

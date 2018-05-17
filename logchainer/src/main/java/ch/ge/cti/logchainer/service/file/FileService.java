@@ -15,12 +15,12 @@ public interface FileService {
     void registerFile(Client client, WatchedFile file);
 
     /**
-     * Treatment of the file as an entry create.
+     * Process of the file as an entry create.
      * 
      * @param clientNb
      * @param filename
      */
-    void newFileTreatment(Client client, String filename);
+    void newFileProcess(Client client, String filename);
 
     /**
      * Sort the files of a specified flux using a specified sorting type.

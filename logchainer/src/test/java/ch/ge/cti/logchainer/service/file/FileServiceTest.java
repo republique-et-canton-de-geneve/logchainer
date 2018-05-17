@@ -55,7 +55,7 @@ public class FileServiceTest {
     }
 
     @Test(description = "testing the registration of a file")
-    public void testRegisterFile() {
+    public void registering_a_file_should_comply_with_a_process() {
 	String fluxname = "fluxTest";
 	WatchedFile file = new WatchedFile(fluxname + "_stampTest.test");
 	WatchedFile fileWithSameFlux = new WatchedFile("noFlux");
@@ -82,8 +82,8 @@ public class FileServiceTest {
 	client.getWatchedFilesByFlux().get(fluxname).stream().forEach(fileTest -> assertTrue(fileTest.isRegistered()));
     }
 
-    @Test(description = "we only have a small test because the newFileTreatment method mainly calls other methods which are tested elsewhere")
-    public void testNewFileTreatment() {
+    @Test(description = "we only have a small test because the newFileProcess method mainly calls other methods which are tested elsewhere")
+    public void the_process_of_a_new_file_should_comply_with_a_process() {
 	String filename = "fluxTest_stampTest.test";
 	client.getConf().setWorkingDir("src/test/resources");
 
@@ -111,13 +111,13 @@ public class FileServiceTest {
 
 	when(mover.copyFileToDirByReplacingExisting(anyString(), anyString(), anyString())).thenReturn(null);
 
-	fileService.newFileTreatment(client, filename);
+	fileService.newFileProcess(client, filename);
 
 	verify(mover).copyFileToDirByReplacingExisting(any(), any(), any());
     }
 
     @Test(description = "testing the way of sorting the files using their stamp")
-    public void testSortFiles() {
+    public void sorting_the_files_should_comply_with_a_process() {
 	FluxServiceImpl fluxService = mock(FluxServiceImpl.class);
 	fileService.fluxService = fluxService;
 	when(fluxService.getSortingStamp(anyString(), anyString(), anyString())).thenCallRealMethod();
@@ -181,7 +181,7 @@ public class FileServiceTest {
     }
 
     @Test(description = "testing the message to be inserted")
-    public void testMessageToInsert() {
+    public void the_message_to_insert_should_comply_with_a_format() {
 	Collection<File> previousFiles = new ArrayList<>();
 	byte[] noHash = new byte[] {};
 

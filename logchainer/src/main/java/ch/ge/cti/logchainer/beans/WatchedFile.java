@@ -43,8 +43,8 @@ public class WatchedFile {
 	return readyToBeProcessed;
     }
 
-    public void setReadyToBeProcessed(boolean readyToBeTreated) {
-	this.readyToBeProcessed = readyToBeTreated;
+    public void setReadyToBeProcessed(boolean readyToBeProcessed) {
+	this.readyToBeProcessed = readyToBeProcessed;
     }
 
     public WatchEvent.Kind<?> getKind() {

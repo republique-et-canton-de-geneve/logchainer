@@ -15,7 +15,7 @@ public interface LogWatcherService {
 
     /**
      * Infinity loop checking for updates in the directoy and then does the file
-     * treatment by calling all necessary methods correctly.
+     * process by calling all necessary methods correctly.
      */
     void processEvents();
 
@@ -24,5 +24,5 @@ public interface LogWatcherService {
      * 
      * @param clientNb
      */
-    boolean treatmentAfterDetectionOfEvent(Client client, String filename, WatchedFile file);
+    boolean processAfterDetectionOfEvent(Client client, String filename, WatchedFile file);
 }

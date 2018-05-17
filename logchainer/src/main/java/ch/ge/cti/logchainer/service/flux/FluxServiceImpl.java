@@ -96,41 +96,41 @@ public class FluxServiceImpl implements FluxService {
     }
 
     @Override
-    public boolean isFluxReadyToBeTreated(Map.Entry<String, ArrayList<WatchedFile>> flux) {
-	boolean fluxReadyToBeTreated = true;
-	// check if all files in a flux are ready to be treated
+    public boolean isFluxReadyToBeProcessed(Map.Entry<String, ArrayList<WatchedFile>> flux) {
+	boolean fluxReadyToBeProcessed = true;
+	// check if all files in a flux are ready to be processed
 	for (WatchedFile file : flux.getValue()) {
 	    // check of the file
 	    if (!file.isReadyToBeProcessed())
-		fluxReadyToBeTreated = false;
+		fluxReadyToBeProcessed = false;
 	}
 
-	if (fluxReadyToBeTreated)
-	    LOG.debug("flux ready to be treated");
+	if (fluxReadyToBeProcessed)
+	    LOG.debug("flux ready to be processed");
 
-	return fluxReadyToBeTreated;
+	return fluxReadyToBeProcessed;
     }
 
     @Override
-    public void fluxTreatment(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<WatchedFile>> flux) {
-	LOG.debug("flux {} starting to be treated", flux.getKey());
+    public void fluxProcess(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<WatchedFile>> flux) {
+	LOG.debug("flux {} starting to be processed", flux.getKey());
 	fileService.sortFiles(fileHelper.getSeparator(client), fileHelper.getSorter(client),
 		fileHelper.getStampPosition(client), flux.getValue());
 	LOG.debug("flux sorted");
 
-	// chek if all files' treatment has been completed
+	// chek if all files' process has been completed
 	boolean finished = true;
 	// iterate on all the files of one flux
 	for (WatchedFile file : flux.getValue()) {
 	    String filename = file.getFilename();
-	    // check if the file's treatment is complete
-	    if (!watcherService.treatmentAfterDetectionOfEvent(client, filename, file))
+	    // check if the file's process is complete
+	    if (!watcherService.processAfterDetectionOfEvent(client, filename, file))
 		finished = false;
 	}
 	// register the flux as completed (thus ready for deletion)
 	if (finished) {
 	    allDoneFlux.add(flux.getKey());
-	    LOG.info("flux {} entirely treated", flux.getKey());
+	    LOG.info("flux {} entirely processed", flux.getKey());
 	}
     }
 
@@ -140,13 +140,13 @@ public class FluxServiceImpl implements FluxService {
 	// iterate on all the files of one flux
 	for (WatchedFile file : flux.getValue()) {
 	    String filename = file.getFilename();
-	    // check if the file's treatment is complete
+	    // check if the file's process is complete
 	    mover.moveFileInDirWithNoSameNameFile(filename, client.getConf().getInputDir(),
 		    client.getConf().getCorruptedFilesDir());
 	}
 	// register the flux as completed (thus ready for deletion)
 	allDoneFlux.add(flux.getKey());
 	if (LOG.isInfoEnabled())
-	    LOG.info("flux {} entirely treated", flux.getKey());
+	    LOG.info("flux {} entirely processed", flux.getKey());
     }
 }

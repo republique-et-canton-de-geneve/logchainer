@@ -84,7 +84,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    // register events (wether anything happened or not)
 	    WatchKey watchKey = client.getWatcher().poll();
 
-	    // Launch the treatment only if a file was detected
+	    // Launch the process only if a file was detected
 	    // No use of the take method because we don't want to wait until
 	    // an event is detected under one client
 	    // to move to the next one
@@ -117,7 +117,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
     /**
      * Support of the file from it's detection until it is ready to be
-     * treated.
+     * processed.
      * 
      * @param client
      */
@@ -140,31 +140,31 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    }
 	}
 
-	// register all the treated files into a list
+	// register all the processed files into a list
 	ArrayList<String> allDoneFlux = new ArrayList<>();
 	// iterate over all the flux
 	for (Map.Entry<String, ArrayList<WatchedFile>> flux : client.getWatchedFilesByFlux().entrySet()) {
-	    // check if the file can be treated
-	    if (fluxService.isFluxReadyToBeTreated(flux)) {
-		// flux treatment
+	    // check if the file can be processed
+	    if (fluxService.isFluxReadyToBeProcessed(flux)) {
+		// flux process
 		LOG.info("flux {} process starting", flux.getKey());
 		if (flux.getKey().equals(CORRUPTED_FLUXNAME)) {
 		    fluxService.corruptedFluxProcess(client, allDoneFlux, flux);
-		    LOG.info("treatment of flux {} completed", flux.getKey());
+		    LOG.info("process of flux {} completed", flux.getKey());
 		} else {
-		    fluxService.fluxTreatment(client, allDoneFlux, flux);
-		    LOG.info("treatment of flux {} completed", flux.getKey());
+		    fluxService.fluxProcess(client, allDoneFlux, flux);
+		    LOG.info("process of flux {} completed", flux.getKey());
 		}
 	    }
 	}
-	// once all files in a flux have been treated, delete the flux in the
+	// once all files in a flux have been processed, delete the flux in the
 	// map
 	clientService.removeAllProcessedFluxesFromMap(allDoneFlux, client);
     }
 
     @Override
-    public boolean treatmentAfterDetectionOfEvent(Client client, String filename, WatchedFile file) {
-	LOG.debug("start of the file treatment");
+    public boolean processAfterDetectionOfEvent(Client client, String filename, WatchedFile file) {
+	LOG.debug("start of the file process");
 	// handle the overflow situation
 	if (file.getKind() == OVERFLOW) {
 	    LOG.debug("overflow detected");
@@ -172,13 +172,13 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
 	// handle a file creation case
 	if (file.getKind() == ENTRY_CREATE) {
-	    // launch the file treatment
-	    fileService.newFileTreatment(client, filename);
+	    // launch the file process
+	    fileService.newFileProcess(client, filename);
 	}
 
-	// handle the file situation once it's treatment is done
+	// handle the file situation once it's process is done
 	if (reset(client, file)) {
-	    LOG.info("file {} treated", filename);
+	    LOG.info("file {} processed", filename);
 	    return true;
 	} else {
 	    return false;
@@ -186,7 +186,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     }
 
     /**
-     * Remove the file of the file list once it has been treated.
+     * Remove the file of the file list once it has been processed.
      * 
      * @param clientNb
      * @return validity of the key

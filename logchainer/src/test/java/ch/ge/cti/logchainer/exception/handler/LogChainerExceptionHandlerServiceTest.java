@@ -7,7 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
-import org.testng.annotations.AfterTest;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -31,7 +31,7 @@ public class LogChainerExceptionHandlerServiceTest {
     }
 
     @Test(description = "testing the way of processing an exception")
-    public void testHandleException() {
+    public void handling_an_exception_should_comply_with_a_process() {
 	ExceptionMessageLoaderImpl messageLoader = mock(ExceptionMessageLoaderImpl.class);
 	handler.messageLoader = messageLoader;
 
@@ -44,35 +44,35 @@ public class LogChainerExceptionHandlerServiceTest {
 	when(messageLoader.getExceptionMessage(any())).thenReturn("{}");
 	when(messageLoader.isProgrammToBeInterrupted()).thenReturn(true);
 
-	// testing the BusinessException interruption
+	// test the BusinessException interruption
 	try {
 	    handler.handleException(businessException);
 	} catch (BusinessException e) {
 	    assertEquals(e.getClass(), BusinessException.class);
 	}
 
-	// testing the CorruptedKeyException interruption
+	// test the CorruptedKeyException interruption
 	try {
 	    handler.handleException(corruptedKeyException);
 	} catch (CorruptedKeyException e) {
 	    assertEquals(e.getClass(), CorruptedKeyException.class);
 	}
 
-	// testing the NameException interruption
+	// test the NameException interruption
 	try {
 	    handler.handleException(nameException);
 	} catch (NameException e) {
 	    assertEquals(e.getClass(), NameException.class);
 	}
 
-	// testing the WatchServiceException interruption
+	// test the WatchServiceException interruption
 	try {
 	    handler.handleException(watchServiceException);
 	} catch (WatchServiceException e) {
 	    assertEquals(e.getClass(), WatchServiceException.class);
 	}
 
-	// testing the RuntimeException interruption
+	// test the RuntimeException interruption
 	try {
 	    handler.handleException(runTimeException);
 	} catch (RuntimeException e) {
@@ -80,9 +80,9 @@ public class LogChainerExceptionHandlerServiceTest {
 	}
     }
 
-    @AfterTest
+    @AfterClass
     public void tearDown() {
-	// reseting log Level to original one
+	// reset log Level to original one
 	LOG.setLevel(WARN);
     }
 }

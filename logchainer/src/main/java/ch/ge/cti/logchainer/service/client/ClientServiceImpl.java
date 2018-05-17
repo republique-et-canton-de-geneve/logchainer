@@ -38,7 +38,7 @@ public class ClientServiceImpl implements ClientService {
 	    boolean toRegister = true;
 
 	    if (LOG.isDebugEnabled())
-		LOG.debug("Treating event from file : {}", fileToRegister.getFilename());
+		LOG.debug("Processing event from file : {}", fileToRegister.getFilename());
 
 	    // check the validity of the filename
 	    if (!fileToRegister.getFilename().contains(fileHelper.getSeparator(client)))

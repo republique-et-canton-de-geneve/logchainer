@@ -17,7 +17,7 @@ public class LogChainerServiceTest {
     private final LogChainerService chainer = new LogChainerServiceImpl();
 
     @Test(description = "testing the writting in a file")
-    public void fileWriterTest() throws IOException {
+    public void writing_in_a_file_should_comply_with_a_process() throws IOException {
 	String noData = "";
 	Path filename = Files.write(Paths.get(testResourcesPath + "/testWriteInFile.txt"), noData.getBytes());
 	String textToWrite = "test is a success";

@@ -54,45 +54,45 @@ public class FileHelperTest {
     }
 
     @Test
-    public void getSorterTest() {
-	// checking that the correct value is returned for a custom fileHelper
+    public void the_sorter_should_comply_with_a_format() {
+	// check that the correct value is returned for a custom fileHelper
 	// part
 	assertEquals(fileHelper.getSorter(clientCustom), customSortingType);
 
-	// checking that if we don't have any value for a fileHelper part, we
+	// check that if we don't have any value for a fileHelper part, we
 	// still get the correct default value
 	assertEquals(fileHelper.getSorter(clientDefault), SORT_DEFAULT);
     }
 
     @Test
-    public void getSeparatorTest() {
-	// checking that the correct value is returned for a custom fileHelper
+    public void the_separator_should_comply_with_a_format() {
+	// check that the correct value is returned for a custom fileHelper
 	// part
 	assertEquals(fileHelper.getSeparator(clientCustom), customSeparator);
 
-	// checking that if we don't have any value for a fileHelper part, we
+	// check that if we don't have any value for a fileHelper part, we
 	// still get the correct default value
 	assertEquals(fileHelper.getSeparator(clientDefault), SEPARATOR_DEFAULT);
     }
 
     @Test
-    public void getStampPositionTest() {
-	// checking that the correct value is returned for a custom fileHelper
+    public void the_stamp_position_should_comply_with_a_format() {
+	// check that the correct value is returned for a custom fileHelper
 	// part
 	assertEquals(fileHelper.getStampPosition(clientCustom), customStampPosition);
 
-	// checking that if we don't have any value for a fileHelper part, we
+	// check that if we don't have any value for a fileHelper part, we
 	// still get the correct default value
 	assertEquals(fileHelper.getStampPosition(clientDefault), STAMP_POSITION_DEFAULT);
     }
 
     @Test
-    public void getEncodingTypeTest() {
-	// checking that the correct value is returned for a custom fileHelper
+    public void the_encoding_type_should_comply_with_a_format() {
+	// check that the correct value is returned for a custom fileHelper
 	// part
 	assertEquals(fileHelper.getEncodingType(clientCustom), customFileEncoding);
 
-	// checking that if we don't have any value for a fileHelper part, we
+	// check that if we don't have any value for a fileHelper part, we
 	// still get the correct default value
 	assertEquals(fileHelper.getEncodingType(clientDefault), ENCODING_TYPE_DEFAULT);
     }

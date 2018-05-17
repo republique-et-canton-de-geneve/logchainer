@@ -52,24 +52,24 @@ public interface FluxService {
     String getSortingStamp(String filename, String separator, String stampPosition);
 
     /**
-     * Check if the flux can be treated.
+     * Check if the flux can be processed.
      * 
      * @param flux
      * @return
      */
-    boolean isFluxReadyToBeTreated(Map.Entry<String, ArrayList<WatchedFile>> flux);
+    boolean isFluxReadyToBeProcessed(Map.Entry<String, ArrayList<WatchedFile>> flux);
 
     /**
-     * Trigger the flux treatment.
+     * Trigger the flux process.
      * 
      * @param client
      * @param allDoneFlux
      * @param flux
      */
-    void fluxTreatment(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<WatchedFile>> flux);
+    void fluxProcess(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<WatchedFile>> flux);
 
     /**
-     * Trigger a corrupted flux treatment.
+     * Trigger a corrupted flux process.
      * 
      * @param client
      * @param allDoneFlux

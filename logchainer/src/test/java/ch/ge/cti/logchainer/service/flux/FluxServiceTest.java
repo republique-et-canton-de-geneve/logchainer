@@ -47,7 +47,7 @@ public class FluxServiceTest {
     }
 
     @Test(description = "testing the method getting the flux name")
-    public void testGetFluxName() {
+    public void fluxname_should_comply_with_a_format() {
 	String fluxname = fluxService.getFluxName(testFilename, SEPARATOR_DEFAULT, STAMP_POSITION_DEFAULT);
 	assertEquals(fluxname, "fluxTest");
 
@@ -65,7 +65,7 @@ public class FluxServiceTest {
     }
 
     @Test(description = "testing the method getting the stamp used to sort files")
-    public void testGetSortingStamp() {
+    public void sortimg_stamp_should_comply_with_a_format() {
 	String stamp = fluxService.getSortingStamp(testFilename, SEPARATOR_DEFAULT, STAMP_POSITION_DEFAULT);
 	assertEquals(stamp, "stampTest");
 
@@ -82,11 +82,11 @@ public class FluxServiceTest {
 	assertEquals(stampChangeSeparatorAndStampPosition, "stampTest");
     }
 
-    @Test(description = "testing when the is ready to be treated")
-    public void testIsFluxReadyToBeTreated() {
+    @Test(description = "testing when the is ready to be processed")
+    public void a_flux_ready_to_be_processed_should_fill_conditions() {
 	watchedFiles.stream().forEach(file -> file.setReadyToBeProcessed(true));
 	mapFluxFiles.put("fluxTest1", watchedFiles);
-	mapFluxFiles.entrySet().stream().forEach(flux -> assertTrue(fluxService.isFluxReadyToBeTreated(flux)));
+	mapFluxFiles.entrySet().stream().forEach(flux -> assertTrue(fluxService.isFluxReadyToBeProcessed(flux)));
 	mapFluxFiles.clear();
 
 	ArrayList<WatchedFile> nonReadyWatchedFiles = new ArrayList<>();
@@ -94,11 +94,11 @@ public class FluxServiceTest {
 	nonReadyWatchedFiles.add(new WatchedFile("file2"));
 	nonReadyWatchedFiles.get(1).setReadyToBeProcessed(true);
 	mapFluxFiles.put("fluxTest2", nonReadyWatchedFiles);
-	mapFluxFiles.entrySet().stream().forEach(flux -> assertFalse(fluxService.isFluxReadyToBeTreated(flux)));
+	mapFluxFiles.entrySet().stream().forEach(flux -> assertFalse(fluxService.isFluxReadyToBeProcessed(flux)));
     }
 
-    @Test(description = "testing the treatment of the flux")
-    public void testFluxTreatment() {
+    @Test(description = "testing the processed of the flux")
+    public void process_of_a_flux_should_comply_with_a_process() {
 	LogWatcherServiceImpl watcherService = mock(LogWatcherServiceImpl.class);
 	fluxService.watcherService = watcherService;
 	FileServiceImpl fileService = mock(FileServiceImpl.class);
@@ -116,19 +116,19 @@ public class FluxServiceTest {
 	mapFluxFiles.put("fluxTest1", watchedFiles);
 	mapFluxFiles.put("fluxTest2", watchedFiles);
 
-	when(watcherService.treatmentAfterDetectionOfEvent(any(Client.class), anyString(), any())).thenReturn(true);
+	when(watcherService.processAfterDetectionOfEvent(any(Client.class), anyString(), any())).thenReturn(true);
 	doNothing().when(fileService).sortFiles(anyString(), anyString(), anyString(), any());
 	when(fileHelper.getSeparator(client)).thenReturn(null);
 	when(fileHelper.getSorter(client)).thenReturn(null);
 
-	mapFluxFiles.entrySet().stream().forEach(fluxname -> fluxService.fluxTreatment(client, fluxList, fluxname));
+	mapFluxFiles.entrySet().stream().forEach(fluxname -> fluxService.fluxProcess(client, fluxList, fluxname));
 
 	assertEquals(fluxList.size(), refList.size());
 	fluxList.stream().forEach(flux -> assertTrue(refList.contains(flux)));
     }
 
     @Test(description = "testing the process of a corrupted file")
-    public void testCorruptedFluxProcess() {
+    public void process_of_a_corrupted_flux_should_comply_with_a_process() {
 	LogWatcherServiceImpl watcherService = mock(LogWatcherServiceImpl.class);
 	fluxService.watcherService = watcherService;
 	FileServiceImpl fileService = mock(FileServiceImpl.class);

@@ -66,7 +66,7 @@ public class metricsAndControllerTest {
     }
 
     @Test(description = "test of the reception of global infos about the corrupted files")
-    public void testGlobalInfos() {
+    public void global_infos_should_show_established_infos() {
 	Set<String> refNames = new HashSet<>();
 	Set<String> refTagsKey = new HashSet<>();
 	Set<String> refTagsValue = new HashSet<>();
@@ -115,7 +115,7 @@ public class metricsAndControllerTest {
     }
 
     @Test(description = "test of the informations given about a client")
-    public void testRegisterCorruptedFiles() {
+    public void infos_about_a_client_should_show_established_infos() {
 	Set<String> refNames = new HashSet<>();
 	Set<String> refTagsKey = new HashSet<>();
 	Set<String> refTagsValue = new HashSet<>();
@@ -164,7 +164,7 @@ public class metricsAndControllerTest {
     }
 
     @AfterTest
-    public void reset() throws IOException {
+    public void tearDown() throws IOException {
 	Files.delete(Paths.get(testCorruptedFilesDir + "/" + filename));
 	Files.delete(Paths.get(testCorruptedFilesDir + "/" + filename2));
     }

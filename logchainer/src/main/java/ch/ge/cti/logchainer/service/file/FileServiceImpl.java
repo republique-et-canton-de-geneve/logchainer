@@ -64,7 +64,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void newFileTreatment(Client client, String filename) {
+    public void newFileProcess(Client client, String filename) {
 	LOG.debug("New file detected : {}", (new File(client.getConf().getInputDir(), filename)).getAbsolutePath());
 
 	// access same flux file in the tmp directory
@@ -85,13 +85,14 @@ public class FileServiceImpl implements FileService {
 	    throw new BusinessException(e);
 	}
 
-	// release the file treated into the output directory to be processed by
+	// release the file processed into the output directory to be processed
+	// by
 	// the user
 	mover.copyFileToDirByReplacingExisting(filename, client.getConf().getWorkingDir(),
 		client.getConf().getOutputDir());
 
 	if (LOG.isInfoEnabled())
-	    LOG.info("end of the treatment of the file {} put in the input directory", filename);
+	    LOG.info("end of the process of the file {} put in the input directory", filename);
     }
 
     @Override

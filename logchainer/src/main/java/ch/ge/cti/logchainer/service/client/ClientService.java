@@ -16,7 +16,7 @@ public interface ClientService {
     List<WatchedFile> registerEvent(Client client);
 
     /**
-     * Remove all flux that have been entirely treated from the client's map.
+     * Remove all flux that have been entirely processed from the client's map.
      * 
      * @param allDoneFlux
      * @param client

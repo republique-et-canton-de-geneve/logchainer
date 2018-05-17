@@ -83,7 +83,7 @@ public class LogWatcherServiceTest {
     }
 
     @Test(description = "testing the initialization of the clients")
-    public void testInitializeFileWatcherByClient() {
+    public void initializing_a_client_should_comply_with_a_process() {
 	watcher.initializeFileWatcherByClient(clientConfList);
 	assertEquals(LogWatcherServiceImpl.clients.size(), 2);
 	assertEquals(LogWatcherServiceImpl.clients.get(0).getConf(), clientConfList.getListeClientConf().get(0));
@@ -91,7 +91,7 @@ public class LogWatcherServiceTest {
     }
 
     @Test(description = "testing the process of an event")
-    public void testProcessEvents() throws IOException {
+    public void processing_events_should_comply_with_a_process() throws IOException {
 	LogWatcherServiceImpl.clients.clear();
 	LogWatcherServiceImpl.clients.add(clientProbleme);
 
@@ -110,7 +110,7 @@ public class LogWatcherServiceTest {
 	mockCorrFilesListToReturn.add(new WatchedFile(filename));
 	when(clientService.registerEvent(any(Client.class))).thenReturn(mockCorrFilesListToReturn);
 	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenCallRealMethod();
-	when(fluxService.isFluxReadyToBeTreated(any())).thenReturn(true);
+	when(fluxService.isFluxReadyToBeProcessed(any())).thenReturn(true);
 	doNothing().when(fluxService).corruptedFluxProcess(any(Client.class), any(), any());
 
 	Files.write(Paths.get(testResourcesDirPath + "/" + filename), noData.getBytes());
@@ -150,7 +150,7 @@ public class LogWatcherServiceTest {
     }
 
     @Test(description = "testing the removal of a file after it's process")
-    public void testTreatmentAfterDetectionOfEvent() {
+    public void the_process_of_an_event_after_detection_should_comply_with_a_process() {
 	LogWatcherServiceImpl.clients.clear();
 	LogWatcherServiceImpl.clients.add(client);
 	client.getWatchedFiles().clear();
@@ -159,14 +159,14 @@ public class LogWatcherServiceTest {
 	FileServiceImpl fileService = mock(FileServiceImpl.class);
 	watcher.fileService = fileService;
 
-	doNothing().when(fileService).newFileTreatment(any(Client.class), anyString());
+	doNothing().when(fileService).newFileProcess(any(Client.class), anyString());
 
-	watcher.treatmentAfterDetectionOfEvent(client, filename, testFile);
+	watcher.processAfterDetectionOfEvent(client, filename, testFile);
 	assertFalse(LogWatcherServiceImpl.clients.get(0).getWatchedFiles().contains(testFile));
     }
 
     @AfterClass
-    public void reset() {
+    public void tearDown() {
 	LogWatcherServiceImpl.clients.clear();
     }
 }

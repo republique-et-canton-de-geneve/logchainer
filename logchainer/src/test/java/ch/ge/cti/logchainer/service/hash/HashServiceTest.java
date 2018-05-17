@@ -20,7 +20,7 @@ public class HashServiceTest {
     private final HashService hasher = new HashServiceImpl();
 
     @Test(description = "hash method test")
-    public void testHashCode() throws IOException {
+    public void getting_an_hashcode_should_comply_with_a_process() throws IOException {
 	final String pathTestFile = "src/test/resources/testHashCode";
 	final byte[] refArray = new byte[] { 14, -39, -87, 75, 76, -6, -127, -30, 51, 126, -4, 21, 5, 102, -98, 25, 100,
 		-62, 91, -19, 117, 1, 50, 118, -89, 57, -10, 11, -8, -49, 15, -18 };
@@ -32,14 +32,14 @@ public class HashServiceTest {
     }
 
     @Test(description = "null hash method test")
-    public void testNullHash() {
+    public void a_null_hashcode_should_comply_with_convention() {
 	byte[] nullHash = new byte[] {};
 
 	assertEquals(hasher.getNullHash(), nullHash);
     }
 
     @Test(description = "testing the method for getting the hashCode of files from collection (should be 1 file)")
-    public void testGetPreviousHash() throws IOException {
+    public void getting_the_hashcode_of_a_previous_file_should_comply_with_a_process() throws IOException {
 	Collection<File> previousFiles = new ArrayList<>();
 	String data = "testing the hash method";
 	Files.write(Paths.get("src/test/resources/hashForTest"), data.getBytes());

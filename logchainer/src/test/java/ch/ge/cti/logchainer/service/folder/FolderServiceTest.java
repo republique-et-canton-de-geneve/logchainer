@@ -24,7 +24,7 @@ public class FolderServiceTest {
     private static final String filename2 = "testMovingFile2.txt";
 
     @Test(description = "testing the move of files")
-    public void testMovingFile() throws Exception {
+    public void moving_a_file_should_comply_with_a_process() throws Exception {
 	String noData = "";
 	Files.write(Paths.get(testResourcesDirPath + "/" + filename1), noData.getBytes());
 	Files.write(Paths.get(testResourcesDirPath + "/" + filename2), noData.getBytes());
@@ -63,7 +63,7 @@ public class FolderServiceTest {
     }
 
     @Test(description = "testing the copy of files")
-    public void testCopyingFile() throws IOException {
+    public void copying_a_file_should_comply_with_a_process() throws IOException {
 	String noData = "";
 	Files.write(Paths.get(testResourcesDirPath + "/" + filename1), noData.getBytes());
 	Files.write(Paths.get(testResourcesDirPath + "/" + filename2), noData.getBytes());
