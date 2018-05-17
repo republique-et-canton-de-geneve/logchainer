@@ -66,7 +66,7 @@ public class LogChainer implements CommandLineRunner {
 
 	LOG.debug("LogWatcherServiceImpl initialization started");
 	LogChainerConf clientConfList = new LogChainerConf();
-	// Accessing the client list provided by the user
+	// Access the client list provided by the user
 	try {
 	    clientConfList = loadConfiguration();
 	    LOG.info("client list accessed");
@@ -74,7 +74,7 @@ public class LogChainer implements CommandLineRunner {
 	    throw new BusinessException(e);
 	}
 
-	// Registering all clients as Client objects in a list
+	// Register all clients as Client objects in a list
 	watcher.initializeFileWatcherByClient(clientConfList);
 	LOG.debug("LogWatcherServiceImpl initialization completed");
 
@@ -106,7 +106,7 @@ public class LogChainer implements CommandLineRunner {
 	JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
 	Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-	// accessing the xml conf file
+	// access the xml conf file
 	try (FileInputStream xmlFileStream = new FileInputStream(xmlDirectoriesConf)) {
 	    logchainerConf = (LogChainerConf) unmarshaller.unmarshal(xmlFileStream);
 	} catch (FileNotFoundException e) {

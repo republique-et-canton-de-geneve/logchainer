@@ -32,7 +32,7 @@ public class ClientServiceImpl implements ClientService {
     public List<WatchedFile> registerEvent(Client client) {
 	List<WatchedFile> corruptedFiles = new ArrayList<>();
 
-	// iterating on all events in the key
+	// iterate on all events in the key
 	for (WatchEvent<?> event : client.getKey().pollEvents()) {
 	    WatchedFile fileToRegister = new WatchedFile(((WatchEvent<Path>) event).context().toString());
 	    boolean toRegister = true;
@@ -40,11 +40,11 @@ public class ClientServiceImpl implements ClientService {
 	    if (LOG.isDebugEnabled())
 		LOG.debug("Treating event from file : {}", fileToRegister.getFilename());
 
-	    // checking the validity of the filename
+	    // check the validity of the filename
 	    if (!fileToRegister.getFilename().contains(fileHelper.getSeparator(client)))
 		corruptedFiles.add(fileToRegister);
 
-	    // checking if the file has already been registered
+	    // check if the file has already been registered
 	    for (WatchedFile file : client.getWatchedFiles()) {
 		if (file.getFilename().equals(fileToRegister.getFilename())) {
 		    toRegister = false;
@@ -52,7 +52,7 @@ public class ClientServiceImpl implements ClientService {
 		}
 	    }
 
-	    // registering the file and instantiating it
+	    // register the file and instantiate it
 	    if (toRegister) {
 		fileToRegister.setKind(event.kind());
 		fileToRegister.setRegistered(false);
@@ -66,7 +66,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void removeAllProcessedFluxesFromMap(List<String> allDoneFlux, Client client) {
-	// removing the flux one by one
+	// remove the flux one by one
 	for (String fluxname : allDoneFlux) {
 	    client.getWatchedFiles().removeAll(client.getWatchedFilesByFlux().get(fluxname));
 	    if (fluxService.removeFlux(fluxname, client)) {

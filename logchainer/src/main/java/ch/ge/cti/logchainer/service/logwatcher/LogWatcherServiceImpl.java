@@ -56,14 +56,14 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
     @Override
     public void initializeFileWatcherByClient(LogChainerConf clientConfList) {
-	// keeping track of the client number
+	// keep track of the client number
 	int clientNb = 0;
 	for (ClientConf client : clientConfList.getListeClientConf()) {
-	    // creating an object Client from each configuration
+	    // create an object Client from each configuration
 	    clients.add(new Client(client));
 	    LOG.info("client {} added to the client list", client.getClientId());
 
-	    // registering a key for each client
+	    // register a key for each client
 	    try {
 		Path inputDirPath = Paths.get(clients.get(clientNb).getConf().getInputDir());
 		WatchService watcher = clients.get(clientNb).getWatcher();
@@ -79,12 +79,12 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
     @Override
     public void processEvents() {
-	// Iterating over all client for each iteration of the infinity loop
+	// Iterate over all client for each iteration of the infinity loop
 	for (Client client : clients) {
-	    // registering events (wether anything happened or not)
+	    // register events (wether anything happened or not)
 	    WatchKey watchKey = client.getWatcher().poll();
 
-	    // Launching the treatment only if a file was detected
+	    // Launch the treatment only if a file was detected
 	    // No use of the take method because we don't want to wait until
 	    // an event is detected under one client
 	    // to move to the next one
@@ -107,7 +107,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		    });
 		}
 
-		// reseting the key to be able to use it again
+		// reset the key to be able to use it again
 		if (!client.getKey().reset())
 		    throw new CorruptedKeyException(client.getConf().getClientId());
 	    }
@@ -122,7 +122,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @param client
      */
     private void waitingForFileToBeReadyToBeLaunched(Client client) {
-	// looking at each detected files per client
+	// look at each detected files per client
 	for (WatchedFile file : client.getWatchedFiles()) {
 	    // present time
 	    int actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
@@ -132,7 +132,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    if (!file.isRegistered())
 		fileService.registerFile(client, file);
 
-	    // checking the waited delay from the arrived time of the file until
+	    // check the waited delay from the arrived time of the file until
 	    // now
 	    if (file.getArrivingTime() + DELAY_TRANSFER_FILE < actualTime) {
 		LOG.debug("enough time waited for file {}", file.getFilename());
@@ -140,11 +140,11 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    }
 	}
 
-	// registering all the treated files into a list
+	// register all the treated files into a list
 	ArrayList<String> allDoneFlux = new ArrayList<>();
-	// iterating over all the flux
+	// iterate over all the flux
 	for (Map.Entry<String, ArrayList<WatchedFile>> flux : client.getWatchedFilesByFlux().entrySet()) {
-	    // checking if the file can be treated
+	    // check if the file can be treated
 	    if (fluxService.isFluxReadyToBeTreated(flux)) {
 		// flux treatment
 		LOG.info("flux {} process starting", flux.getKey());
@@ -157,7 +157,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		}
 	    }
 	}
-	// once all files in a flux have been treated, deleting the flux in the
+	// once all files in a flux have been treated, delete the flux in the
 	// map
 	clientService.removeAllProcessedFluxesFromMap(allDoneFlux, client);
     }
@@ -165,18 +165,18 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     @Override
     public boolean treatmentAfterDetectionOfEvent(Client client, String filename, WatchedFile file) {
 	LOG.debug("start of the file treatment");
-	// handling the overflow situation
+	// handle the overflow situation
 	if (file.getKind() == OVERFLOW) {
 	    LOG.debug("overflow detected");
 	}
 
-	// handling a file creation case
+	// handle a file creation case
 	if (file.getKind() == ENTRY_CREATE) {
-	    // launching the file treatment
+	    // launch the file treatment
 	    fileService.newFileTreatment(client, filename);
 	}
 
-	// handling the file situation once it's treatment is done
+	// handle the file situation once it's treatment is done
 	if (reset(client, file)) {
 	    LOG.info("file {} treated", filename);
 	    return true;
@@ -192,7 +192,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @return validity of the key
      */
     private boolean reset(Client client, WatchedFile file) {
-	// checking if the file can be removed (removes it if able)
+	// check if the file can be removed (removes it if able)
 	if (client.getWatchedFiles().remove(file)) {
 	    LOG.debug("file references successfully removed from map");
 	    return true;

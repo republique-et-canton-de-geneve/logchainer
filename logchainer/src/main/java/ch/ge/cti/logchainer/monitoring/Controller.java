@@ -12,6 +12,11 @@ class Controller {
     static CompositeMeterRegistry composite;
     private Metrics metric;
 
+    /**
+     * Informations about the programm.
+     * 
+     * @return registry containing the infos
+     */
     @RequestMapping("/actuator/global")
     public CompositeMeterRegistry globalInfos() {
 	metric = new Metrics();
@@ -23,6 +28,12 @@ class Controller {
 	return composite;
     }
 
+    /**
+     * Informations about the specified client.
+     * 
+     * @param client
+     * @return registry containing the infos
+     */
     @RequestMapping("/actuator/{client}")
     @ResponseBody
     public CompositeMeterRegistry clientInfos(@PathVariable String client) {

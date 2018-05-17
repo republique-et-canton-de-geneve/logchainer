@@ -51,7 +51,7 @@ public class LogChainerServiceImpl implements LogChainerService {
     }
 
     /**
-     * Accessing the the tmp file.
+     * Access the the tmp file.
      * 
      * @param offset
      * @param content

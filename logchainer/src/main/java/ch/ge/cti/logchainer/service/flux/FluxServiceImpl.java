@@ -56,8 +56,7 @@ public class FluxServiceImpl implements FluxService {
 	LOG.debug("getting flux name method entered");
 	StringBuilder fluxNameTmp = new StringBuilder();
 
-	// finding the flux name of the file, knowing each flux is situated at
-	// the beginning of the filename (before the separator)
+	// find the flux name of the file
 	String[] nameComponents = filename.split(separator);
 
 	int start;
@@ -99,7 +98,7 @@ public class FluxServiceImpl implements FluxService {
     @Override
     public boolean isFluxReadyToBeTreated(Map.Entry<String, ArrayList<WatchedFile>> flux) {
 	boolean fluxReadyToBeTreated = true;
-	// checking if all files in a flux are ready to be treated
+	// check if all files in a flux are ready to be treated
 	for (WatchedFile file : flux.getValue()) {
 	    // check of the file
 	    if (!file.isReadyToBeProcessed())
@@ -119,16 +118,16 @@ public class FluxServiceImpl implements FluxService {
 		fileHelper.getStampPosition(client), flux.getValue());
 	LOG.debug("flux sorted");
 
-	// cheking if all files' treatment has been completed
+	// chek if all files' treatment has been completed
 	boolean finished = true;
-	// iterating on all the files of one flux
+	// iterate on all the files of one flux
 	for (WatchedFile file : flux.getValue()) {
 	    String filename = file.getFilename();
-	    // checking if the file's treatment is complete
+	    // check if the file's treatment is complete
 	    if (!watcherService.treatmentAfterDetectionOfEvent(client, filename, file))
 		finished = false;
 	}
-	// registering the flux as completed (thus ready for deletion)
+	// register the flux as completed (thus ready for deletion)
 	if (finished) {
 	    allDoneFlux.add(flux.getKey());
 	    LOG.info("flux {} entirely treated", flux.getKey());
@@ -138,14 +137,14 @@ public class FluxServiceImpl implements FluxService {
     @Override
     public void corruptedFluxProcess(Client client, List<String> allDoneFlux,
 	    Map.Entry<String, ArrayList<WatchedFile>> flux) {
-	// iterating on all the files of one flux
+	// iterate on all the files of one flux
 	for (WatchedFile file : flux.getValue()) {
 	    String filename = file.getFilename();
-	    // checking if the file's treatment is complete
+	    // check if the file's treatment is complete
 	    mover.moveFileInDirWithNoSameNameFile(filename, client.getConf().getInputDir(),
 		    client.getConf().getCorruptedFilesDir());
 	}
-	// registering the flux as completed (thus ready for deletion)
+	// register the flux as completed (thus ready for deletion)
 	allDoneFlux.add(flux.getKey());
 	if (LOG.isInfoEnabled())
 	    LOG.info("flux {} entirely treated", flux.getKey());

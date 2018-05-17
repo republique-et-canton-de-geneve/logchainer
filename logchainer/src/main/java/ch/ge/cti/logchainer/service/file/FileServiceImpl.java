@@ -48,17 +48,17 @@ public class FileServiceImpl implements FileService {
     @Override
     public void registerFile(Client client, WatchedFile file) {
 	LOG.debug("registering file {}", file.getFilename());
-	// getting the name of the file's flux
+	// get the name of the file's flux
 	String fluxname = fluxService.getFluxName(file.getFilename(), fileHelper.getSeparator(client),
 		fileHelper.getStampPosition(client));
 
-	// registering the flux if it doesn't already exist
+	// register the flux if it doesn't already exist
 	fluxService.addFlux(fluxname, client);
 	LOG.debug("new flux {} added to the map", fluxname);
 
-	// registering the file as a relation to it's flux
+	// register the file as a relation to it's flux
 	fluxService.addFileToFlux(fluxname, file, client);
-	// indicating the file has been registered
+	// indicate the file has been registered
 	file.setRegistered(true);
 	LOG.debug("file {} registered", file.getFilename());
     }
@@ -67,16 +67,16 @@ public class FileServiceImpl implements FileService {
     public void newFileTreatment(Client client, String filename) {
 	LOG.debug("New file detected : {}", (new File(client.getConf().getInputDir(), filename)).getAbsolutePath());
 
-	// accessing same flux file in the tmp directory
+	// access same flux file in the tmp directory
 	Collection<File> previousFiles = getPreviousFiles(
 		fluxService.getFluxName(filename, fileHelper.getSeparator(client), fileHelper.getStampPosition(client)),
 		client.getConf().getWorkingDir(), fileHelper.getSeparator(client), fileHelper.getStampPosition(client));
 
-	// moving the file to the tmp directory
+	// move the file to the tmp directory
 	String pFileInTmp = mover.moveFileInDirWithNoSameNameFile(filename, client.getConf().getInputDir(),
 		client.getConf().getWorkingDir());
 
-	// chaining the log of the previous file to the current one (with infos:
+	// chain the log of the previous file to the current one (with infos:
 	// previous file name and date of chaining)
 	try {
 	    String message = messageToInsert(hasher.getPreviousFileHash(previousFiles), previousFiles, client);
@@ -85,8 +85,8 @@ public class FileServiceImpl implements FileService {
 	    throw new BusinessException(e);
 	}
 
-	// releasing the file treated into the output directory to be taken in
-	// charge by the user
+	// release the file treated into the output directory to be processed by
+	// the user
 	mover.copyFileToDirByReplacingExisting(filename, client.getConf().getWorkingDir(),
 		client.getConf().getOutputDir());
 
@@ -106,7 +106,7 @@ public class FileServiceImpl implements FileService {
 	Collections.sort(files, new Comparator<WatchedFile>() {
 	    @Override
 	    public int compare(WatchedFile file1, WatchedFile file2) {
-		// getting both file's stamp which are used to sort them
+		// get both file's stamp which are used to sort them
 		String sortingStamp1 = fluxService.getSortingStamp(file1.getFilename(), separator, stampPosition);
 		String sortingStamp2 = fluxService.getSortingStamp(file2.getFilename(), separator, stampPosition);
 
@@ -134,7 +134,7 @@ public class FileServiceImpl implements FileService {
     @SuppressWarnings("unchecked")
     private Collection<File> getPreviousFiles(String fluxName, String workingDir, String separator,
 	    String stampPosition) {
-	// filtering the files to only keep the same as given flux one (should
+	// filter the files to only keep the same as given flux one (should
 	// be unique)
 	return FileUtils.listFiles(new File(workingDir), new IOFileFilter() {
 	    @Override

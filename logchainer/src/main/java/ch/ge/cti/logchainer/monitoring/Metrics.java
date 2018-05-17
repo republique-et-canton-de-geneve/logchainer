@@ -20,6 +20,10 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 @Component
 public class Metrics {
+    /**
+     * Counts the number of corrupted files put in the corrupted files directory
+     * and registers it for monitoring.
+     */
     public void registerTotalNbCorruptedFiles() {
 	SimpleMeterRegistry registry = new SimpleMeterRegistry();
 	Counter counterTotalNbCorruptedFiles = Counter.builder("corruptedFilesNb").register(new SimpleMeterRegistry());
@@ -38,6 +42,10 @@ public class Metrics {
 	Controller.composite.add(registry);
     }
 
+    /**
+     * Registers informations about all the detected corrupted files for
+     * monitoring.
+     */
     public void registerAllCorruptedFiles() {
 	Map<String, ArrayList<Tag>> clientWithTags = new HashMap<>();
 	Map<String, Counter> clientWithCounter = new HashMap<>();
@@ -71,6 +79,12 @@ public class Metrics {
 			.register(Controller.composite));
     }
 
+    /**
+     * Registers informations about the corrupted files of a specified client
+     * for monitoring.
+     * 
+     * @param clientId
+     */
     public void registerCorruptedFiles(String clientId) {
 	Collection<File> corruptedFilesForClient = new ArrayList<>();
 
@@ -95,6 +109,12 @@ public class Metrics {
 			.tags("file.size", String.valueOf(corruptedFile.length())).register(Controller.composite));
     }
 
+    /**
+     * Get the files present in the specified directory.
+     * 
+     * @param workingDir
+     * @return
+     */
     @SuppressWarnings("unchecked")
     private Collection<File> getFilesAlreadyInDirectory(String workingDir) {
 	return FileUtils.listFiles(new File(workingDir), new IOFileFilter() {
@@ -105,7 +125,7 @@ public class Metrics {
 
 	    @Override
 	    public boolean accept(File file) {
-		return true;
+		return file.getName().equals("readme") ? false : true;
 	    }
 	}, null);
 

@@ -47,7 +47,7 @@ public class HashServiceImpl implements HashService {
     @Override
     public byte[] getPreviousFileHash(Collection<File> previousFiles) {
 	byte[] hashCodeOfLog;
-	// hashing the provided file, with null hash if there's no file (=no
+	// hash the provided file, with null hash if there's no file (=no
 	// previous same flux file)
 	Optional<File> previousFirstFile = previousFiles.stream().findFirst();
 	if (previousFirstFile.isPresent()) {

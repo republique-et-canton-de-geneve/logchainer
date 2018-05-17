@@ -4,7 +4,7 @@ package ch.ge.cti.logchainer.service.logchainer;
 public interface LogChainerService {
     /**
      * Writes by inserting the byte array 'content' in the file 'filename' where
-     * the byte insertion starts at offset.
+     * the byte insertion starts at the 'offset'.
      * 
      * @param filename
      *            - the name of the file to be written in.
