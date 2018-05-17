@@ -172,7 +172,7 @@ public class ClientServiceTest {
 
 	when(fluxService.removeFlux(anyString(), any(Client.class))).thenCallRealMethod();
 
-	clientService.deleteAllTreatedFluxFromMap(doneFlux, client);
+	clientService.removeAllProcessedFluxesFromMap(doneFlux, client);
 	assertTrue(client.getWatchedFilesByFlux().isEmpty());
     }
 }

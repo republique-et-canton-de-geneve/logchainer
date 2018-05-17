@@ -116,7 +116,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     }
 
     /**
-     * Take in charge of the file from it's detection until it is ready to be
+     * Support of the file from it's detection until it is ready to be
      * treated.
      * 
      * @param client
@@ -159,7 +159,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	}
 	// once all files in a flux have been treated, deleting the flux in the
 	// map
-	clientService.deleteAllTreatedFluxFromMap(allDoneFlux, client);
+	clientService.removeAllProcessedFluxesFromMap(allDoneFlux, client);
     }
 
     @Override

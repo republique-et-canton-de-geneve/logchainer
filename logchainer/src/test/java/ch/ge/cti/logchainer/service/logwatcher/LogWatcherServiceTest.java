@@ -131,7 +131,7 @@ public class LogWatcherServiceTest {
 	}
 
 	// test of the delay waited before the process of a file
-	doNothing().when(clientService).deleteAllTreatedFluxFromMap(any(), any());
+	doNothing().when(clientService).removeAllProcessedFluxesFromMap(any(), any());
 
 	LogWatcherServiceImpl.clients.clear();
 	LogWatcherServiceImpl.clients.add(client);

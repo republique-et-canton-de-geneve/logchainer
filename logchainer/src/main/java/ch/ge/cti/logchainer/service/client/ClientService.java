@@ -21,5 +21,5 @@ public interface ClientService {
      * @param allDoneFlux
      * @param client
      */
-    void deleteAllTreatedFluxFromMap(List<String> allDoneFlux, Client client);
+    void removeAllProcessedFluxesFromMap(List<String> allDoneFlux, Client client);
 }

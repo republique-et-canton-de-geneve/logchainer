@@ -65,7 +65,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void deleteAllTreatedFluxFromMap(List<String> allDoneFlux, Client client) {
+    public void removeAllProcessedFluxesFromMap(List<String> allDoneFlux, Client client) {
 	// removing the flux one by one
 	for (String fluxname : allDoneFlux) {
 	    client.getWatchedFiles().removeAll(client.getWatchedFilesByFlux().get(fluxname));
