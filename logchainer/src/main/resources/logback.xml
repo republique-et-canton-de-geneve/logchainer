@@ -3,8 +3,8 @@
 <configuration>
 	<!-- define where to store the log file -->
 	<property name="LOG_HOME" value="logs" />
-	<property file="${properties_file}"/>
-	
+	<property file="${properties_file}" />
+
 
 	<!-- to screen -->
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">

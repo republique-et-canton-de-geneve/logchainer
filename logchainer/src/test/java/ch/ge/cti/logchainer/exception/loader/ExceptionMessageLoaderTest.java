@@ -53,7 +53,7 @@ public class ExceptionMessageLoaderTest {
 	assertEquals(messageLoader.getExceptionMessage(new BusinessException(new FileNotFoundException("testing"))),
 		fileNotFoundExceptionMessage);
 	assertTrue(messageLoader.isProgrammToBeInterrupted());
-	
+
 	assertEquals(messageLoader.getExceptionMessage(new BusinessException(new NoSuchFileException("testing"))),
 		fileNotFoundExceptionMessage);
 	assertTrue(messageLoader.isProgrammToBeInterrupted());

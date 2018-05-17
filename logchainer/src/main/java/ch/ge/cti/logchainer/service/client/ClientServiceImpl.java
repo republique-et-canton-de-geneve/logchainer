@@ -31,7 +31,7 @@ public class ClientServiceImpl implements ClientService {
     @SuppressWarnings("unchecked")
     public List<FileWatched> registerEvent(Client client) {
 	List<FileWatched> corruptedFiles = new ArrayList<>();
-	
+
 	// iterating on all events in the key
 	for (WatchEvent<?> event : client.getKey().pollEvents()) {
 	    FileWatched fileToRegister = new FileWatched(((WatchEvent<Path>) event).context().toString());

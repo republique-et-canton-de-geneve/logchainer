@@ -16,8 +16,6 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.exception.BusinessException;
-import ch.ge.cti.logchainer.service.folder.FolderService;
-import ch.ge.cti.logchainer.service.folder.FolderServiceImpl;
 
 public class FolderServiceTest {
     private final String testResourcesDirPath = "src/test/resources";
@@ -39,11 +37,9 @@ public class FolderServiceTest {
 
 	Collection<File> existingFilesMoved = getPreviousFiles(testResourcesDirPath + "/testMovingToFolder");
 
-	assertEquals(
-		existingFilesMoved.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename1)),
+	assertEquals(existingFilesMoved.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename1)),
 		true);
-	assertEquals(
-		existingFilesMoved.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename2)),
+	assertEquals(existingFilesMoved.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename2)),
 		true);
 
 	Files.write(Paths.get(testResourcesDirPath + "/" + filename1), noData.getBytes());
@@ -79,10 +75,8 @@ public class FolderServiceTest {
 		testResourcesDirPath + "/testMovingToFolder");
 
 	Collection<File> existingFilesCopied = getPreviousFiles(testResourcesDirPath + "/testMovingToFolder");
-	assertTrue(existingFilesCopied
-		.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename1)));
-	assertTrue(existingFilesCopied
-		.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename2)));
+	assertTrue(existingFilesCopied.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename1)));
+	assertTrue(existingFilesCopied.contains(new File(testResourcesDirPath + "/testMovingToFolder/" + filename2)));
 
 	Collection<File> existingFilesStaying = getPreviousFiles(testResourcesDirPath);
 	assertTrue(existingFilesStaying.contains(new File(testResourcesDirPath + "/" + filename1)));

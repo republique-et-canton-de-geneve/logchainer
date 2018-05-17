@@ -102,7 +102,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 			    client.getFluxFileMap().putIfAbsent(CORRUPTED_FLUXNAME, new ArrayList<>());
 			    client.getFluxFileMap().get(CORRUPTED_FLUXNAME).add(corruptedFile);
 			    client.getFilesWatched().add(corruptedFile);
-			    corruptedFile.setRegistered(true); 
+			    corruptedFile.setRegistered(true);
 			}
 		    });
 		}
@@ -203,7 +203,8 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     }
 
     /**
-     * Getter for the client list which can't modify the list used for the process.
+     * Getter for the client list which can't modify the list used for the
+     * process.
      * 
      * @return the client list
      */

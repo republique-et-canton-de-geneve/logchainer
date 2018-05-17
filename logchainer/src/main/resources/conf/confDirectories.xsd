@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://service.logchainer.ge.ch/"
-	xmlns="http://service.logchainer.ge.ch/"	
-	elementFormDefault="qualified"
-	version="1.0">
+	targetNamespace="http://service.logchainer.ge.ch/" xmlns="http://service.logchainer.ge.ch/"
+	elementFormDefault="qualified" version="1.0">
 
 
 	<xs:element name="logChainerConf">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="listeClientConf" type="clientConf" minOccurs="1" maxOccurs="unbounded" />
+				<xs:element name="listeClientConf" type="clientConf"
+					minOccurs="1" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -25,11 +24,11 @@
 			<xs:element name="OutputDir" type="xs:string" />
 			<xs:element name="CorruptedFilesDir" type="xs:string" />
 			<xs:element name="filePattern" type="filePattern"
-					minOccurs="0" maxOccurs="1" />
+				minOccurs="0" maxOccurs="1" />
 			<xs:element name="fileEncoding" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
-	
+
 	<xs:complexType name="filePattern">
 		<xs:annotation>
 			<xs:documentation>Pattern of the File Name</xs:documentation>
@@ -37,7 +36,7 @@
 		<xs:sequence>
 			<xs:element name="separator" type="xs:string" />
 			<xs:element name="sortingType" type="xs:string" />
-			<xs:element name="stampPosition" type="xs:string"/>
+			<xs:element name="stampPosition" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
 </xs:schema>

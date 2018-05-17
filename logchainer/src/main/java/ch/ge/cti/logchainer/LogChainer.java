@@ -30,7 +30,7 @@ public class LogChainer implements CommandLineRunner {
 
     @Autowired
     private LogWatcherService watcher;
-    
+
     @Autowired
     private LogChainerExceptionHandlerServiceImpl exceptionHandler;
 
@@ -80,6 +80,7 @@ public class LogChainer implements CommandLineRunner {
 
 	// infinity loop to actualize endlessly the search for new files
 	LOG.debug("start of the infinity loop");
+	// loop variable controls if the loop continues
 	boolean loop = true;
 	while (loop) {
 	    try {
