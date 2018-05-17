@@ -30,7 +30,7 @@ import ch.ge.cti.logchainer.beans.WatchedFile;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.generate.FilePattern;
 import ch.ge.cti.logchainer.service.flux.FluxServiceImpl;
-import ch.ge.cti.logchainer.service.utils.UtilsComponentsImpl;
+import ch.ge.cti.logchainer.service.helper.FileHelper;
 
 public class ClientServiceTest {
     private final ClientServiceImpl clientService = new ClientServiceImpl();
@@ -62,10 +62,10 @@ public class ClientServiceTest {
 
     @Test(description = "testing the registration of an event")
     public void testRegisterEvent() throws IOException {
-	UtilsComponentsImpl component = mock(UtilsComponentsImpl.class);
-	clientService.component = component;
+	FileHelper fileHelper = mock(FileHelper.class);
+	clientService.fileHelper = fileHelper;
 
-	when(component.getSeparator(any(Client.class))).thenReturn(SEPARATOR_DEFAULT);
+	when(fileHelper.getSeparator(any(Client.class))).thenReturn(SEPARATOR_DEFAULT);
 
 	// testing the case where the filename isn't valid
 	boolean loop = true;

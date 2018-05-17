@@ -13,14 +13,14 @@ import org.springframework.stereotype.Service;
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.WatchedFile;
 import ch.ge.cti.logchainer.service.flux.FluxService;
-import ch.ge.cti.logchainer.service.utils.UtilsComponents;
+import ch.ge.cti.logchainer.service.helper.FileHelper;
 
 @Service
 public class ClientServiceImpl implements ClientService {
+    FileHelper fileHelper = new FileHelper();
+
     @Autowired
     FluxService fluxService;
-    @Autowired
-    UtilsComponents component;
 
     /**
      * logger
@@ -41,7 +41,7 @@ public class ClientServiceImpl implements ClientService {
 		LOG.debug("Treating event from file : {}", fileToRegister.getFilename());
 
 	    // checking the validity of the filename
-	    if (!fileToRegister.getFilename().contains(component.getSeparator(client)))
+	    if (!fileToRegister.getFilename().contains(fileHelper.getSeparator(client)))
 		corruptedFiles.add(fileToRegister);
 
 	    // checking if the file has already been registered

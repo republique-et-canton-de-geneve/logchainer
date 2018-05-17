@@ -1,4 +1,4 @@
-package ch.ge.cti.logchainer.service.utils;
+package ch.ge.cti.logchainer.service.helper;
 
 import static ch.ge.cti.logchainer.constant.LogChainerConstant.ENCODING_TYPE_DEFAULT;
 import static ch.ge.cti.logchainer.constant.LogChainerConstant.SEPARATOR_DEFAULT;
@@ -12,8 +12,9 @@ import org.testng.annotations.Test;
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.generate.FilePattern;
+import ch.ge.cti.logchainer.service.helper.FileHelper;
 
-public class UtilsComponentsTest {
+public class FileHelperTest {
     private final String customSeparator = "-";
     private final String customSortingType = "alphabetical";
     private final String customStampPosition = "before";
@@ -21,7 +22,7 @@ public class UtilsComponentsTest {
 
     private Client clientCustom;
     private Client clientDefault;
-    private final UtilsComponents component = new UtilsComponentsImpl();
+    private final FileHelper fileHelper = new FileHelper();
 
     @BeforeClass
     public void setUp() {
@@ -54,45 +55,45 @@ public class UtilsComponentsTest {
 
     @Test
     public void getSorterTest() {
-	// checking that the correct value is returned for a custom component
+	// checking that the correct value is returned for a custom fileHelper
 	// part
-	assertEquals(component.getSorter(clientCustom), customSortingType);
+	assertEquals(fileHelper.getSorter(clientCustom), customSortingType);
 
-	// checking that if we don't have any value for a component part, we
+	// checking that if we don't have any value for a fileHelper part, we
 	// still get the correct default value
-	assertEquals(component.getSorter(clientDefault), SORT_DEFAULT);
+	assertEquals(fileHelper.getSorter(clientDefault), SORT_DEFAULT);
     }
 
     @Test
     public void getSeparatorTest() {
-	// checking that the correct value is returned for a custom component
+	// checking that the correct value is returned for a custom fileHelper
 	// part
-	assertEquals(component.getSeparator(clientCustom), customSeparator);
+	assertEquals(fileHelper.getSeparator(clientCustom), customSeparator);
 
-	// checking that if we don't have any value for a component part, we
+	// checking that if we don't have any value for a fileHelper part, we
 	// still get the correct default value
-	assertEquals(component.getSeparator(clientDefault), SEPARATOR_DEFAULT);
+	assertEquals(fileHelper.getSeparator(clientDefault), SEPARATOR_DEFAULT);
     }
 
     @Test
     public void getStampPositionTest() {
-	// checking that the correct value is returned for a custom component
+	// checking that the correct value is returned for a custom fileHelper
 	// part
-	assertEquals(component.getStampPosition(clientCustom), customStampPosition);
+	assertEquals(fileHelper.getStampPosition(clientCustom), customStampPosition);
 
-	// checking that if we don't have any value for a component part, we
+	// checking that if we don't have any value for a fileHelper part, we
 	// still get the correct default value
-	assertEquals(component.getStampPosition(clientDefault), STAMP_POSITION_DEFAULT);
+	assertEquals(fileHelper.getStampPosition(clientDefault), STAMP_POSITION_DEFAULT);
     }
 
     @Test
     public void getEncodingTypeTest() {
-	// checking that the correct value is returned for a custom component
+	// checking that the correct value is returned for a custom fileHelper
 	// part
-	assertEquals(component.getEncodingType(clientCustom), customFileEncoding);
+	assertEquals(fileHelper.getEncodingType(clientCustom), customFileEncoding);
 
-	// checking that if we don't have any value for a component part, we
+	// checking that if we don't have any value for a fileHelper part, we
 	// still get the correct default value
-	assertEquals(component.getEncodingType(clientDefault), ENCODING_TYPE_DEFAULT);
+	assertEquals(fileHelper.getEncodingType(clientDefault), ENCODING_TYPE_DEFAULT);
     }
 }

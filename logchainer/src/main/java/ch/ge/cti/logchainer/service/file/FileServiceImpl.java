@@ -24,11 +24,13 @@ import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.service.flux.FluxService;
 import ch.ge.cti.logchainer.service.folder.FolderService;
 import ch.ge.cti.logchainer.service.hash.HashService;
+import ch.ge.cti.logchainer.service.helper.FileHelper;
 import ch.ge.cti.logchainer.service.logchainer.LogChainerService;
-import ch.ge.cti.logchainer.service.utils.UtilsComponents;
 
 @Service
 public class FileServiceImpl implements FileService {
+    FileHelper fileHelper = new FileHelper();
+
     @Autowired
     FolderService mover;
     @Autowired
@@ -37,8 +39,6 @@ public class FileServiceImpl implements FileService {
     HashService hasher;
     @Autowired
     FluxService fluxService;
-    @Autowired
-    UtilsComponents component;
 
     /**
      * logger
@@ -49,8 +49,8 @@ public class FileServiceImpl implements FileService {
     public void registerFile(Client client, WatchedFile file) {
 	LOG.debug("registering file {}", file.getFilename());
 	// getting the name of the file's flux
-	String fluxname = fluxService.getFluxName(file.getFilename(), component.getSeparator(client),
-		component.getStampPosition(client));
+	String fluxname = fluxService.getFluxName(file.getFilename(), fileHelper.getSeparator(client),
+		fileHelper.getStampPosition(client));
 
 	// registering the flux if it doesn't already exist
 	fluxService.addFlux(fluxname, client);
@@ -69,8 +69,8 @@ public class FileServiceImpl implements FileService {
 
 	// accessing same flux file in the tmp directory
 	Collection<File> previousFiles = getPreviousFiles(
-		fluxService.getFluxName(filename, component.getSeparator(client), component.getStampPosition(client)),
-		client.getConf().getWorkingDir(), component.getSeparator(client), component.getStampPosition(client));
+		fluxService.getFluxName(filename, fileHelper.getSeparator(client), fileHelper.getStampPosition(client)),
+		client.getConf().getWorkingDir(), fileHelper.getSeparator(client), fileHelper.getStampPosition(client));
 
 	// moving the file to the tmp directory
 	String pFileInTmp = mover.moveFileInDirWithNoSameNameFile(filename, client.getConf().getInputDir(),
@@ -80,7 +80,7 @@ public class FileServiceImpl implements FileService {
 	// previous file name and date of chaining)
 	try {
 	    String message = messageToInsert(hasher.getPreviousFileHash(previousFiles), previousFiles, client);
-	    chainer.chainingLogFile(pFileInTmp, 0, message.getBytes(component.getEncodingType(client)));
+	    chainer.chainingLogFile(pFileInTmp, 0, message.getBytes(fileHelper.getEncodingType(client)));
 	} catch (UnsupportedEncodingException e) {
 	    throw new BusinessException(e);
 	}
@@ -180,7 +180,8 @@ public class FileServiceImpl implements FileService {
 	// HashCode of the previous file
 	String previousFileHashCode;
 	try {
-	    previousFileHashCode = "<SHA-256: " + new String(hashCodeOfLog, component.getEncodingType(client)) + "> \n";
+	    previousFileHashCode = "<SHA-256: " + new String(hashCodeOfLog, fileHelper.getEncodingType(client))
+		    + "> \n";
 	} catch (UnsupportedEncodingException e) {
 	    throw new BusinessException(e);
 	}

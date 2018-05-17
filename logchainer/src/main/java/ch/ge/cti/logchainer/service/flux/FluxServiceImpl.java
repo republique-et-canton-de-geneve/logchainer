@@ -13,17 +13,16 @@ import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.WatchedFile;
 import ch.ge.cti.logchainer.service.file.FileService;
 import ch.ge.cti.logchainer.service.folder.FolderService;
+import ch.ge.cti.logchainer.service.helper.FileHelper;
 import ch.ge.cti.logchainer.service.logwatcher.LogWatcherService;
-import ch.ge.cti.logchainer.service.utils.UtilsComponents;
 
 @Service
 public class FluxServiceImpl implements FluxService {
     private final String stampPositionIsBefore = "before";
+    FileHelper fileHelper = new FileHelper();
 
     @Autowired
     FileService fileService;
-    @Autowired
-    UtilsComponents component;
     @Autowired
     LogWatcherService watcherService;
     @Autowired
@@ -116,8 +115,8 @@ public class FluxServiceImpl implements FluxService {
     @Override
     public void fluxTreatment(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<WatchedFile>> flux) {
 	LOG.debug("flux {} starting to be treated", flux.getKey());
-	fileService.sortFiles(component.getSeparator(client), component.getSorter(client),
-		component.getStampPosition(client), flux.getValue());
+	fileService.sortFiles(fileHelper.getSeparator(client), fileHelper.getSorter(client),
+		fileHelper.getStampPosition(client), flux.getValue());
 	LOG.debug("flux sorted");
 
 	// cheking if all files' treatment has been completed

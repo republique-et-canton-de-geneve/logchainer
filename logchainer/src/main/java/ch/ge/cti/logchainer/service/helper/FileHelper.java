@@ -1,13 +1,9 @@
-package ch.ge.cti.logchainer.service.utils;
-
-import org.springframework.stereotype.Service;
+package ch.ge.cti.logchainer.service.helper;
 
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.constant.LogChainerConstant;
 
-@Service
-public class UtilsComponentsImpl implements UtilsComponents {
-    @Override
+public class FileHelper {
     public String getSorter(Client client) {
 	if (!client.getConf().getFilePattern().getSortingType().isEmpty()) {
 	    return client.getConf().getFilePattern().getSortingType();
@@ -16,7 +12,6 @@ public class UtilsComponentsImpl implements UtilsComponents {
 	}
     }
 
-    @Override
     public String getSeparator(Client client) {
 	if (!client.getConf().getFilePattern().getSeparator().isEmpty()) {
 	    return client.getConf().getFilePattern().getSeparator();
@@ -25,7 +20,6 @@ public class UtilsComponentsImpl implements UtilsComponents {
 	}
     }
 
-    @Override
     public String getEncodingType(Client client) {
 	if (!client.getConf().getFileEncoding().isEmpty()) {
 	    return client.getConf().getFileEncoding();
@@ -34,7 +28,6 @@ public class UtilsComponentsImpl implements UtilsComponents {
 	}
     }
 
-    @Override
     public String getStampPosition(Client client) {
 	if (!client.getConf().getFilePattern().getStampPosition().isEmpty()) {
 	    return client.getConf().getFilePattern().getStampPosition();

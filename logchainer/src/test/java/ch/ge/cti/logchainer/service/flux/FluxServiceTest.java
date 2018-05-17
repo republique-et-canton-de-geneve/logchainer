@@ -24,8 +24,8 @@ import ch.ge.cti.logchainer.beans.WatchedFile;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.service.file.FileServiceImpl;
 import ch.ge.cti.logchainer.service.folder.FolderServiceImpl;
+import ch.ge.cti.logchainer.service.helper.FileHelper;
 import ch.ge.cti.logchainer.service.logwatcher.LogWatcherServiceImpl;
-import ch.ge.cti.logchainer.service.utils.UtilsComponentsImpl;
 
 public class FluxServiceTest {
     private final FluxServiceImpl fluxService = new FluxServiceImpl();
@@ -103,8 +103,8 @@ public class FluxServiceTest {
 	fluxService.watcherService = watcherService;
 	FileServiceImpl fileService = mock(FileServiceImpl.class);
 	fluxService.fileService = fileService;
-	UtilsComponentsImpl component = mock(UtilsComponentsImpl.class);
-	fluxService.component = component;
+	FileHelper fileHelper = mock(FileHelper.class);
+	fluxService.fileHelper = fileHelper;
 
 	Client client = mock(Client.class);
 
@@ -118,8 +118,8 @@ public class FluxServiceTest {
 
 	when(watcherService.treatmentAfterDetectionOfEvent(any(Client.class), anyString(), any())).thenReturn(true);
 	doNothing().when(fileService).sortFiles(anyString(), anyString(), anyString(), any());
-	when(component.getSeparator(client)).thenReturn(null);
-	when(component.getSorter(client)).thenReturn(null);
+	when(fileHelper.getSeparator(client)).thenReturn(null);
+	when(fileHelper.getSorter(client)).thenReturn(null);
 
 	mapFluxFiles.entrySet().stream().forEach(fluxname -> fluxService.fluxTreatment(client, fluxList, fluxname));
 
@@ -133,8 +133,8 @@ public class FluxServiceTest {
 	fluxService.watcherService = watcherService;
 	FileServiceImpl fileService = mock(FileServiceImpl.class);
 	fluxService.fileService = fileService;
-	UtilsComponentsImpl component = mock(UtilsComponentsImpl.class);
-	fluxService.component = component;
+	FileHelper fileHelper = mock(FileHelper.class);
+	fluxService.fileHelper = fileHelper;
 	FolderServiceImpl mover = mock(FolderServiceImpl.class);
 	fluxService.mover = mover;
 

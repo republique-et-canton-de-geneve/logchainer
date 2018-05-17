@@ -32,8 +32,8 @@ import ch.ge.cti.logchainer.generate.FilePattern;
 import ch.ge.cti.logchainer.service.flux.FluxServiceImpl;
 import ch.ge.cti.logchainer.service.folder.FolderServiceImpl;
 import ch.ge.cti.logchainer.service.hash.HashServiceImpl;
+import ch.ge.cti.logchainer.service.helper.FileHelper;
 import ch.ge.cti.logchainer.service.logchainer.LogChainerServiceImpl;
-import ch.ge.cti.logchainer.service.utils.UtilsComponentsImpl;
 
 public class FileServiceTest {
     private Client client;
@@ -62,14 +62,14 @@ public class FileServiceTest {
 
 	FluxServiceImpl fluxService = mock(FluxServiceImpl.class);
 	fileService.fluxService = fluxService;
-	UtilsComponentsImpl component = mock(UtilsComponentsImpl.class);
-	fileService.component = component;
+	FileHelper fileHelper = mock(FileHelper.class);
+	fileService.fileHelper = fileHelper;
 
 	when(fluxService.getFluxName(anyString(), anyString(), anyString())).thenReturn(fluxname);
 	doCallRealMethod().when(fluxService).addFlux(anyString(), any(Client.class));
 	doCallRealMethod().when(fluxService).addFileToFlux(anyString(), any(), any(Client.class));
-	when(component.getSeparator(client)).thenReturn(SEPARATOR_DEFAULT);
-	when(component.getStampPosition(client)).thenReturn(STAMP_POSITION_DEFAULT);
+	when(fileHelper.getSeparator(client)).thenReturn(SEPARATOR_DEFAULT);
+	when(fileHelper.getStampPosition(client)).thenReturn(STAMP_POSITION_DEFAULT);
 
 	fileService.registerFile(client, file);
 	assertTrue(client.getWatchedFilesByFlux().keySet().contains(fluxname));
@@ -89,8 +89,8 @@ public class FileServiceTest {
 
 	FluxServiceImpl fluxService = mock(FluxServiceImpl.class);
 	fileService.fluxService = fluxService;
-	UtilsComponentsImpl component = mock(UtilsComponentsImpl.class);
-	fileService.component = component;
+	FileHelper fileHelper = mock(FileHelper.class);
+	fileService.fileHelper = fileHelper;
 	FolderServiceImpl mover = mock(FolderServiceImpl.class);
 	fileService.mover = mover;
 	HashServiceImpl hasher = mock(HashServiceImpl.class);
@@ -99,13 +99,13 @@ public class FileServiceTest {
 	fileService.chainer = chainer;
 
 	when(fluxService.getFluxName(anyString(), anyString(), anyString())).thenReturn("noFlux");
-	when(component.getSeparator(any(Client.class))).thenReturn("noSeparator");
+	when(fileHelper.getSeparator(any(Client.class))).thenReturn("noSeparator");
 
 	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenReturn(null);
 
 	when(hasher.getPreviousFileHash(any())).thenReturn(new byte[] {});
-	when(component.getEncodingType(any(Client.class))).thenReturn(ENCODING_TYPE_DEFAULT);
-	when(component.getStampPosition(any(Client.class))).thenReturn(STAMP_POSITION_DEFAULT);
+	when(fileHelper.getEncodingType(any(Client.class))).thenReturn(ENCODING_TYPE_DEFAULT);
+	when(fileHelper.getStampPosition(any(Client.class))).thenReturn(STAMP_POSITION_DEFAULT);
 
 	doNothing().when(chainer).chainingLogFile(anyString(), anyInt(), any());
 
@@ -185,10 +185,10 @@ public class FileServiceTest {
 	Collection<File> previousFiles = new ArrayList<>();
 	byte[] noHash = new byte[] {};
 
-	UtilsComponentsImpl component = mock(UtilsComponentsImpl.class);
-	fileService.component = component;
+	FileHelper fileHelper = mock(FileHelper.class);
+	fileService.fileHelper = fileHelper;
 
-	when(component.getEncodingType(any(Client.class))).thenReturn(ENCODING_TYPE_DEFAULT);
+	when(fileHelper.getEncodingType(any(Client.class))).thenReturn(ENCODING_TYPE_DEFAULT);
 
 	// testing for a normal message with previous file
 	previousFiles.add(new File("testPreviousFilename"));
@@ -204,7 +204,7 @@ public class FileServiceTest {
 	assertTrue(messageTestWithoutPreviousFile.contains("<Previous file: none> \n"));
 
 	// invalid charset
-	when(component.getEncodingType(any(Client.class))).thenReturn("Invalid_charset");
+	when(fileHelper.getEncodingType(any(Client.class))).thenReturn("Invalid_charset");
 	try {
 	    fileService.messageToInsert(noHash, previousFiles, client);
 	} catch (BusinessException e) {
