@@ -26,7 +26,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.beans.Client;
-import ch.ge.cti.logchainer.beans.FileWatched;
+import ch.ge.cti.logchainer.beans.WatchedFile;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.generate.FilePattern;
 import ch.ge.cti.logchainer.service.flux.FluxServiceImpl;
@@ -105,10 +105,10 @@ public class ClientServiceTest {
 		client.setKey(watchKey);
 		assertNull(clientService.registerEvent(client));
 		boolean fileInFilesWatchedList = false;
-		for (int i = 0; i < client.getFilesWatched().size(); ++i) {
-		    if (client.getFilesWatched().get(i).getFilename().equals(filename)) {
+		for (int i = 0; i < client.getWatchedFiles().size(); ++i) {
+		    if (client.getWatchedFiles().get(i).getFilename().equals(filename)) {
 			fileInFilesWatchedList = true;
-			assertFalse(client.getFilesWatched().get(i).isRegistered());
+			assertFalse(client.getWatchedFiles().get(i).isRegistered());
 		    }
 		}
 		assertTrue(fileInFilesWatchedList);
@@ -138,8 +138,8 @@ public class ClientServiceTest {
 		client.setKey(watchKey);
 		assertNull(clientService.registerEvent(client));
 		boolean fileInFilesWatchedList = false;
-		for (int i = 0; i < client.getFilesWatched().size(); ++i) {
-		    if (client.getFilesWatched().get(i).getFilename().equals(filename)) {
+		for (int i = 0; i < client.getWatchedFiles().size(); ++i) {
+		    if (client.getWatchedFiles().get(i).getFilename().equals(filename)) {
 			fileInFilesWatchedList = true;
 		    }
 		}
@@ -163,7 +163,7 @@ public class ClientServiceTest {
     @Test(description = "testing the deletion of the flux from the flux list of the client")
     public void testDeleteAllTreatedFluxFromMap() {
 	String fluxname = "fluxTest";
-	client.getFluxFileMap().put(fluxname, (ArrayList<FileWatched>) client.getFilesWatched());
+	client.getWatchedFilesByFlux().put(fluxname, (ArrayList<WatchedFile>) client.getWatchedFiles());
 	List<String> doneFlux = new ArrayList<>();
 	doneFlux.add(fluxname);
 
@@ -173,6 +173,6 @@ public class ClientServiceTest {
 	when(fluxService.removeFlux(anyString(), any(Client.class))).thenCallRealMethod();
 
 	clientService.deleteAllTreatedFluxFromMap(doneFlux, client);
-	assertTrue(client.getFluxFileMap().isEmpty());
+	assertTrue(client.getWatchedFilesByFlux().isEmpty());
     }
 }

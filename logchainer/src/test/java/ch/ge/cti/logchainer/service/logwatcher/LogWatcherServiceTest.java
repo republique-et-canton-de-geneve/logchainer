@@ -30,7 +30,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.beans.Client;
-import ch.ge.cti.logchainer.beans.FileWatched;
+import ch.ge.cti.logchainer.beans.WatchedFile;
 import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.exception.CorruptedKeyException;
 import ch.ge.cti.logchainer.generate.ClientConf;
@@ -49,7 +49,7 @@ public class LogWatcherServiceTest {
     private final LogChainerConf clientConfList = new LogChainerConf();
     private final Client client = new Client(new ClientConf());
     private final String filename = "testDelayFile";
-    private final FileWatched testFile = new FileWatched(filename);
+    private final WatchedFile testFile = new WatchedFile(filename);
     private Client clientProbleme;
 
     @BeforeClass
@@ -106,8 +106,8 @@ public class LogWatcherServiceTest {
 	watcher.fluxService = fluxService;
 
 	// test for a corrupted file
-	List<FileWatched> mockCorrFilesListToReturn = new ArrayList<>();
-	mockCorrFilesListToReturn.add(new FileWatched(filename));
+	List<WatchedFile> mockCorrFilesListToReturn = new ArrayList<>();
+	mockCorrFilesListToReturn.add(new WatchedFile(filename));
 	when(clientService.registerEvent(any(Client.class))).thenReturn(mockCorrFilesListToReturn);
 	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenCallRealMethod();
 	when(fluxService.isFluxReadyToBeTreated(any())).thenReturn(true);
@@ -135,13 +135,13 @@ public class LogWatcherServiceTest {
 
 	LogWatcherServiceImpl.clients.clear();
 	LogWatcherServiceImpl.clients.add(client);
-	client.getFilesWatched().add(testFile);
-	client.getFilesWatched().get(0).setRegistered(true);
+	client.getWatchedFiles().add(testFile);
+	client.getWatchedFiles().get(0).setRegistered(true);
 
 	boolean loop = true;
 	while (loop) {
 	    watcher.processEvents();
-	    if (testFile.isReadyToBeTreated())
+	    if (testFile.isReadyToBeProcessed())
 		loop = false;
 	}
 	int actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
@@ -153,8 +153,8 @@ public class LogWatcherServiceTest {
     public void testTreatmentAfterDetectionOfEvent() {
 	LogWatcherServiceImpl.clients.clear();
 	LogWatcherServiceImpl.clients.add(client);
-	client.getFilesWatched().clear();
-	client.getFilesWatched().add(testFile);
+	client.getWatchedFiles().clear();
+	client.getWatchedFiles().add(testFile);
 
 	FileServiceImpl fileService = mock(FileServiceImpl.class);
 	watcher.fileService = fileService;
@@ -162,7 +162,7 @@ public class LogWatcherServiceTest {
 	doNothing().when(fileService).newFileTreatment(any(Client.class), anyString());
 
 	watcher.treatmentAfterDetectionOfEvent(client, filename, testFile);
-	assertFalse(LogWatcherServiceImpl.clients.get(0).getFilesWatched().contains(testFile));
+	assertFalse(LogWatcherServiceImpl.clients.get(0).getWatchedFiles().contains(testFile));
     }
 
     @AfterClass

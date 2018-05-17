@@ -20,7 +20,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.beans.Client;
-import ch.ge.cti.logchainer.beans.FileWatched;
+import ch.ge.cti.logchainer.beans.WatchedFile;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.service.file.FileServiceImpl;
 import ch.ge.cti.logchainer.service.folder.FolderServiceImpl;
@@ -33,15 +33,15 @@ public class FluxServiceTest {
     private final String testFilenameChangeSeparator = "fluxTest-stampTest.txt";
     private final String testFilenameChangeStampPosition = "stampTest_fluxTest.txt";
     private final String testFilenameChangeSeparatorAndStampPosition = "stampTest-fluxTest.txt";
-    private ArrayList<FileWatched> watchedFiles = new ArrayList<>();
-    private Map<String, ArrayList<FileWatched>> mapFluxFiles;
+    private ArrayList<WatchedFile> watchedFiles = new ArrayList<>();
+    private Map<String, ArrayList<WatchedFile>> mapFluxFiles;
 
     @BeforeClass
     public void setUp() {
-	watchedFiles.add(new FileWatched("file1"));
-	watchedFiles.add(new FileWatched("file2"));
-	watchedFiles.add(new FileWatched("file3"));
-	watchedFiles.add(new FileWatched("file4"));
+	watchedFiles.add(new WatchedFile("file1"));
+	watchedFiles.add(new WatchedFile("file2"));
+	watchedFiles.add(new WatchedFile("file3"));
+	watchedFiles.add(new WatchedFile("file4"));
 
 	mapFluxFiles = new HashMap<>();
     }
@@ -84,15 +84,15 @@ public class FluxServiceTest {
 
     @Test(description = "testing when the is ready to be treated")
     public void testIsFluxReadyToBeTreated() {
-	watchedFiles.stream().forEach(file -> file.setReadyToBeTreated(true));
+	watchedFiles.stream().forEach(file -> file.setReadyToBeProcessed(true));
 	mapFluxFiles.put("fluxTest1", watchedFiles);
 	mapFluxFiles.entrySet().stream().forEach(flux -> assertTrue(fluxService.isFluxReadyToBeTreated(flux)));
 	mapFluxFiles.clear();
 
-	ArrayList<FileWatched> nonReadyWatchedFiles = new ArrayList<>();
-	nonReadyWatchedFiles.add(new FileWatched("file1"));
-	nonReadyWatchedFiles.add(new FileWatched("file2"));
-	nonReadyWatchedFiles.get(1).setReadyToBeTreated(true);
+	ArrayList<WatchedFile> nonReadyWatchedFiles = new ArrayList<>();
+	nonReadyWatchedFiles.add(new WatchedFile("file1"));
+	nonReadyWatchedFiles.add(new WatchedFile("file2"));
+	nonReadyWatchedFiles.get(1).setReadyToBeProcessed(true);
 	mapFluxFiles.put("fluxTest2", nonReadyWatchedFiles);
 	mapFluxFiles.entrySet().stream().forEach(flux -> assertFalse(fluxService.isFluxReadyToBeTreated(flux)));
     }

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import ch.ge.cti.logchainer.beans.Client;
-import ch.ge.cti.logchainer.beans.FileWatched;
+import ch.ge.cti.logchainer.beans.WatchedFile;
 
 public interface FluxService {
     /**
@@ -32,7 +32,7 @@ public interface FluxService {
      * @param clientInfos
      * @param client
      */
-    void addFileToFlux(String fluxname, FileWatched clientInfos, Client client);
+    void addFileToFlux(String fluxname, WatchedFile clientInfos, Client client);
 
     /**
      * Get the flux name from a file.
@@ -57,7 +57,7 @@ public interface FluxService {
      * @param flux
      * @return
      */
-    boolean isFluxReadyToBeTreated(Map.Entry<String, ArrayList<FileWatched>> flux);
+    boolean isFluxReadyToBeTreated(Map.Entry<String, ArrayList<WatchedFile>> flux);
 
     /**
      * Trigger the flux treatment.
@@ -66,7 +66,7 @@ public interface FluxService {
      * @param allDoneFlux
      * @param flux
      */
-    void fluxTreatment(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<FileWatched>> flux);
+    void fluxTreatment(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<WatchedFile>> flux);
 
     /**
      * Trigger a corrupted flux treatment.
@@ -75,5 +75,5 @@ public interface FluxService {
      * @param allDoneFlux
      * @param flux
      */
-    void corruptedFluxProcess(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<FileWatched>> flux);
+    void corruptedFluxProcess(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<WatchedFile>> flux);
 }

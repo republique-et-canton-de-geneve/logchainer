@@ -25,7 +25,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import ch.ge.cti.logchainer.beans.Client;
-import ch.ge.cti.logchainer.beans.FileWatched;
+import ch.ge.cti.logchainer.beans.WatchedFile;
 import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.generate.ClientConf;
 import ch.ge.cti.logchainer.generate.FilePattern;
@@ -57,8 +57,8 @@ public class FileServiceTest {
     @Test(description = "testing the registration of a file")
     public void testRegisterFile() {
 	String fluxname = "fluxTest";
-	FileWatched file = new FileWatched(fluxname + "_stampTest.test");
-	FileWatched fileWithSameFlux = new FileWatched("noFlux");
+	WatchedFile file = new WatchedFile(fluxname + "_stampTest.test");
+	WatchedFile fileWithSameFlux = new WatchedFile("noFlux");
 
 	FluxServiceImpl fluxService = mock(FluxServiceImpl.class);
 	fileService.fluxService = fluxService;
@@ -72,14 +72,14 @@ public class FileServiceTest {
 	when(component.getStampPosition(client)).thenReturn(STAMP_POSITION_DEFAULT);
 
 	fileService.registerFile(client, file);
-	assertTrue(client.getFluxFileMap().keySet().contains(fluxname));
-	assertTrue(client.getFluxFileMap().get(fluxname).contains(file));
+	assertTrue(client.getWatchedFilesByFlux().keySet().contains(fluxname));
+	assertTrue(client.getWatchedFilesByFlux().get(fluxname).contains(file));
 
 	fileService.registerFile(client, fileWithSameFlux);
-	assertEquals(client.getFluxFileMap().keySet().size(), 1);
-	assertEquals(client.getFluxFileMap().get(fluxname).size(), 2);
+	assertEquals(client.getWatchedFilesByFlux().keySet().size(), 1);
+	assertEquals(client.getWatchedFilesByFlux().get(fluxname).size(), 2);
 
-	client.getFluxFileMap().get(fluxname).stream().forEach(fileTest -> assertTrue(fileTest.isRegistered()));
+	client.getWatchedFilesByFlux().get(fluxname).stream().forEach(fileTest -> assertTrue(fileTest.isRegistered()));
     }
 
     @Test(description = "we only have a small test because the newFileTreatment method mainly calls other methods which are tested elsewhere")
@@ -122,27 +122,27 @@ public class FileServiceTest {
 	fileService.fluxService = fluxService;
 	when(fluxService.getSortingStamp(anyString(), anyString(), anyString())).thenCallRealMethod();
 
-	List<FileWatched> filesNumericalStampRefList = new ArrayList<>();
-	filesNumericalStampRefList.add(new FileWatched("fluxTest1_001.txt"));
-	filesNumericalStampRefList.add(new FileWatched("fluxTest1_002.txt"));
-	filesNumericalStampRefList.add(new FileWatched("fluxTest1_003.txt"));
-	filesNumericalStampRefList.add(new FileWatched("fluxTest1_011.txt"));
-	filesNumericalStampRefList.add(new FileWatched("fluxTest1_021.txt"));
-	filesNumericalStampRefList.add(new FileWatched("fluxTest1_032.txt"));
-	filesNumericalStampRefList.add(new FileWatched("fluxTest1_101.txt"));
-	filesNumericalStampRefList.add(new FileWatched("fluxTest1_212.txt"));
-	filesNumericalStampRefList.add(new FileWatched("fluxTest1_323.txt"));
+	List<WatchedFile> filesNumericalStampRefList = new ArrayList<>();
+	filesNumericalStampRefList.add(new WatchedFile("fluxTest1_001.txt"));
+	filesNumericalStampRefList.add(new WatchedFile("fluxTest1_002.txt"));
+	filesNumericalStampRefList.add(new WatchedFile("fluxTest1_003.txt"));
+	filesNumericalStampRefList.add(new WatchedFile("fluxTest1_011.txt"));
+	filesNumericalStampRefList.add(new WatchedFile("fluxTest1_021.txt"));
+	filesNumericalStampRefList.add(new WatchedFile("fluxTest1_032.txt"));
+	filesNumericalStampRefList.add(new WatchedFile("fluxTest1_101.txt"));
+	filesNumericalStampRefList.add(new WatchedFile("fluxTest1_212.txt"));
+	filesNumericalStampRefList.add(new WatchedFile("fluxTest1_323.txt"));
 
-	List<FileWatched> filesNumericalStamp = new ArrayList<>();
-	filesNumericalStamp.add(new FileWatched("fluxTest1_323.txt"));
-	filesNumericalStamp.add(new FileWatched("fluxTest1_032.txt"));
-	filesNumericalStamp.add(new FileWatched("fluxTest1_011.txt"));
-	filesNumericalStamp.add(new FileWatched("fluxTest1_212.txt"));
-	filesNumericalStamp.add(new FileWatched("fluxTest1_021.txt"));
-	filesNumericalStamp.add(new FileWatched("fluxTest1_002.txt"));
-	filesNumericalStamp.add(new FileWatched("fluxTest1_001.txt"));
-	filesNumericalStamp.add(new FileWatched("fluxTest1_003.txt"));
-	filesNumericalStamp.add(new FileWatched("fluxTest1_101.txt"));
+	List<WatchedFile> filesNumericalStamp = new ArrayList<>();
+	filesNumericalStamp.add(new WatchedFile("fluxTest1_323.txt"));
+	filesNumericalStamp.add(new WatchedFile("fluxTest1_032.txt"));
+	filesNumericalStamp.add(new WatchedFile("fluxTest1_011.txt"));
+	filesNumericalStamp.add(new WatchedFile("fluxTest1_212.txt"));
+	filesNumericalStamp.add(new WatchedFile("fluxTest1_021.txt"));
+	filesNumericalStamp.add(new WatchedFile("fluxTest1_002.txt"));
+	filesNumericalStamp.add(new WatchedFile("fluxTest1_001.txt"));
+	filesNumericalStamp.add(new WatchedFile("fluxTest1_003.txt"));
+	filesNumericalStamp.add(new WatchedFile("fluxTest1_101.txt"));
 
 	fileService.sortFiles(SEPARATOR_DEFAULT, SORT_DEFAULT, STAMP_POSITION_DEFAULT, filesNumericalStamp);
 	assertEquals(filesNumericalStamp.size(), filesNumericalStampRefList.size());
@@ -150,27 +150,27 @@ public class FileServiceTest {
 	    assertEquals(filesNumericalStamp.get(i).getFilename(), filesNumericalStampRefList.get(i).getFilename());
 	}
 
-	List<FileWatched> filesAlphabeticalStampRefList = new ArrayList<>();
-	filesAlphabeticalStampRefList.add(new FileWatched("fluxTest1_aaa.txt"));
-	filesAlphabeticalStampRefList.add(new FileWatched("fluxTest1_aab.txt"));
-	filesAlphabeticalStampRefList.add(new FileWatched("fluxTest1_aar.txt"));
-	filesAlphabeticalStampRefList.add(new FileWatched("fluxTest1_act.txt"));
-	filesAlphabeticalStampRefList.add(new FileWatched("fluxTest1_acv.txt"));
-	filesAlphabeticalStampRefList.add(new FileWatched("fluxTest1_afg.txt"));
-	filesAlphabeticalStampRefList.add(new FileWatched("fluxTest1_cad.txt"));
-	filesAlphabeticalStampRefList.add(new FileWatched("fluxTest1_cae.txt"));
-	filesAlphabeticalStampRefList.add(new FileWatched("fluxTest1_hra.txt"));
+	List<WatchedFile> filesAlphabeticalStampRefList = new ArrayList<>();
+	filesAlphabeticalStampRefList.add(new WatchedFile("fluxTest1_aaa.txt"));
+	filesAlphabeticalStampRefList.add(new WatchedFile("fluxTest1_aab.txt"));
+	filesAlphabeticalStampRefList.add(new WatchedFile("fluxTest1_aar.txt"));
+	filesAlphabeticalStampRefList.add(new WatchedFile("fluxTest1_act.txt"));
+	filesAlphabeticalStampRefList.add(new WatchedFile("fluxTest1_acv.txt"));
+	filesAlphabeticalStampRefList.add(new WatchedFile("fluxTest1_afg.txt"));
+	filesAlphabeticalStampRefList.add(new WatchedFile("fluxTest1_cad.txt"));
+	filesAlphabeticalStampRefList.add(new WatchedFile("fluxTest1_cae.txt"));
+	filesAlphabeticalStampRefList.add(new WatchedFile("fluxTest1_hra.txt"));
 
-	List<FileWatched> filesAlphabeticalStamp = new ArrayList<>();
-	filesAlphabeticalStamp.add(new FileWatched("fluxTest1_aab.txt"));
-	filesAlphabeticalStamp.add(new FileWatched("fluxTest1_act.txt"));
-	filesAlphabeticalStamp.add(new FileWatched("fluxTest1_afg.txt"));
-	filesAlphabeticalStamp.add(new FileWatched("fluxTest1_cad.txt"));
-	filesAlphabeticalStamp.add(new FileWatched("fluxTest1_hra.txt"));
-	filesAlphabeticalStamp.add(new FileWatched("fluxTest1_cae.txt"));
-	filesAlphabeticalStamp.add(new FileWatched("fluxTest1_aar.txt"));
-	filesAlphabeticalStamp.add(new FileWatched("fluxTest1_acv.txt"));
-	filesAlphabeticalStamp.add(new FileWatched("fluxTest1_aaa.txt"));
+	List<WatchedFile> filesAlphabeticalStamp = new ArrayList<>();
+	filesAlphabeticalStamp.add(new WatchedFile("fluxTest1_aab.txt"));
+	filesAlphabeticalStamp.add(new WatchedFile("fluxTest1_act.txt"));
+	filesAlphabeticalStamp.add(new WatchedFile("fluxTest1_afg.txt"));
+	filesAlphabeticalStamp.add(new WatchedFile("fluxTest1_cad.txt"));
+	filesAlphabeticalStamp.add(new WatchedFile("fluxTest1_hra.txt"));
+	filesAlphabeticalStamp.add(new WatchedFile("fluxTest1_cae.txt"));
+	filesAlphabeticalStamp.add(new WatchedFile("fluxTest1_aar.txt"));
+	filesAlphabeticalStamp.add(new WatchedFile("fluxTest1_acv.txt"));
+	filesAlphabeticalStamp.add(new WatchedFile("fluxTest1_aaa.txt"));
 
 	fileService.sortFiles(SEPARATOR_DEFAULT, "alphabetical", STAMP_POSITION_DEFAULT, filesAlphabeticalStamp);
 	assertEquals(filesAlphabeticalStamp.size(), filesAlphabeticalStampRefList.size());

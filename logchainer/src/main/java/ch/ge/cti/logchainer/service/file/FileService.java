@@ -3,7 +3,7 @@ package ch.ge.cti.logchainer.service.file;
 import java.util.List;
 
 import ch.ge.cti.logchainer.beans.Client;
-import ch.ge.cti.logchainer.beans.FileWatched;
+import ch.ge.cti.logchainer.beans.WatchedFile;
 
 public interface FileService {
     /**
@@ -12,7 +12,7 @@ public interface FileService {
      * @param client
      * @param file
      */
-    void registerFile(Client client, FileWatched file);
+    void registerFile(Client client, WatchedFile file);
 
     /**
      * Treatment of the file as an entry create.
@@ -29,5 +29,5 @@ public interface FileService {
      * @param sorter
      * @param files
      */
-    void sortFiles(String separator, String sorter, String stampPosition, List<FileWatched> files);
+    void sortFiles(String separator, String sorter, String stampPosition, List<WatchedFile> files);
 }

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.beans.Client;
-import ch.ge.cti.logchainer.beans.FileWatched;
+import ch.ge.cti.logchainer.beans.WatchedFile;
 import ch.ge.cti.logchainer.service.file.FileService;
 import ch.ge.cti.logchainer.service.folder.FolderService;
 import ch.ge.cti.logchainer.service.logwatcher.LogWatcherService;
@@ -37,19 +37,19 @@ public class FluxServiceImpl implements FluxService {
     @Override
     public void addFlux(String fluxname, Client client) {
 	LOG.debug("adding flux {} to client {}", fluxname, client.getConf().getClientId());
-	client.getFluxFileMap().putIfAbsent(fluxname, new ArrayList<FileWatched>());
+	client.getWatchedFilesByFlux().putIfAbsent(fluxname, new ArrayList<WatchedFile>());
     }
 
     @Override
     public boolean removeFlux(String fluxname, Client client) {
 	LOG.debug("removing flux {} from list", fluxname);
-	return client.getFluxFileMap().remove(fluxname) != null;
+	return client.getWatchedFilesByFlux().remove(fluxname) != null;
     }
 
     @Override
-    public void addFileToFlux(String fluxname, FileWatched file, Client client) {
+    public void addFileToFlux(String fluxname, WatchedFile file, Client client) {
 	LOG.debug("mapping file {} to the flux {}", file.getFilename(), fluxname);
-	client.getFluxFileMap().get(fluxname).add(file);
+	client.getWatchedFilesByFlux().get(fluxname).add(file);
     }
 
     @Override
@@ -98,12 +98,12 @@ public class FluxServiceImpl implements FluxService {
     }
 
     @Override
-    public boolean isFluxReadyToBeTreated(Map.Entry<String, ArrayList<FileWatched>> flux) {
+    public boolean isFluxReadyToBeTreated(Map.Entry<String, ArrayList<WatchedFile>> flux) {
 	boolean fluxReadyToBeTreated = true;
 	// checking if all files in a flux are ready to be treated
-	for (FileWatched file : flux.getValue()) {
+	for (WatchedFile file : flux.getValue()) {
 	    // check of the file
-	    if (!file.isReadyToBeTreated())
+	    if (!file.isReadyToBeProcessed())
 		fluxReadyToBeTreated = false;
 	}
 
@@ -114,7 +114,7 @@ public class FluxServiceImpl implements FluxService {
     }
 
     @Override
-    public void fluxTreatment(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<FileWatched>> flux) {
+    public void fluxTreatment(Client client, List<String> allDoneFlux, Map.Entry<String, ArrayList<WatchedFile>> flux) {
 	LOG.debug("flux {} starting to be treated", flux.getKey());
 	fileService.sortFiles(component.getSeparator(client), component.getSorter(client),
 		component.getStampPosition(client), flux.getValue());
@@ -123,7 +123,7 @@ public class FluxServiceImpl implements FluxService {
 	// cheking if all files' treatment has been completed
 	boolean finished = true;
 	// iterating on all the files of one flux
-	for (FileWatched file : flux.getValue()) {
+	for (WatchedFile file : flux.getValue()) {
 	    String filename = file.getFilename();
 	    // checking if the file's treatment is complete
 	    if (!watcherService.treatmentAfterDetectionOfEvent(client, filename, file))
@@ -138,9 +138,9 @@ public class FluxServiceImpl implements FluxService {
 
     @Override
     public void corruptedFluxProcess(Client client, List<String> allDoneFlux,
-	    Map.Entry<String, ArrayList<FileWatched>> flux) {
+	    Map.Entry<String, ArrayList<WatchedFile>> flux) {
 	// iterating on all the files of one flux
-	for (FileWatched file : flux.getValue()) {
+	for (WatchedFile file : flux.getValue()) {
 	    String filename = file.getFilename();
 	    // checking if the file's treatment is complete
 	    mover.moveFileInDirWithNoSameNameFile(filename, client.getConf().getInputDir(),

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.beans.Client;
-import ch.ge.cti.logchainer.beans.FileWatched;
+import ch.ge.cti.logchainer.beans.WatchedFile;
 import ch.ge.cti.logchainer.service.flux.FluxService;
 import ch.ge.cti.logchainer.service.utils.UtilsComponents;
 
@@ -29,12 +29,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<FileWatched> registerEvent(Client client) {
-	List<FileWatched> corruptedFiles = new ArrayList<>();
+    public List<WatchedFile> registerEvent(Client client) {
+	List<WatchedFile> corruptedFiles = new ArrayList<>();
 
 	// iterating on all events in the key
 	for (WatchEvent<?> event : client.getKey().pollEvents()) {
-	    FileWatched fileToRegister = new FileWatched(((WatchEvent<Path>) event).context().toString());
+	    WatchedFile fileToRegister = new WatchedFile(((WatchEvent<Path>) event).context().toString());
 	    boolean toRegister = true;
 
 	    if (LOG.isDebugEnabled())
@@ -45,7 +45,7 @@ public class ClientServiceImpl implements ClientService {
 		corruptedFiles.add(fileToRegister);
 
 	    // checking if the file has already been registered
-	    for (FileWatched file : client.getFilesWatched()) {
+	    for (WatchedFile file : client.getWatchedFiles()) {
 		if (file.getFilename().equals(fileToRegister.getFilename())) {
 		    toRegister = false;
 		    LOG.debug("file already registered");
@@ -56,7 +56,7 @@ public class ClientServiceImpl implements ClientService {
 	    if (toRegister) {
 		fileToRegister.setKind(event.kind());
 		fileToRegister.setRegistered(false);
-		client.getFilesWatched().add(fileToRegister);
+		client.getWatchedFiles().add(fileToRegister);
 		LOG.debug("file registered");
 	    }
 	}
@@ -68,7 +68,7 @@ public class ClientServiceImpl implements ClientService {
     public void deleteAllTreatedFluxFromMap(List<String> allDoneFlux, Client client) {
 	// removing the flux one by one
 	for (String fluxname : allDoneFlux) {
-	    client.getFilesWatched().removeAll(client.getFluxFileMap().get(fluxname));
+	    client.getWatchedFiles().removeAll(client.getWatchedFilesByFlux().get(fluxname));
 	    if (fluxService.removeFlux(fluxname, client)) {
 		LOG.debug("flux {} has been removed from the map", fluxname);
 	    } else {

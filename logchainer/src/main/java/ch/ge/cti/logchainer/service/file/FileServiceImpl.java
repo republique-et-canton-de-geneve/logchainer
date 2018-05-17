@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.beans.Client;
-import ch.ge.cti.logchainer.beans.FileWatched;
+import ch.ge.cti.logchainer.beans.WatchedFile;
 import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.service.flux.FluxService;
 import ch.ge.cti.logchainer.service.folder.FolderService;
@@ -46,7 +46,7 @@ public class FileServiceImpl implements FileService {
     private static final Logger LOG = LoggerFactory.getLogger(FileServiceImpl.class.getName());
 
     @Override
-    public void registerFile(Client client, FileWatched file) {
+    public void registerFile(Client client, WatchedFile file) {
 	LOG.debug("registering file {}", file.getFilename());
 	// getting the name of the file's flux
 	String fluxname = fluxService.getFluxName(file.getFilename(), component.getSeparator(client),
@@ -95,7 +95,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void sortFiles(String separator, String sorter, String stampPosition, List<FileWatched> files) {
+    public void sortFiles(String separator, String sorter, String stampPosition, List<WatchedFile> files) {
 	LOG.debug("sorting the file list");
 	if (("alphabetical").equals(sorter)) {
 	    LOG.debug("sorting by alphabetical order");
@@ -103,9 +103,9 @@ public class FileServiceImpl implements FileService {
 	    LOG.debug("sorting by numerical order");
 	}
 	// sorting algorithm
-	Collections.sort(files, new Comparator<FileWatched>() {
+	Collections.sort(files, new Comparator<WatchedFile>() {
 	    @Override
-	    public int compare(FileWatched file1, FileWatched file2) {
+	    public int compare(WatchedFile file1, WatchedFile file2) {
 		// getting both file's stamp which are used to sort them
 		String sortingStamp1 = fluxService.getSortingStamp(file1.getFilename(), separator, stampPosition);
 		String sortingStamp2 = fluxService.getSortingStamp(file2.getFilename(), separator, stampPosition);

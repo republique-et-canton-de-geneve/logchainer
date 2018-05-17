@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.beans.Client;
-import ch.ge.cti.logchainer.beans.FileWatched;
+import ch.ge.cti.logchainer.beans.WatchedFile;
 import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.exception.CorruptedKeyException;
 import ch.ge.cti.logchainer.generate.ClientConf;
@@ -92,16 +92,16 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 		LOG.info("event detected on client {}", client.getConf().getClientId());
 
 		client.setKey(watchKey);
-		List<FileWatched> corruptedFiles = clientService.registerEvent(client);
+		List<WatchedFile> corruptedFiles = clientService.registerEvent(client);
 
 		if (corruptedFiles != null) {
-		    corruptedFiles.stream().forEach(new Consumer<FileWatched>() {
+		    corruptedFiles.stream().forEach(new Consumer<WatchedFile>() {
 			@Override
-			public void accept(FileWatched corruptedFile) {
+			public void accept(WatchedFile corruptedFile) {
 			    LOG.info("file {} has invalid name", corruptedFile.getFilename());
-			    client.getFluxFileMap().putIfAbsent(CORRUPTED_FLUXNAME, new ArrayList<>());
-			    client.getFluxFileMap().get(CORRUPTED_FLUXNAME).add(corruptedFile);
-			    client.getFilesWatched().add(corruptedFile);
+			    client.getWatchedFilesByFlux().putIfAbsent(CORRUPTED_FLUXNAME, new ArrayList<>());
+			    client.getWatchedFilesByFlux().get(CORRUPTED_FLUXNAME).add(corruptedFile);
+			    client.getWatchedFiles().add(corruptedFile);
 			    corruptedFile.setRegistered(true);
 			}
 		    });
@@ -123,7 +123,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      */
     private void waitingForFileToBeReadyToBeLaunched(Client client) {
 	// looking at each detected files per client
-	for (FileWatched file : client.getFilesWatched()) {
+	for (WatchedFile file : client.getWatchedFiles()) {
 	    // present time
 	    int actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
 		    + LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS + LocalDateTime.now().getSecond();
@@ -136,14 +136,14 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	    // now
 	    if (file.getArrivingTime() + DELAY_TRANSFER_FILE < actualTime) {
 		LOG.debug("enough time waited for file {}", file.getFilename());
-		file.setReadyToBeTreated(true);
+		file.setReadyToBeProcessed(true);
 	    }
 	}
 
 	// registering all the treated files into a list
 	ArrayList<String> allDoneFlux = new ArrayList<>();
 	// iterating over all the flux
-	for (Map.Entry<String, ArrayList<FileWatched>> flux : client.getFluxFileMap().entrySet()) {
+	for (Map.Entry<String, ArrayList<WatchedFile>> flux : client.getWatchedFilesByFlux().entrySet()) {
 	    // checking if the file can be treated
 	    if (fluxService.isFluxReadyToBeTreated(flux)) {
 		// flux treatment
@@ -163,7 +163,7 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     }
 
     @Override
-    public boolean treatmentAfterDetectionOfEvent(Client client, String filename, FileWatched file) {
+    public boolean treatmentAfterDetectionOfEvent(Client client, String filename, WatchedFile file) {
 	LOG.debug("start of the file treatment");
 	// handling the overflow situation
 	if (file.getKind() == OVERFLOW) {
@@ -191,9 +191,9 @@ public class LogWatcherServiceImpl implements LogWatcherService {
      * @param clientNb
      * @return validity of the key
      */
-    private boolean reset(Client client, FileWatched file) {
+    private boolean reset(Client client, WatchedFile file) {
 	// checking if the file can be removed (removes it if able)
-	if (client.getFilesWatched().remove(file)) {
+	if (client.getWatchedFiles().remove(file)) {
 	    LOG.debug("file references successfully removed from map");
 	    return true;
 	} else {

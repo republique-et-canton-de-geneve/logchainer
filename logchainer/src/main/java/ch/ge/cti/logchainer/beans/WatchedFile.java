@@ -8,26 +8,23 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Bean grouping all watched file related attributes.
- * 
- * @author FANICHETL
- *
  */
-public class FileWatched {
+public class WatchedFile {
     private static final int CONVERT_HOUR_TO_SECONDS = 3600;
     private static final int CONVERT_MINUTE_TO_SECONDS = 60;
 
     private final String filename;
     private final int arrivingTime;
-    private boolean readyToBeTreated = false;
+    private boolean readyToBeProcessed = false;
     private WatchEvent.Kind<?> kind;
     private boolean registered;
 
     /**
      * logger
      */
-    private static final Logger LOG = LoggerFactory.getLogger(FileWatched.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(WatchedFile.class.getName());
 
-    public FileWatched(String filename) {
+    public WatchedFile(String filename) {
 	LOG.debug("client infos instantiated");
 	this.filename = filename;
 	this.arrivingTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
@@ -42,12 +39,12 @@ public class FileWatched {
 	return arrivingTime;
     }
 
-    public boolean isReadyToBeTreated() {
-	return readyToBeTreated;
+    public boolean isReadyToBeProcessed() {
+	return readyToBeProcessed;
     }
 
-    public void setReadyToBeTreated(boolean readyToBeTreated) {
-	this.readyToBeTreated = readyToBeTreated;
+    public void setReadyToBeProcessed(boolean readyToBeTreated) {
+	this.readyToBeProcessed = readyToBeTreated;
     }
 
     public WatchEvent.Kind<?> getKind() {

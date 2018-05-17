@@ -18,18 +18,14 @@ import ch.ge.cti.logchainer.generate.ClientConf;
 /**
  * Bean grouping all client related attributs, such as the directories, the
  * watcher and it's watchKey.
- * 
- * @author FANICHETL
- *
  */
 public class Client {
     private ClientConf conf;
     private WatchService watcher;
     private WatchKey key;
-    // Variable des fichioers wahtched
-    private ArrayList<FileWatched> filesWatched;
+    private ArrayList<WatchedFile> watchedFiles;
     // Map the flux to the files it contains
-    private Map<String, ArrayList<FileWatched>> fluxFileMap;
+    private Map<String, ArrayList<WatchedFile>> watchedFilesByFlux;
 
     /**
      * logger
@@ -44,8 +40,8 @@ public class Client {
 	} catch (IOException e) {
 	    throw new WatchServiceException(this.conf.getClientId(), e);
 	}
-	this.filesWatched = new ArrayList<>();
-	this.fluxFileMap = new HashMap<>();
+	this.watchedFiles = new ArrayList<>();
+	this.watchedFilesByFlux = new HashMap<>();
     }
 
     public WatchKey getKey() {
@@ -65,11 +61,11 @@ public class Client {
 	return conf;
     }
 
-    public List<FileWatched> getFilesWatched() {
-	return filesWatched;
+    public List<WatchedFile> getWatchedFiles() {
+	return watchedFiles;
     }
 
-    public Map<String, ArrayList<FileWatched>> getFluxFileMap() {
-	return fluxFileMap;
+    public Map<String, ArrayList<WatchedFile>> getWatchedFilesByFlux() {
+	return watchedFilesByFlux;
     }
 }

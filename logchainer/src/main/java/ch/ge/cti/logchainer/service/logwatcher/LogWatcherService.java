@@ -1,7 +1,7 @@
 package ch.ge.cti.logchainer.service.logwatcher;
 
 import ch.ge.cti.logchainer.beans.Client;
-import ch.ge.cti.logchainer.beans.FileWatched;
+import ch.ge.cti.logchainer.beans.WatchedFile;
 import ch.ge.cti.logchainer.generate.LogChainerConf;
 
 public interface LogWatcherService {
@@ -24,5 +24,5 @@ public interface LogWatcherService {
      * 
      * @param clientNb
      */
-    boolean treatmentAfterDetectionOfEvent(Client client, String filename, FileWatched file);
+    boolean treatmentAfterDetectionOfEvent(Client client, String filename, WatchedFile file);
 }
