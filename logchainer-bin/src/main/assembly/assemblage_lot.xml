@@ -32,6 +32,11 @@
 			<filtered>true</filtered>
 		</file>
 		<file>
+   <source>src/main/bin/stop.sh</source>
+   <outputDirectory>/bin</outputDirectory>
+   <filtered>true</filtered>
+  </file>
+		<file>
 			<source>src/main/readmeForFolderExample/readme</source>
 			<outputDirectory>/clientExample/input</outputDirectory>
 			<filtered>true</filtered>
