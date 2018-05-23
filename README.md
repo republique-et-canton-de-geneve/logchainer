@@ -17,7 +17,7 @@ version at which point the hash code is still present but is null (we arbitraril
 		- [Error](#error)
 		- [Logback](#logback)
 	- [Components](#components)
-- [Internal Functioning](#working)
+- [Functioning](#functioning)
 	- [Process](#process)
 	- [Exceptions](#exceptions)
 	- [Monitoring](#monitoring)
@@ -109,7 +109,7 @@ The directory must be created upfront by the user.
 
 The clients are defined in the XML file.
 
-# Internal Functioning <a name="working"></a>
+# Functioning
 
 Once the program is launched, for every client in the XML file, the system creates a WatchService (directory surveillance)
 and attaches it to the client. Each client refers to an input directory where files will be put by the user and then detected. 
