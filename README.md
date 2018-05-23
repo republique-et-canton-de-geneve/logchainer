@@ -7,7 +7,9 @@ The files are processed following the order given by their stamp.
 Post-process, an exacct copy of each file is released into the output directory, the only difference with the original file will be the text inserted at the beginning of each file.
 In the example, this text will be :
 - in the file flux1-a.log :
+
 '&lt;Previous file: none&gt;
+
  &ltDate of chaining: ...date...&gt
  &ltSHA-256: &gt'
 - in the file flux1-b.log :
