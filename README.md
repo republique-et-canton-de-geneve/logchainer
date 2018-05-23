@@ -21,6 +21,7 @@ In the example, this text will be :
  
  &lt;SHA-256: ...hashCode of previous file&gt;'
 - in the file flux1-c.log :
+
 '&lt;Previous file: flux1-b.log&gt;
 
  &lt;Date of chaining: ...date...&gt;
@@ -38,6 +39,7 @@ and the system won't do anything about it.
 # Table of contents
 - [Overview](#overview)
     - [Contents](#contents)
+    - [Use](#use)
 - [Installation](#installation)
 - [Configuration](#configuration)
 	- [Execution](#execution)
@@ -59,6 +61,14 @@ and the system won't do anything about it.
 
 The project also contains a working copy of the log chainer. The ZIP version contains a functional launcher, the JAR file
 of the log chainer, the properties file, and an XML configuration file.
+
+## Use
+
+Here are two example case of use for the logchainer application: 
+
+- the application can be launched once and left functioning in the background.
+Then the output of the application producing the files to chain can be plugged on the system's input directory so that the files are continuously chained.
+- once in a while the application can be launched and the user can put all of his files to chain at once and then shut down the application.
 
 # Installation
 
