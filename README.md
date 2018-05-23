@@ -20,9 +20,14 @@ In the example, this text will be :
  <SHA-256: ...hashCode of previous file>'
 Also, only file flux1-c.log will be kept in the working directory.
 
+NB : This project only supports the log chaining of provided files: if a version of the file isn't submitted, no error 
+will be sent and there will be an undetected breach. It is therefore up to the user to correctly set the history 
+of the modifications. If a file does not have an appropriate name, it will be moved to the corrupted files directory
+and the system won't do anything about it.
+
+
 # Table of contents
 - [Overview](#overview)
-    - [Context](#context)
     - [Contents](#contents)
 - [Installation](#installation)
 - [Configuration](#configuration)
@@ -40,13 +45,6 @@ Also, only file flux1-c.log will be kept in the working directory.
 - [Contact](#contact)
 
 # Overview 
-
-## Context
-
-This project only supports the log chaining of provided files: if a version of the file isn't submitted, no error 
-will be sent and there will be an undetected breach. It is therefore up to the user to correctly set the history 
-of the modifications. If a file does not have an appropriate name, it will be moved to the corrupted files directory
- and the system won't do anything about it.
 
 ## Contents
 
@@ -172,24 +170,24 @@ Notes:
 This section provides the list of the expected exceptions. Any other exception that might be raised won't be handled. Legend: (I) stands for: the exception generates a program interruption. (NI) stands for: the exception generates no program interruption.
 
 - NameException: (ClientService::registerEvent) the pattern of the name is incorrect. (NI)
-- FileAlreadyExistsException: (FolderService::moveFileInDirWithNoSameNameFile) a file with the same name already exists in the directory.
+- FileAlreadyExistsException: (FolderService::moveFileInDirWithNoSameNameFile) a file with the same name already exists in the directory. (I)
 - FileNotFoundException/NoSuchFileException: 
-	- (FolderService::moveFileInDirWithNoSameNameFile) the file couldn't be found in the input directory (possibly it was detected but it was removed before being processed).
-	- (LogChainerService::chainingLogFile) (2 occurrences) the files were not found in the working directory.
-	- (LogWatcherService::getPreviousFileHash) at stream opening time, the previous file wasn't found in the working directory.
+	- (FolderService::moveFileInDirWithNoSameNameFile) the file couldn't be found in the input directory (possibly it was detected but it was removed before being processed). (I)
+	- (LogChainerService::chainingLogFile) (2 occurrences) the files were not found in the working directory. (I)
+	- (LogWatcherService::getPreviousFileHash) at stream opening time, the previous file wasn't found in the working directory. (I)
 - IOException: 
-	- (FolderService::moveFileInDirWithNoSameNameFile) when an IOException is raised in Files::move.
-	- (FolderService::copyFileToDirByReplacingExisting) when an IOException is raised in Files::copy.
-	- (HashService::getLogHash) error when reading the given stream.
-	- (LogChainerService::chainingLogFile) error when reading the stream opened on the file to process.
-	- (LogChainerService::accessToTmpFile) error when reading the stream opened on the temp file.
-	- (LogChainerService::insertionOfMessage) error while manipulating the streams.
-	- (LogWatcherService::initializeFileWatcherByClient) error while initializing the watchKey.
-	- (LogWatcherService::getPreviousFileHash) error when reading the stream from the previous file in the working directory.
-- UnsupportedEncodingException: (LogWatcherService::newFileTreatment) encoding type isn't a valid Charset.
-- JAXBException: (LogChainer::loadConfiguration) error while loading the configurations from the XML file.
-- CorruptedKeyException: (LogWatcherService::processEvents) the directory isn't accessible anymore or the key is corrupted.
-- WatchServiceError: (Client::constructor) error while creating the watchService.
+	- (FolderService::moveFileInDirWithNoSameNameFile) when an IOException is raised in Files::move. (I)
+	- (FolderService::copyFileToDirByReplacingExisting) when an IOException is raised in Files::copy. (I)
+	- (HashService::getLogHash) error when reading the given stream. (I)
+	- (LogChainerService::chainingLogFile) error when reading the stream opened on the file to process. (I)
+	- (LogChainerService::accessToTmpFile) error when reading the stream opened on the temp file. (I)
+	- (LogChainerService::insertionOfMessage) error while manipulating the streams. (I)
+	- (LogWatcherService::initializeFileWatcherByClient) error while initializing the watchKey. (I)
+	- (LogWatcherService::getPreviousFileHash) error when reading the stream from the previous file in the working directory. (I)
+- UnsupportedEncodingException: (LogWatcherService::newFileTreatment) encoding type isn't a valid Charset. (I)
+- JAXBException: (LogChainer::loadConfiguration) error while loading the configurations from the XML file. (I)
+- CorruptedKeyException: (LogWatcherService::processEvents) the directory isn't accessible anymore or the key is corrupted. (I)
+- WatchServiceError: (Client::constructor) error while creating the watchService. (I)
 
 ## Monitoring
 
