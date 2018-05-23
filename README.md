@@ -1,8 +1,24 @@
 # Open e-Gov - LogChainer
 
 The goal of the LogChainer project is to create an unbroken sequence of log files so that any modification is registered. 
-The chain works as following: the header of any file contains the hash code of its previous version, until there is no such 
-version at which point the hash code is still present but is null (we arbitrarily defined such a hashCode as an empty one).
+The chain works as following: let's take 3 files flux1-a.log, flux1-b.log, flux1-c.log. Here the flux of all files is the same (flux1) so only their stamp changes.
+Once all these 3 files have been put in the input directory, they are moved to the working directory to be processed.
+The files are processed following the order given by their stamp.
+Post-process, an exacct copy of each file is released into the output directory, the only difference with the original file will be the text inserted at the beginning of each file.
+In the example, this text will be :
+- in the file flux1-a.log :
+'<Previous file: none>
+ <Date of chaining: ...date...>
+ <SHA-256: >'
+- in the file flux1-b.log :
+'<Previous file: flux1-a.log>
+ <Date of chaining: ...date...>
+ <SHA-256: ...hashCode of previous file>'
+- in the file flux1-c.log :
+'<Previous file: flux1-b.log>
+ <Date of chaining: ...date...>
+ <SHA-256: ...hashCode of previous file>'
+Also, only file flux1-c.log will be kept in the working directory.
 
 # Table of contents
 - [Overview](#overview)
