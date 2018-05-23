@@ -8,16 +8,16 @@ Post-process, an exacct copy of each file is released into the output directory,
 In the example, this text will be :
 - in the file flux1-a.log :
 '&lt;Previous file: none&gt;
- <Date of chaining: ...date...>
- <SHA-256: >'
+ &ltDate of chaining: ...date...&gt
+ &ltSHA-256: &gt'
 - in the file flux1-b.log :
-'<Previous file: flux1-a.log>
- <Date of chaining: ...date...>
- <SHA-256: ...hashCode of previous file>'
+'&ltPrevious file: flux1-a.log&gt
+ &ltDate of chaining: ...date...&gt
+ &ltSHA-256: ...hashCode of previous file&gt'
 - in the file flux1-c.log :
-'<Previous file: flux1-b.log>
- <Date of chaining: ...date...>
- <SHA-256: ...hashCode of previous file>'
+'&ltPrevious file: flux1-b.log&gt
+ &ltDate of chaining: ...date...&gt
+ &ltSHA-256: ...hashCode of previous file&gt'
 Also, only file flux1-c.log will be kept in the working directory.
 
 NB : This project only supports the log chaining of provided files: if a version of the file isn't submitted, no error 
@@ -74,9 +74,9 @@ The launcher ``run.sh`` must contain:
 - the path to the JVM. Alternatively the JAVA_HOME system property can be set
 - the path to the project JAR file
 - the paths to the 3 properties files:
-	- the project properties (-Dapplication.properties=<PATH>)
-	- the error messages properties (-DerrorMessages.properties=<PATH>)
-	- the Logback properties (-Dlogback.properties=<PATH>)
+	- the project properties (-Dapplication.properties=&ltPATH&gt)
+	- the error messages properties (-DerrorMessages.properties=&ltPATH&gt)
+	- the Logback properties (-Dlogback.properties=&ltPATH&gt)
 
 ## Properties
 
