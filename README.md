@@ -10,16 +10,23 @@ In the example, this text will be :
 
 '&lt;Previous file: none&gt;
 
- &ltDate of chaining: ...date...&gt
- &ltSHA-256: &gt'
+ &lt;Date of chaining: ...date...&gt;
+ 
+ &lt;SHA-256: &gt;'
 - in the file flux1-b.log :
-'&ltPrevious file: flux1-a.log&gt
- &ltDate of chaining: ...date...&gt
- &ltSHA-256: ...hashCode of previous file&gt'
+
+'&lt;Previous file: flux1-a.log&gt;
+
+ &lt;Date of chaining: ...date...&gt;
+ 
+ &lt;SHA-256: ...hashCode of previous file&gt;'
 - in the file flux1-c.log :
-'&ltPrevious file: flux1-b.log&gt
- &ltDate of chaining: ...date...&gt
- &ltSHA-256: ...hashCode of previous file&gt'
+'&lt;Previous file: flux1-b.log&gt;
+
+ &lt;Date of chaining: ...date...&gt;
+ 
+ &lt;SHA-256: ...hashCode of previous file&gt;'
+ 
 Also, only file flux1-c.log will be kept in the working directory.
 
 NB : This project only supports the log chaining of provided files: if a version of the file isn't submitted, no error 
@@ -76,9 +83,9 @@ The launcher ``run.sh`` must contain:
 - the path to the JVM. Alternatively the JAVA_HOME system property can be set
 - the path to the project JAR file
 - the paths to the 3 properties files:
-	- the project properties (-Dapplication.properties=&ltPATH&gt)
-	- the error messages properties (-DerrorMessages.properties=&ltPATH&gt)
-	- the Logback properties (-Dlogback.properties=&ltPATH&gt)
+	- the project properties (-Dapplication.properties=&lt;PATH&gt;)
+	- the error messages properties (-DerrorMessages.properties=&lt;PATH&gt;)
+	- the Logback properties (-Dlogback.properties=&lt;PATH&gt;)
 
 ## Properties
 
