@@ -1,7 +1,7 @@
 /*
  * <Log Chainer>
  *
- * Copyright (C) <Date, 2018> République et Canton de Genève
+ * Copyright (C) 2018 République et Canton de Genève
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
