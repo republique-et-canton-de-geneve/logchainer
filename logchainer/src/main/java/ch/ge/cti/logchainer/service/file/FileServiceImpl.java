@@ -185,28 +185,34 @@ public class FileServiceImpl implements FileService {
     String messageToInsert(byte[] hashCodeOfLog, Collection<File> previousFiles, Client client) {
 	LOG.debug("computing the message to insert");
 	// Chaining date
-	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-	String date = "<Date of chaining: " + dateFormat.format(new Date()) + "> \n";
+	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'+01:00'");
+	// dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+1"));
+	String date = dateFormat.format(new Date());
 
 	// Name of the previous file
-	String previousFile = "<Previous file: ";
+	String previousFile = " ";
 	Optional<File> previousFirstFile = previousFiles.stream().findFirst();
 	if (previousFirstFile.isPresent()) {
-	    previousFile += previousFirstFile.get().getName() + "> \n";
+	    previousFile += previousFirstFile.get().getName() + "\n";
 	} else {
-	    previousFile += "none> \n";
+	    previousFile += "\n";
 	}
 
 	// HashCode of the previous file
 	String previousFileHashCode;
 	try {
-	    previousFileHashCode = "<SHA-256: " + new String(hashCodeOfLog, fileHelper.getEncodingType(client))
-		    + "> \n";
+	    StringBuffer sbHashCode = new StringBuffer();
+	    for (int i = 0; i < hashCodeOfLog.length; i++) {
+		sbHashCode.append(Integer.toString((hashCodeOfLog[i] & 0xff) + 0x100, 16).substring(1));
+	    }
+
+	    previousFileHashCode = "SHA-256:"
+		    + new String(sbHashCode.toString().getBytes(), fileHelper.getEncodingType(client)) + "\n";
 	} catch (UnsupportedEncodingException e) {
 	    throw new BusinessException(e);
 	}
 
 	LOG.debug("message ready to be inserted");
-	return previousFile + date + previousFileHashCode;
+	return date + previousFile + previousFileHashCode;
     }
 }
