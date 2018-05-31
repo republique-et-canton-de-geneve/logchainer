@@ -218,19 +218,10 @@ public class FileServiceTest {
 	// testing for a normal message with previous file
 	previousFiles.add(new File("testPreviousFilename"));
 	String messageTestWithPreviousFile = fileService.messageToInsert(noHash, previousFiles, client);
-	assertTrue(messageTestWithPreviousFile.contains("<Date of chaining: "),
-		"message to insert doesn't contain '<Date of chaining: '");
-	assertTrue(messageTestWithPreviousFile.contains("> \n"), "message to insert doesn't contain '> \n'");
-	assertTrue(messageTestWithPreviousFile.contains("<Previous file: testPreviousFilename> \n"),
-		"message to insert doesn't contain '<Previous file: testPreviousFilename> \n'");
-	assertTrue(messageTestWithPreviousFile.contains("<SHA-256: "),
-		"message to insert doesn't contain '<SHA-256: '");
-
-	// without previous file
-	previousFiles.clear();
-	String messageTestWithoutPreviousFile = fileService.messageToInsert(noHash, previousFiles, client);
-	assertTrue(messageTestWithoutPreviousFile.contains("<Previous file: none> \n"),
-		"message to insert doesn't contain '<Previous file: none> \n'");
+	assertTrue(messageTestWithPreviousFile.contains(" testPreviousFilename\n"),
+		"message to insert doesn't contain ' testPreviousFilename\n'");
+	assertTrue(messageTestWithPreviousFile.contains("SHA-256:"),
+		"message to insert doesn't contain 'SHA-256:'");
 
 	// invalid charset
 	when(fileHelper.getEncodingType(any(Client.class))).thenReturn("Invalid_charset");
