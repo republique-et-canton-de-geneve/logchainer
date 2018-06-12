@@ -1,39 +1,49 @@
 # Open e-Gov - LogChainer
 
-The goal of the LogChainer project is to create an unbroken sequence of log files so that any modification is registered. 
-The chain works as following: let's take 3 files flux1-a.log, flux1-b.log, flux1-c.log. Here the flux of all files is the same (flux1) so only their stamp changes.
-Once all these 3 files have been put in the input directory, they are moved to the working directory to be processed.
+The goal of the LogChainer project is to create an unbroken sequence of log files so that any modification is registered.
+
+The chain works as following. Consider 3 files flux1-a.log, flux1-b.log, flux1-c.log. Here the flux of all files is the same (flux1) so only their stamp changes.
+Once all of these 3 files have been put by in the input directory, the system moves them to the working directory in order to process them.
 The files are processed following the order given by their stamp.
-Post-process, an exacct copy of each file is released into the output directory, the only difference with the original file will be the text inserted at the beginning of each file.
-In the example, this text will be :
-- in the file flux1-a.log :
+For every file, a copy of the file is released into the output directory, with one difference with the original file: in the beginning of the
+output file a few lines of text are inserted. These header lines establish the chaining.
+In the example, the header text are the following:
+- In file flux1-a.log :
 
-'&lt;Previous file: none&gt;
+```
+<Previous file: none>
 
- &lt;Date of chaining: ...date...&gt;
+<Date of chaining: ...date...>
  
- &lt;SHA-256: &gt;'
-- in the file flux1-b.log :
+<SHA-256: >
+```
 
-'&lt;Previous file: flux1-a.log&gt;
+- In file flux1-b.log :
 
- &lt;Date of chaining: ...date...&gt;
+```
+<Previous file: flux1-a.log>
+
+<Date of chaining: ...date...>
  
- &lt;SHA-256: ...hashCode of previous file&gt;'
-- in the file flux1-c.log :
+<SHA-256: ...hashCode of previous file...>
+```
 
-'&lt;Previous file: flux1-b.log&gt;
+- In file flux1-c.log :
 
- &lt;Date of chaining: ...date...&gt;
+```
+<Previous file: flux1-b.log>
+
+<Date of chaining: ...date...>
  
- &lt;SHA-256: ...hashCode of previous file&gt;'
+<SHA-256: ...hashCode of previous file...>
+```
  
-Also, only file flux1-c.log will be kept in the working directory.
+Additionally, the system retains only file flux1-c.log in the working directory.
 
-NB : This project only supports the log chaining of provided files: if a version of the file isn't submitted, no error 
-will be sent and there will be an undetected breach. It is therefore up to the user to correctly set the history 
+Note. This project only supports the log chaining of provided files: if a version of the file is not submitted, no error
+will be sent - an undetected breach will silently occur. It is therefore up to the user to set correctly the history
 of the modifications. If a file does not have an appropriate name, it will be moved to the corrupted files directory
-and the system won't do anything about it.
+and the system won't further process it.
 
 
 # Table of contents
