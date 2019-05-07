@@ -31,8 +31,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
 		<java.version>${jdk.version}</java.version>
-		<javacoco-maven-plugin.version>0.8.0</javacoco-maven-plugin.version>
-		<sonar.jacoco.reportPaths>target/jacoco.exec</sonar.jacoco.reportPaths>
+		<javacoco-maven-plugin.version>0.8.3</javacoco-maven-plugin.version>
 	</properties>
 
 	<modules>
@@ -106,7 +105,6 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<configuration>
 					<append>true</append>
-					<destFile>${sonar.jacoco.reportPaths}</destFile>
 				</configuration>
 				<executions>
 					<execution>
@@ -117,7 +115,6 @@
 					</execution>
 					<execution>
 						<id>jacoco-site</id>
-						<phase>verify</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
