@@ -206,8 +206,11 @@ public class FileServiceImpl implements FileService {
 		sbHashCode.append(Integer.toString((hashCodeOfLog[i] & 0xff) + 0x100, 16).substring(1));
 	    }
 
-	    previousFileHashCode = "SHA-256:"
-		    + new String(sbHashCode.toString().getBytes(), fileHelper.getEncodingType(client)) + "\n";
+	    String hash = new String(sbHashCode.toString().getBytes(), fileHelper.getEncodingType(client));
+	    if (!StringUtils.isEmpty(hash)) {
+			hash = hash.toUpperCase();
+	    }
+	    previousFileHashCode = "SHA-256:" + hash + "\n";
 	} catch (UnsupportedEncodingException e) {
 	    throw new BusinessException(e);
 	}
