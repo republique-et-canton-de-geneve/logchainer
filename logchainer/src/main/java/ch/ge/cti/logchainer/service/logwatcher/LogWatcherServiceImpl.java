@@ -23,12 +23,15 @@ import static ch.ge.cti.logchainer.constant.LogChainerConstant.DELAY_TRANSFER_FI
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +44,7 @@ import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.WatchedFile;
+import ch.ge.cti.logchainer.constant.LogChainerConstant;
 import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.exception.CorruptedKeyException;
 import ch.ge.cti.logchainer.generate.ClientConf;
@@ -60,9 +64,6 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     FluxService fluxService;
     @Autowired
     FileService fileService;
-
-    static final int CONVERT_HOUR_TO_SECONDS = 3600;
-    static final int CONVERT_MINUTE_TO_SECONDS = 60;
 
     private static final String CORRUPTED_FLUXNAME = "corrupted";
 
@@ -98,20 +99,34 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 
     @Override
     public void processEvents() {
+	processEvents(false);
+    }
+    
+    @Override
+    public void processEvents(boolean withHisto) {
 	// Iterate over all client for each iteration of the infinity loop
 	for (Client client : clients) {
+	    // if the option to manage the history is positioned 
+	    // then the present files before the logchainer execution are referenced 
+	    if (withHisto) {
+		try {
+		    historyTrigger(client);
+		} catch (IOException e) {
+		    throw new BusinessException(e);
+		}
+	    }
 	    // register events (wether anything happened or not)
 	    WatchKey watchKey = client.getWatcher().poll();
-
+	    
 	    // Launch the process only if a file was detected
 	    // No use of the take method because we don't want to wait until
 	    // an event is detected under one client
 	    // to move to the next one
-	    if (watchKey != null) {
+	    if (watchKey != null || withHisto) {
 		LOG.info("event detected on client {}", client.getConf().getClientId());
 
 		client.setKey(watchKey);
-		List<WatchedFile> corruptedFiles = clientService.registerEvent(client);
+		List<WatchedFile> corruptedFiles = clientService.registerEvent(client, withHisto);
 
 		if (corruptedFiles != null) {
 		    corruptedFiles.stream().forEach(new Consumer<WatchedFile>() {
@@ -135,6 +150,23 @@ public class LogWatcherServiceImpl implements LogWatcherService {
     }
 
     /**
+     * History trigger : a temporary file is created to trigger polling
+     *
+     * @param client 
+     * @throws IOException 
+     */
+    private void historyTrigger(Client client) throws IOException {
+	File f = new File(client.getConf().getInputDir(), LogChainerConstant.HISTORY_TRIGGER_FILENAME); 
+	try {
+	    new FileOutputStream(f).close();
+	} catch (Exception e) {
+	    throw new BusinessException("Error when creating the trigger polling.", e);
+	} finally {
+	    Files.delete(f.toPath());
+	}
+    }
+
+    /**
      * Support of the file from it's detection until it is ready to be
      * processed.
      * 
@@ -144,12 +176,13 @@ public class LogWatcherServiceImpl implements LogWatcherService {
 	// look at each detected files per client
 	for (WatchedFile file : client.getWatchedFiles()) {
 	    // present time
-	    int actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
-		    + LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS + LocalDateTime.now().getSecond();
+	    Timestamp timestampNow = new Timestamp(System.currentTimeMillis());
+	    long actualTime = timestampNow.getTime();
 
 	    // registration of the file
-	    if (!file.isRegistered())
+	    if (!file.isRegistered()) {
 		fileService.registerFile(client, file);
+	    }
 
 	    // check the waited delay from the arrived time of the file until
 	    // now

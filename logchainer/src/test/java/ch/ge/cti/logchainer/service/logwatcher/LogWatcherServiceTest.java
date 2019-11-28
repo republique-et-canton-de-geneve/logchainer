@@ -20,8 +20,6 @@
 package ch.ge.cti.logchainer.service.logwatcher;
 
 import static ch.ge.cti.logchainer.constant.LogChainerConstant.DELAY_TRANSFER_FILE;
-import static ch.ge.cti.logchainer.service.logwatcher.LogWatcherServiceImpl.CONVERT_HOUR_TO_SECONDS;
-import static ch.ge.cti.logchainer.service.logwatcher.LogWatcherServiceImpl.CONVERT_MINUTE_TO_SECONDS;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -39,7 +37,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchService;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,7 +126,7 @@ public class LogWatcherServiceTest {
 	// test for a corrupted file
 	List<WatchedFile> mockCorrFilesListToReturn = new ArrayList<>();
 	mockCorrFilesListToReturn.add(new WatchedFile(filename));
-	when(clientService.registerEvent(any(Client.class))).thenReturn(mockCorrFilesListToReturn);
+	when(clientService.registerEvent(any(Client.class), any(Boolean.class))).thenReturn(mockCorrFilesListToReturn);
 	when(mover.moveFileInDirWithNoSameNameFile(anyString(), anyString(), anyString())).thenCallRealMethod();
 	when(fluxService.isFluxReadyToBeProcessed(any())).thenReturn(true);
 	doNothing().when(fluxService).corruptedFluxProcess(any(Client.class), any(), any());
@@ -139,7 +137,7 @@ public class LogWatcherServiceTest {
 	Files.delete(Paths.get(testResourcesDirPath + "/" + filename));
 
 	// test for a key becoming invalid
-	when(clientService.registerEvent(any(Client.class))).thenReturn(null);
+	when(clientService.registerEvent(any(Client.class), any(Boolean.class))).thenReturn(null);
 
 	Files.write(Paths.get(testKeyBecomingInvalidDir + "/" + filename), noData.getBytes());
 	Files.delete(Paths.get(testKeyBecomingInvalidDir + "/" + filename));
@@ -164,8 +162,9 @@ public class LogWatcherServiceTest {
 	    if (testFile.isReadyToBeProcessed())
 		loop = false;
 	}
-	int actualTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
-		+ LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS + LocalDateTime.now().getSecond();
+	Timestamp timestampNow = new Timestamp(System.currentTimeMillis());
+	long actualTime = timestampNow.getTime();
+	
 	assertTrue(actualTime - testFile.getArrivingTime() > DELAY_TRANSFER_FILE, "delay wasn't respected");
     }
 

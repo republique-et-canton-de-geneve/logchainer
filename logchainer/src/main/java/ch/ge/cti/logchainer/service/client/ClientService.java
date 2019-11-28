@@ -32,8 +32,14 @@ public interface ClientService {
      * @param client
      * @return the corrupted file or null if there are none
      */
-    List<WatchedFile> registerEvent(Client client);
+    List<WatchedFile> registerEvent(Client client, boolean withHisto);
 
+    /**
+     * Register history files as new WatchedFile objects
+     * 
+     * @param client
+     */
+    void registerEventHistory(Client client);
     /**
      * Remove all flux that have been entirely processed from the client's map.
      * 

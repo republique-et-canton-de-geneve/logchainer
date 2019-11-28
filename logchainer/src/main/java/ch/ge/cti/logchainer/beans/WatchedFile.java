@@ -20,7 +20,7 @@
 package ch.ge.cti.logchainer.beans;
 
 import java.nio.file.WatchEvent;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +29,8 @@ import org.slf4j.LoggerFactory;
  * Bean grouping all watched file related attributes.
  */
 public class WatchedFile {
-    private static final int CONVERT_HOUR_TO_SECONDS = 3600;
-    private static final int CONVERT_MINUTE_TO_SECONDS = 60;
-
     private final String filename;
-    private final int arrivingTime;
+    private final long arrivingTime;
     private boolean readyToBeProcessed = false;
     private WatchEvent.Kind<?> kind;
     private boolean registered;
@@ -46,15 +43,21 @@ public class WatchedFile {
     public WatchedFile(String filename) {
 	LOG.debug("client infos instantiated");
 	this.filename = filename;
-	this.arrivingTime = LocalDateTime.now().getHour() * CONVERT_HOUR_TO_SECONDS
-		+ LocalDateTime.now().getMinute() * CONVERT_MINUTE_TO_SECONDS + LocalDateTime.now().getSecond();
+	Timestamp timestampNow = new Timestamp(System.currentTimeMillis());
+	this.arrivingTime = timestampNow.getTime();
+    }
+    
+    public WatchedFile(String filename, long arrivingTime) {
+	LOG.debug("client infos instantiated");
+	this.filename = filename;
+	this.arrivingTime = arrivingTime;
     }
 
     public String getFilename() {
 	return filename;
     }
 
-    public int getArrivingTime() {
+    public long getArrivingTime() {
 	return arrivingTime;
     }
 

@@ -30,6 +30,8 @@ public final class LogChainerConstant {
 
     // in seconds
     public static final int DELAY_TRANSFER_FILE = 7;
+    
+    public static final String HISTORY_TRIGGER_FILENAME = "_garbageHistoryTrigger.tmp";    
 
     private LogChainerConstant() {
     }

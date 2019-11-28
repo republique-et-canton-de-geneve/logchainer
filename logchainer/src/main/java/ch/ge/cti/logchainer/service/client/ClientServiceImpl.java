@@ -19,8 +19,15 @@
 
 package ch.ge.cti.logchainer.service.client;
 
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +38,8 @@ import org.springframework.stereotype.Service;
 
 import ch.ge.cti.logchainer.beans.Client;
 import ch.ge.cti.logchainer.beans.WatchedFile;
+import ch.ge.cti.logchainer.constant.LogChainerConstant;
+import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.service.flux.FluxService;
 import ch.ge.cti.logchainer.service.helper.FileHelper;
 
@@ -48,20 +57,29 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<WatchedFile> registerEvent(Client client) {
+    public List<WatchedFile> registerEvent(Client client, boolean withHisto) {
 	List<WatchedFile> corruptedFiles = new ArrayList<>();
 
+	// Management of the present files in the input folder before the logchainer execution
+	if (withHisto) {
+	    registerEventHistory(client);
+	}	
 	// iterate on all events in the key
 	for (WatchEvent<?> event : client.getKey().pollEvents()) {
 	    WatchedFile fileToRegister = new WatchedFile(((WatchEvent<Path>) event).context().toString());
 	    boolean toRegister = true;
 
-	    if (LOG.isDebugEnabled())
-		LOG.debug("Processing event from file : {}", fileToRegister.getFilename());
+	    LOG.debug("Processing event from file : {}", fileToRegister.getFilename());
 
+	    if (LogChainerConstant.HISTORY_TRIGGER_FILENAME.equals(fileToRegister.getFilename())) {
+		LOG.debug("History Event");
+		continue;
+	    }
+	    
 	    // check the validity of the filename
-	    if (!fileToRegister.getFilename().contains(fileHelper.getSeparator(client)))
+	    if (!fileToRegister.getFilename().contains(fileHelper.getSeparator(client))) {
 		corruptedFiles.add(fileToRegister);
+	    }
 
 	    // check if the file has already been registered
 	    for (WatchedFile file : client.getWatchedFiles()) {
@@ -81,6 +99,23 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	return corruptedFiles.isEmpty() ? null : corruptedFiles;
+    }
+
+    @Override    
+    public void registerEventHistory(Client client) {
+	Path inputDirPath = Paths.get(client.getConf().getInputDir());
+	// Manage History files
+	try (DirectoryStream<Path> stream = Files.newDirectoryStream(inputDirPath)) {
+	    for (Path entry : stream) {
+		BasicFileAttributes attr = Files.readAttributes(entry, BasicFileAttributes.class);
+		WatchedFile fileToRegister = new WatchedFile(entry.getFileName().toString(), attr.creationTime().toMillis());
+		fileToRegister.setKind(ENTRY_CREATE);
+		fileToRegister.setRegistered(false);
+		client.getWatchedFiles().add(fileToRegister);
+	    }
+	} catch (IOException e) {
+	    throw new BusinessException(e);
+	}
     }
 
     @Override

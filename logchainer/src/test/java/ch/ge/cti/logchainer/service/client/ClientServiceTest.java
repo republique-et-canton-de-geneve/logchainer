@@ -96,7 +96,7 @@ public class ClientServiceTest {
 
 	    if (watchKey != null) {
 		client.setKey(watchKey);
-		assertEquals(clientService.registerEvent(client).get(0).getFilename(), refFilename,
+		assertEquals(clientService.registerEvent(client, false).get(0).getFilename(), refFilename,
 			"corrupted files incorrectly processed");
 
 		// reset the to be able to use it again
@@ -123,7 +123,7 @@ public class ClientServiceTest {
 
 	    if (watchKey != null) {
 		client.setKey(watchKey);
-		assertNull(clientService.registerEvent(client), "file not registered");
+		assertNull(clientService.registerEvent(client, false), "file not registered");
 		boolean fileInFilesWatchedList = false;
 		for (int i = 0; i < client.getWatchedFiles().size(); ++i) {
 		    if (client.getWatchedFiles().get(i).getFilename().equals(filename)) {
@@ -157,7 +157,7 @@ public class ClientServiceTest {
 
 	    if (watchKey != null) {
 		client.setKey(watchKey);
-		assertNull(clientService.registerEvent(client), "file previously not registered and neither this time");
+		assertNull(clientService.registerEvent(client, false), "file previously not registered and neither this time");
 		boolean fileInFilesWatchedList = false;
 		for (int i = 0; i < client.getWatchedFiles().size(); ++i) {
 		    if (client.getWatchedFiles().get(i).getFilename().equals(filename)) {

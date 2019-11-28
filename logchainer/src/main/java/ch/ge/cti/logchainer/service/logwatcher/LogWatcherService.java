@@ -37,6 +37,12 @@ public interface LogWatcherService {
      * process by calling all necessary methods correctly.
      */
     void processEvents();
+    
+    /**
+     * Infinity loop checking for updates (with history) in the directoy and then does the file
+     * process by calling all necessary methods correctly.
+     */
+    void processEvents(boolean first);
 
     /**
      * Control in which way the file will be handled.

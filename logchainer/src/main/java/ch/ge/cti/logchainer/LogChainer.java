@@ -101,12 +101,14 @@ public class LogChainer implements CommandLineRunner {
 	LOG.debug("start of the infinity loop");
 	// loop variable controls if the loop continues
 	boolean loop = true;
+	boolean withHisto = true;
 	while (loop) {
 	    try {
-		watcher.processEvents();
+		watcher.processEvents(withHisto);
 	    } catch (RuntimeException e) {
 		exceptionHandler.handleException(e);
 	    }
+	    withHisto = false;
 	}
     }
 

@@ -106,11 +106,11 @@ public class FluxServiceImpl implements FluxService {
 
 	if (stampPosition.equals(stampPositionIsBefore)) {
 	    LOG.debug("the stamp of the file {} is : {}", filename, nameComponents[0]);
-	    return nameComponents[0];
+	    return nameComponents[0].trim();
 	} else {
 	    nameStampComponents = nameComponents[nameComponents.length - 1].split("\\.");
 	    LOG.debug("the stamp of the file {} is : {}", filename, nameStampComponents[0]);
-	    return nameStampComponents[0];
+	    return nameStampComponents[0].trim();
 	}
     }
 
