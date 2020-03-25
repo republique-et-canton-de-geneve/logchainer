@@ -36,6 +36,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import ch.ge.cti.logchainer.constant.LogChainerConstant;
 import ch.ge.cti.logchainer.exception.BusinessException;
 import ch.ge.cti.logchainer.exception.handler.LogChainerExceptionHandlerServiceImpl;
 import ch.ge.cti.logchainer.generate.LogChainerConf;
@@ -81,9 +82,16 @@ public class LogChainer implements CommandLineRunner {
 
     @Override
     public void run(String... arg0) {
+	boolean modeBatch = false;
 	LOG.debug("run started");
 
 	LOG.debug("LogWatcherServiceImpl initialization started");
+	for (String arg : arg0) {
+	    if (arg != null && arg.equalsIgnoreCase(LogChainerConstant.MODE_BATCH)) {
+		modeBatch = true;
+	    }
+	}
+	
 	LogChainerConf clientConfList = new LogChainerConf();
 	// Access the client list provided by the user
 	try {
@@ -96,19 +104,31 @@ public class LogChainer implements CommandLineRunner {
 	// Register all clients as Client objects in a list
 	watcher.initializeFileWatcherByClient(clientConfList);
 	LOG.debug("LogWatcherServiceImpl initialization completed");
-
-	// infinity loop to actualize endlessly the search for new files
-	LOG.debug("start of the infinity loop");
-	// loop variable controls if the loop continues
-	boolean loop = true;
 	boolean withHisto = true;
-	while (loop) {
+	// Solution simple et rapide pour la mise en place de l'option "mode batch"
+	if (modeBatch) {
 	    try {
-		watcher.processEvents(withHisto);
-	    } catch (RuntimeException e) {
-		exceptionHandler.handleException(e);
+		    watcher.processEvents(withHisto);
+		    LOG.info("SUCCES - Fin du traitement");
+		    System.exit(0);
+		} catch (RuntimeException e) {
+		    exceptionHandler.handleException(e);
+		    LOG.error("ERROR - Fin du traitement");
+		    System.exit(-1);
+		}
+	} else {
+	    // infinity loop to actualize endlessly the search for new files
+	    LOG.debug("start of the infinity loop");
+	    // loop variable controls if the loop continues
+	    boolean loop = true;
+	    while (loop) {
+		try {
+		    watcher.processEvents(withHisto);
+		} catch (RuntimeException e) {
+		    exceptionHandler.handleException(e);
+		}
+		withHisto = false;
 	    }
-	    withHisto = false;
 	}
     }
 

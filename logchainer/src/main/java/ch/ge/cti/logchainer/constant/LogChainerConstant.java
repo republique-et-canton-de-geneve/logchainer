@@ -27,6 +27,7 @@ public final class LogChainerConstant {
     public static final String ENCODING_TYPE_DEFAULT = "UTF-8";
 
     public static final String STAMP_POSITION_DEFAULT = "after";
+    public static final String MODE_BATCH = "batch";
 
     // in seconds
     public static final int DELAY_TRANSFER_FILE = 7;
