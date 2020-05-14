@@ -21,6 +21,7 @@ package ch.ge.cti.logchainer.service.file;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -136,8 +137,8 @@ public class FileServiceImpl implements FileService {
 		    return sortingStamp1.compareTo(sortingStamp2);
 		} else {
 		    // case where the sorting type is numerical (default one)
-		    Integer stamp1 = Integer.parseInt(sortingStamp1);
-		    Integer stamp2 = Integer.parseInt(sortingStamp2);
+		    BigInteger stamp1 = new BigInteger(sortingStamp1);
+		    BigInteger stamp2 = new BigInteger(sortingStamp2);
 
 		    return stamp1.compareTo(stamp2);
 		}
