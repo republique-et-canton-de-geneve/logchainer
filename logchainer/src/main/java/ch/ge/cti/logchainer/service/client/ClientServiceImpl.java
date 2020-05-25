@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,7 @@ public class ClientServiceImpl implements ClientService {
 	// Management of the present files in the input folder before the logchainer execution
 	if (withHisto) {
 	    registerEventHistory(client);
-	}	
+	}
 	// iterate on all events in the key
 	for (WatchEvent<?> event : client.getKey().pollEvents()) {
 	    WatchedFile fileToRegister = new WatchedFile(((WatchEvent<Path>) event).context().toString());
@@ -106,6 +107,8 @@ public class ClientServiceImpl implements ClientService {
 	Path inputDirPath = Paths.get(client.getConf().getInputDir());
 	// Manage History files
 	try (DirectoryStream<Path> stream = Files.newDirectoryStream(inputDirPath)) {
+	    WatchKey watchKey = inputDirPath.register(client.getWatcher(), ENTRY_CREATE);
+	    client.setKey(watchKey);
 	    for (Path entry : stream) {
 		BasicFileAttributes attr = Files.readAttributes(entry, BasicFileAttributes.class);
 		WatchedFile fileToRegister = new WatchedFile(entry.getFileName().toString(), attr.creationTime().toMillis());

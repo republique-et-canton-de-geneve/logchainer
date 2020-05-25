@@ -9,8 +9,7 @@
 	<!-- to screen -->
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} %-5level [%thread] - %msg -
-				%logger{36}.%M\(%line\)%n</pattern>
+			<pattern>%d{HH:mm:ss.SSS} %-5level [%thread] - %msg - %logger{36}.%M\(%line\)%n</pattern>
 		</encoder>
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
 			<level>WARN</level>
@@ -31,8 +30,7 @@
 			<maxHistory>30</maxHistory>
 		</rollingPolicy>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<pattern>%d{HH:mm:ss.SSS} %-5level [%thread] - %msg -
-				%logger{36}.%M\(%line\)%n</pattern>
+			<pattern>%d{HH:mm:ss.SSS} %-5level [%thread] - %msg - %logger{36}.%M\(%line\)%n</pattern>
 		</encoder>
 	</appender>
 

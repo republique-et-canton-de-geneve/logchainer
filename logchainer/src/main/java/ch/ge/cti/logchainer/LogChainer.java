@@ -1,7 +1,7 @@
 /*
  * <Log Chainer>
  *
- * Copyright (C) 2018 République et Canton de Genève
+ * Copyright (C) 2018 Rï¿½publique et Canton de Genï¿½ve
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import ch.ge.cti.logchainer.constant.LogChainerConstant;
@@ -44,6 +45,7 @@ import ch.ge.cti.logchainer.generate.ObjectFactory;
 import ch.ge.cti.logchainer.service.logwatcher.LogWatcherService;
 
 @SpringBootApplication
+//@SpringBootTest(classes = ApplicationBootstrap.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class LogChainer implements CommandLineRunner {
     @Value("${xmlDirectoriesConf}")
     private String xmlDirectoriesConf;
@@ -76,6 +78,7 @@ public class LogChainer implements CommandLineRunner {
 	SpringApplication app = new SpringApplication(LogChainer.class);
 	// disable the spring banner
 	app.setBannerMode(Banner.Mode.OFF);
+	app.setWebApplicationType(WebApplicationType.NONE);
 
 	app.run(args);
     }
